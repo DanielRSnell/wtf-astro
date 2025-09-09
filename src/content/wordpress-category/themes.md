@@ -1,0 +1,39 @@
+---
+title: "WordPress Themes"
+description: "Discover the best WordPress themes for every type of website. From lightweight options to feature-rich designs, find the perfect theme for your project."
+category: themes
+subtitle: "(Theme reviews, web-design principles, UI/UX, typography and more)"
+count: 12
+topRecommendation:
+  slug: "blocksy"
+  badge: "Editor's Choice"
+runnerUp:
+  slug: "generatepress"
+  badge: "Best Value"
+honorableMention:
+  slug: "astra"
+  badge: "Most Popular"
+links:
+  - title: "Best WordPress Themes 2024"
+    href: "#"
+    description: "Comprehensive review of top performing themes"
+  - title: "BEST theme (for non-coders) – GeneratePress"
+    href: "#" 
+    description: "Perfect balance of simplicity and customization"
+  - title: "BEST theme (for coders) – Genesis"
+    href: "#"
+    description: "Developer-friendly framework with robust features"
+  - title: "How to choose a good WordPress theme"
+    href: "#"
+    description: "Essential criteria for theme selection"
+  - title: "Astra vs OceanWP vs Generatepress – best FREE theme review"
+    href: "#"
+    description: "In-depth comparison of popular free options"
+  - title: "Fastest lightweight WordPress themes"
+    href: "#"
+    description: "Performance-optimized themes for speed"
+---
+
+# WordPress Themes Resource Hub
+
+This collection contains comprehensive reviews, comparisons, and recommendations for WordPress themes. Whether you're looking for a lightweight theme for speed, a feature-rich option for complex sites, or something in between, our curated selection helps you make the right choice.

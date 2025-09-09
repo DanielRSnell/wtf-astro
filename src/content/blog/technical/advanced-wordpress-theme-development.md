@@ -1,0 +1,153 @@
+---
+title: "Advanced WordPress Theme Development"
+description: "Deep dive into custom theme development with modern WordPress practices. Learn about block themes, full site editing, and performance optimization."
+author: "Ben Ritner"
+date: 2024-01-10
+category: "technical"
+tags: ["wordpress", "theme-development", "php", "full-site-editing"]
+featured: true
+draft: false
+image:
+  src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop"
+  alt: "Code editor displaying WordPress theme files"
+readTime: 12
+---
+
+# Advanced WordPress Theme Development
+
+Modern WordPress theme development has evolved significantly with the introduction of Full Site Editing (FSE) and block themes. This guide explores advanced techniques for creating cutting-edge WordPress themes.
+
+## Block Themes vs Classic Themes
+
+Block themes represent the future of WordPress theme development. Unlike classic themes that rely heavily on PHP templates, block themes use:
+
+- **HTML templates** instead of PHP files
+- **theme.json** for global styling and configuration
+- **Block patterns** for reusable design components
+- **Template parts** for modular site building
+
+## Setting Up Your Development Environment
+
+```json
+{
+  "version": 2,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "840px",
+      "wideSize": "1200px"
+    },
+    "spacing": {
+      "spacingScale": {
+        "operator": "*",
+        "increment": 1.5,
+        "steps": 7,
+        "mediumStep": 1.5,
+        "unit": "rem"
+      }
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+          "name": "System Font",
+          "slug": "system-font"
+        }
+      ]
+    }
+  }
+}
+```
+
+## Creating Custom Block Patterns
+
+Block patterns are predefined block layouts that users can insert into their content. Here's how to register a custom pattern:
+
+```php
+register_block_pattern(
+    'mytheme/hero-section',
+    array(
+        'title'       => __( 'Hero Section', 'mytheme' ),
+        'description' => _x( 'A hero section with heading and call-to-action.', 'Pattern description', 'mytheme' ),
+        'content'     => '<!-- wp:group {"layout":{"type":"constrained"}} -->
+                         <div class="wp-block-group">
+                         <!-- wp:heading {"level":1} -->
+                         <h1>Welcome to Our Site</h1>
+                         <!-- /wp:heading -->
+                         </div>
+                         <!-- /wp:group -->',
+        'categories'  => array( 'header' ),
+    )
+);
+```
+
+## Performance Optimization Techniques
+
+### 1. Asset Optimization
+
+```php
+function mytheme_enqueue_assets() {
+    wp_enqueue_style( 
+        'mytheme-style', 
+        get_stylesheet_uri(), 
+        array(), 
+        wp_get_theme()->get( 'Version' ) 
+    );
+    
+    wp_enqueue_script(
+        'mytheme-script',
+        get_template_directory_uri() . '/assets/js/main.js',
+        array(),
+        wp_get_theme()->get( 'Version' ),
+        true
+    );
+}
+add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_assets' );
+```
+
+### 2. Database Query Optimization
+
+- Use `WP_Query` efficiently with proper arguments
+- Implement caching strategies
+- Minimize database calls in loops
+- Use transients for expensive operations
+
+### 3. Image Optimization
+
+- Implement responsive images with `srcset`
+- Use modern image formats (WebP, AVIF)
+- Lazy load images below the fold
+- Optimize featured image sizes
+
+## Advanced Customization Hooks
+
+```php
+// Add custom body classes
+function mytheme_body_classes( $classes ) {
+    if ( is_single() ) {
+        $classes[] = 'single-post-layout';
+    }
+    return $classes;
+}
+add_filter( 'body_class', 'mytheme_body_classes' );
+
+// Customize excerpt length
+function mytheme_excerpt_length( $length ) {
+    return 25;
+}
+add_filter( 'excerpt_length', 'mytheme_excerpt_length' );
+```
+
+## Testing and Quality Assurance
+
+- Use Theme Check plugin for WordPress coding standards
+- Test with Theme Unit Test data
+- Validate HTML and CSS
+- Test across multiple browsers and devices
+- Check accessibility with screen readers
+
+## Conclusion
+
+Advanced WordPress theme development requires understanding modern practices, performance optimization, and user experience principles. By embracing block themes and FSE, developers can create more flexible and maintainable WordPress sites.
+
+The future of WordPress theming is bright, with new tools and techniques constantly emerging to help developers build better experiences for users.

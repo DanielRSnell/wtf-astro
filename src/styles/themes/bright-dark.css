@@ -1,0 +1,92 @@
+:root[data-theme="bright-dark"], 
+[data-theme="bright-dark"] {
+  /* Base colors inspired by Bright theme */
+  --background: oklch(0.1059 0.0157 240.9877); /* Deep navy blue */
+  --foreground: oklch(0.9647 0.0039 106.423); /* Clean white */
+  --card: oklch(0.1373 0.0196 240.9877); /* Slightly lighter navy */
+  --card-foreground: oklch(0.9647 0.0039 106.423);
+  --popover: oklch(0.1373 0.0196 240.9877);
+  --popover-foreground: oklch(0.9647 0.0039 106.423);
+  
+  /* Primary colors - bright accent */
+  --primary: oklch(0.7059 0.2157 180.8627); /* Bright cyan/teal */
+  --primary-foreground: oklch(0.1059 0.0157 240.9877);
+  
+  /* Secondary colors */
+  --secondary: oklch(0.1765 0.0235 240.9877);
+  --secondary-foreground: oklch(0.9647 0.0039 106.423);
+  
+  /* Muted colors */
+  --muted: oklch(0.1569 0.0216 240.9877);
+  --muted-foreground: oklch(0.7059 0.0157 240.9877); /* Mid-tone for secondary text */
+  
+  /* Accent colors */
+  --accent: oklch(0.2157 0.0275 240.9877);
+  --accent-foreground: oklch(0.9647 0.0039 106.423);
+  
+  /* Status colors */
+  --destructive: oklch(0.5765 0.2157 29.2338);
+  --destructive-foreground: oklch(0.9647 0.0039 106.423);
+  --danger: oklch(0.5765 0.2157 29.2338);
+  --danger-foreground: oklch(0.9647 0.0039 106.423);
+  --warning: oklch(0.7451 0.1804 85.8746);
+  --warning-foreground: oklch(0.1059 0.0157 240.9877);
+  --success: oklch(0.6863 0.2157 120.5490);
+  --success-foreground: oklch(0.9647 0.0039 106.423);
+  
+  /* Border and input */
+  --border: oklch(0.2353 0.0314 240.9877);
+  --input: oklch(0.1961 0.0255 240.9877);
+  --ring: oklch(0.7059 0.2157 180.8627);
+  
+  /* Chart colors - bright palette */
+  --chart-1: oklch(0.7059 0.2157 180.8627); /* Cyan */
+  --chart-2: oklch(0.6863 0.2157 120.5490); /* Green */
+  --chart-3: oklch(0.6667 0.2157 60.2745); /* Yellow */
+  --chart-4: oklch(0.6471 0.2157 300.8235); /* Purple */
+  --chart-5: oklch(0.6275 0.2157 0.0000); /* Pink */
+  
+  /* Sidebar */
+  --sidebar: oklch(0.1059 0.0157 240.9877);
+  --sidebar-foreground: oklch(0.9647 0.0039 106.423);
+  --sidebar-primary: oklch(0.7059 0.2157 180.8627);
+  --sidebar-primary-foreground: oklch(0.1059 0.0157 240.9877);
+  --sidebar-accent: oklch(0.2157 0.0275 240.9877);
+  --sidebar-accent-foreground: oklch(0.9647 0.0039 106.423);
+  --sidebar-border: oklch(0.2353 0.0314 240.9877);
+  --sidebar-ring: oklch(0.7059 0.2157 180.8627);
+  
+  /* Typography */
+  --font-sans: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-mono: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+  
+  /* Border radius - more modern/rounded */
+  --radius: 0.75rem;
+  
+  /* Enhanced shadows for depth */
+  --shadow-2xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  
+  /* Grid background effect */
+  --grid-pattern: linear-gradient(90deg, transparent 24px, rgba(255, 255, 255, 0.03) 25px, rgba(255, 255, 255, 0.03) 26px, transparent 27px, transparent 99px),
+                   linear-gradient(transparent 24px, rgba(255, 255, 255, 0.03) 25px, rgba(255, 255, 255, 0.03) 26px, transparent 27px, transparent 99px);
+  --grid-size: 100px 100px;
+  
+  /* Gradient backgrounds */
+  --gradient-primary: linear-gradient(135deg, oklch(0.7059 0.2157 180.8627) 0%, oklch(0.6863 0.2157 120.5490) 100%);
+  --gradient-secondary: linear-gradient(135deg, oklch(0.1373 0.0196 240.9877) 0%, oklch(0.1059 0.0157 240.9877) 100%);
+  
+  /* Special effects */
+  --glow-primary: 0 0 20px oklch(0.7059 0.2157 180.8627 / 0.3);
+  --glow-secondary: 0 0 20px oklch(0.6863 0.2157 120.5490 / 0.3);
+  --glow-danger: 0 0 16px oklch(0.5765 0.2157 29.2338 / 0.25);
+  --glow-warning: 0 0 16px oklch(0.7451 0.1804 85.8746 / 0.25);
+  --glow-success: 0 0 16px oklch(0.6863 0.2157 120.5490 / 0.25);
+}

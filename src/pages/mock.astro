@@ -1,0 +1,267 @@
+---
+import Layout from '../layouts/base.astro';
+import { CoreWebVitalsComparison } from '../components/core-web-vitals-comparison.tsx';
+import { LinkListWithRecommendation } from '../components/ui/link-list-with-recommendation.tsx';
+import { ReviewHero } from '../components/review-hero.tsx';
+import { CompareSection } from '../components/compare-section.tsx';
+import { DosDontsSection } from '../components/dos-donts-section.tsx';
+import { PerspectiveComparison } from '../components/perspective-comparison.tsx';
+import { GuidesCards } from '../components/guides-cards.tsx';
+import { ResourceHub } from '../components/resource-hub.tsx';
+---
+
+<Layout title="Mock Components" description="High-fidelity component demonstrations and examples.">
+  <div class="pt-20 space-y-16">
+    <ReviewHero 
+      client:load 
+      data-theme="bright-dark"
+      alignment="left"
+      title="GenerateBlocks Review"
+      subtitle="The Ultimate Block Builder for WordPress"
+      description="After extensive testing and real-world usage, GenerateBlocks proves to be one of the most powerful and flexible block builders available. Our comprehensive review covers performance, usability, and developer experience to help you make an informed decision."
+      overallRating={4.7}
+      totalReviews={847}
+      publishDate="March 2024"
+      author="WooThatsFast Team"
+      badge="In-Depth Review"
+      ratings={[
+        { name: "Editor Empathy", value: 4.6 },
+        { name: "Performance", value: 4.9 },
+        { name: "Admin Experience", value: 4.5 },
+        { name: "Stability", value: 4.8 },
+        { name: "Documentation", value: 4.7 }
+      ]}
+    />
+    
+    <CompareSection
+      client:load
+      data-theme="bright-dark"
+      title="WooCommerce vs SureCart"
+      subtitle="Compare the leading e-commerce solutions to find the perfect fit for your business needs."
+      itemA={{
+        title: "WooCommerce",
+        subtitle: "The WordPress E-commerce Solution",
+        description: "The most popular WordPress e-commerce plugin, offering extensive customization and a vast ecosystem of extensions. Perfect for businesses that need complete control over their store.",
+        overallRating: 4.4,
+        accent: "woocommerce",
+        badge: "Most Popular",
+        href: "#",
+        ratings: [
+          { name: "Editor Empathy", value: 4.2 },
+          { name: "Performance", value: 4.1 },
+          { name: "Admin Experience", value: 4.3 },
+          { name: "Stability", value: 4.6 }
+        ]
+      }}
+      itemB={{
+        title: "SureCart",
+        subtitle: "Modern E-commerce Platform",
+        description: "A modern, headless e-commerce solution built for speed and simplicity. Offers seamless checkout experiences and powerful automation tools for growing businesses.",
+        overallRating: 4.7,
+        accent: "surecart", 
+        badge: "Rising Star",
+        href: "#",
+        ratings: [
+          { name: "Editor Empathy", value: 4.8 },
+          { name: "Performance", value: 4.9 },
+          { name: "Admin Experience", value: 4.6 },
+          { name: "Stability", value: 4.5 }
+        ]
+      }}
+    />
+    
+    <DosDontsSection
+      client:load
+      data-theme="bright-dark"
+      title="E-commerce Best Practices"
+      subtitle="Essential guidelines for building successful online stores that convert visitors into customers."
+      dos={[
+        {
+          text: "Optimize for mobile-first shopping",
+          description: "Over 60% of e-commerce traffic comes from mobile devices. Ensure your checkout process works seamlessly on smartphones and tablets."
+        },
+        {
+          text: "Display clear product images and descriptions",
+          description: "High-quality photos from multiple angles and detailed specifications reduce returns and increase buyer confidence."
+        },
+        {
+          text: "Implement trust signals and security badges",
+          description: "SSL certificates, payment security badges, and customer reviews build trust and reduce cart abandonment rates."
+        },
+        {
+          text: "Use abandoned cart recovery emails",
+          description: "Automated email sequences can recover 15-25% of abandoned carts when implemented with personalized messaging."
+        },
+        {
+          text: "Optimize page loading speeds",
+          description: "Every second of delay can cost you 7% in conversions. Aim for page load times under 3 seconds."
+        }
+      ]}
+      donts={[
+        {
+          text: "Force account creation before checkout",
+          description: "Guest checkout options can increase conversion rates by up to 45%. Make account creation optional or post-purchase."
+        },
+        {
+          text: "Hide shipping costs until the end",
+          description: "Unexpected costs are the #1 reason for cart abandonment. Display shipping costs upfront or offer free shipping thresholds."
+        },
+        {
+          text: "Use complicated checkout processes",
+          description: "Multi-page checkouts with unnecessary fields create friction. Keep it simple with progress indicators and minimal required fields."
+        },
+        {
+          text: "Neglect product review systems",
+          description: "Products without reviews can see 70% lower conversion rates. Encourage and showcase authentic customer feedback."
+        },
+        {
+          text: "Ignore return policy clarity",
+          description: "Unclear return policies create purchase anxiety. Display easy-to-find, generous return policies to boost buyer confidence."
+        }
+      ]}
+    />
+    
+    <PerspectiveComparison
+      client:load
+      data-theme="bright-dark"
+      title="GenerateBlocks: Two Perspectives"
+      subtitle="Comparing individual hands-on experience with broader community feedback to provide a complete picture."
+      topic="GenerateBlocks"
+      personalPerspective={{
+        title: "My Experience",
+        intro: "After 18 months of using GenerateBlocks across 20+ client projects, here's what I've discovered about this block builder.",
+        author: "Alex Thompson",
+        authorTitle: "WordPress Developer",
+        points: [
+          {
+            text: "Learning curve is steeper than expected",
+            description: "Coming from Gutenberg blocks, it took about 2 weeks to become proficient. The CSS knowledge requirement is real but worth it.",
+            emphasis: true
+          },
+          {
+            text: "Performance is genuinely impressive",
+            description: "Client sites consistently score 95+ on PageSpeed Insights. The clean markup and minimal CSS overhead make a noticeable difference."
+          },
+          {
+            text: "Support response time varies significantly", 
+            description: "Premium support ranges from 2 hours to 3 days. Tom usually responds quickly, but complex issues can take longer during busy periods."
+          },
+          {
+            text: "Query Loop is a game-changer for dynamic content",
+            description: "Building custom post displays without touching PHP has transformed how I approach client projects. Saves 2-3 hours per project."
+          },
+          {
+            text: "Limited design templates out of the box",
+            description: "Unlike other builders, you're starting from scratch most of the time. Great for custom work, but increases initial development time."
+          }
+        ]
+      }}
+      communityPerspective={{
+        title: "Community Consensus", 
+        intro: "Analysis of 500+ reviews, forum discussions, and user feedback across WordPress communities reveals these common themes.",
+        source: "Based on 500+ reviews from WordPress.org, Reddit, and Facebook groups",
+        points: [
+          {
+            text: "Praised for lightweight architecture",
+            description: "93% of users highlight performance benefits. Common comparison: 'Sites load noticeably faster after switching from Elementor.'",
+            emphasis: true
+          },
+          {
+            text: "Mixed reactions on ease of use",
+            description: "Developers love the flexibility (4.8/5), while beginners find it challenging (3.2/5). Clear divide based on technical background."
+          },
+          {
+            text: "Strong developer community support",
+            description: "Active Facebook group with 8K+ members. User-generated tutorials and code snippets help bridge documentation gaps."
+          },
+          {
+            text: "Concerns about long-term viability",
+            description: "Some users worry about dependence on a single developer. Regular updates and responsiveness have eased most concerns."
+          },
+          {
+            text: "Premium features justify the cost",
+            description: "89% of Pro users say the Query Loop and additional blocks are worth the upgrade. Common sentiment: 'Should have upgraded sooner.'"
+          }
+        ]
+      }}
+    />
+    
+    <GuidesCards
+      client:load
+      data-theme="bright-dark"
+      title="WordPress Performance Guides"
+      subtitle="Comprehensive tutorials and best practices to optimize your WordPress site for speed and scalability."
+      guides={[
+        {
+          title: "Redis for WordPress",
+          description: "Learn how to implement Redis caching to dramatically improve WordPress performance and reduce database load.",
+          category: "Caching",
+          gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          lessonsCount: 8,
+          duration: "2h 15m",
+          level: "Intermediate",
+          href: "#",
+          author: "Mike Johnson"
+        },
+        {
+          title: "WordPress Database Optimization", 
+          description: "Master database optimization techniques including indexing, query optimization, and automated cleanup processes.",
+          category: "Database",
+          gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+          lessonsCount: 12,
+          duration: "3h 45m", 
+          level: "Advanced",
+          href: "#",
+          author: "Sarah Chen"
+        },
+        {
+          title: "CDN Setup & Configuration",
+          description: "Step-by-step guide to setting up and configuring Content Delivery Networks for maximum performance gains.",
+          category: "Infrastructure",
+          gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+          lessonsCount: 6,
+          duration: "1h 30m",
+          level: "Beginner", 
+          href: "#",
+          author: "David Kim"
+        },
+        {
+          title: "Advanced WP-CLI Techniques",
+          description: "Unlock the power of WordPress Command Line Interface for advanced site management and automation.",
+          category: "Development",
+          gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+          lessonsCount: 10,
+          duration: "2h 50m",
+          level: "Advanced",
+          href: "#",
+          author: "Alex Rivera"
+        },
+        {
+          title: "WordPress Security Hardening",
+          description: "Comprehensive security guide covering authentication, file permissions, and protection against common vulnerabilities.",
+          category: "Security", 
+          gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+          lessonsCount: 15,
+          duration: "4h 20m",
+          level: "Intermediate",
+          href: "#",
+          author: "Emma Thompson"
+        },
+        {
+          title: "Headless WordPress with Next.js",
+          description: "Build modern, fast frontends using WordPress as a headless CMS with Next.js and GraphQL.",
+          category: "Development",
+          gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+          lessonsCount: 18,
+          duration: "5h 10m", 
+          level: "Advanced",
+          href: "#",
+          author: "Chris Martinez"
+        }
+      ]}
+    />
+    
+    <CoreWebVitalsComparison client:load data-theme="bright-dark" />
+
+  </div>
+</Layout>

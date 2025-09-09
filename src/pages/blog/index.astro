@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/base.astro';
+import { BlogCategoryArchive } from '../../components/blog-category-archive.tsx';
+import { getCollection } from 'astro:content';
+
+// Load all blog posts
+const blogPosts = await getCollection('blog', ({ data }) => {
+  return !data.draft;
+});
+
+// Sort posts by date (newest first)
+const sortedPosts = blogPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Get unique categories with counts
+const blogCategories = blogPosts.reduce((acc, post) => {
+  const category = post.data.category;
+  const existing = acc.find(cat => cat.slug === category);
+  if (existing) {
+    existing.count++;
+  } else {
+    acc.push({
+      name: category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' '),
+      slug: category,
+      count: 1
+    });
+  }
+  return acc;
+}, [] as Array<{ name: string; slug: string; count: number; }>).sort((a, b) => a.slug.localeCompare(b.slug));
+---
+
+<Layout title="Blog - All Posts" description="Browse all our blog posts covering web development, design trends, and digital strategy.">
+  <BlogCategoryArchive 
+    client:load 
+    data-theme="bright-dark" 
+    posts={sortedPosts} 
+    categories={blogCategories}
+    title="Blog Posts" 
+    description="Latest news and updates from our blog."
+  />
+</Layout>

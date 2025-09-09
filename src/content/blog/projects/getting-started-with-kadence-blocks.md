@@ -1,0 +1,65 @@
+---
+title: "Getting Started with Kadence Blocks"
+description: "Learn how to build beautiful WordPress sites with Kadence Blocks and themes. This comprehensive guide covers everything from basic setup to advanced customization techniques."
+author: "Kadence Team"
+date: 2024-01-15
+category: "projects"
+tags: ["wordpress", "kadence", "blocks", "beginners"]
+featured: true
+draft: false
+image:
+  src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop"
+  alt: "WordPress development workspace with Kadence Blocks"
+readTime: 8
+---
+
+# Getting Started with Kadence Blocks
+
+Building modern WordPress websites has never been easier with Kadence Blocks. This powerful plugin transforms the way you create layouts, design pages, and customize your site's appearance.
+
+## What Are Kadence Blocks?
+
+Kadence Blocks is a comprehensive collection of custom blocks for the WordPress block editor (Gutenberg). It extends the native functionality with advanced design options, flexible layouts, and professional styling controls.
+
+## Key Features
+
+- **Advanced Typography**: Complete control over fonts, sizes, and spacing
+- **Responsive Design**: Mobile-first approach with device-specific controls
+- **Custom Layouts**: Row layouts, column controls, and advanced grid systems
+- **Design Library**: Pre-built templates and design patterns
+- **Performance Optimized**: Clean code and efficient loading
+
+## Installation and Setup
+
+1. Install the Kadence Blocks plugin from the WordPress repository
+2. Activate the plugin through your WordPress admin panel
+3. Access the new blocks from the block editor
+4. Configure global settings in the Kadence Blocks dashboard
+
+## Building Your First Layout
+
+Start with the Row Layout block as your foundation. This powerful container allows you to create complex layouts with multiple columns, custom spacing, and responsive breakpoints.
+
+```html
+<!-- Example Row Layout Structure -->
+<div class="kb-row-layout-wrap">
+  <div class="kb-row-layout">
+    <div class="kb-row-layout-inner">
+      <!-- Your content blocks go here -->
+    </div>
+  </div>
+</div>
+```
+
+## Best Practices
+
+- Always test your designs on multiple devices
+- Use consistent spacing throughout your site
+- Leverage the global color palette for brand consistency
+- Optimize images before adding them to your layouts
+
+## Conclusion
+
+Kadence Blocks provides the tools you need to create professional WordPress websites without coding. With its intuitive interface and powerful features, you can build stunning layouts that work perfectly across all devices.
+
+Start exploring the possibilities today and transform your WordPress workflow!

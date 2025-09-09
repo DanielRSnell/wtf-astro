@@ -1,0 +1,73 @@
+---
+import Layout from '../../../layouts/base.astro';
+import { BlogCategoryArchive } from '../../../components/blog-category-archive.tsx';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  
+  // Get unique categories
+  const categories = [...new Set(allPosts.map(post => post.data.category))];
+  
+  return categories.map((category) => {
+    const categoryPosts = allPosts.filter(post => post.data.category === category);
+    
+    return {
+      params: { category },
+      props: { 
+        posts: categoryPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()),
+        categorySlug: category
+      }
+    };
+  });
+}
+
+const { category } = Astro.params;
+const { posts, categorySlug } = Astro.props;
+
+// Get all categories for the sidebar
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const blogCategories = allPosts.reduce((acc, post) => {
+  const cat = post.data.category;
+  const existing = acc.find(c => c.slug === cat);
+  if (existing) {
+    existing.count++;
+  } else {
+    acc.push({
+      name: cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' '),
+      slug: cat,
+      count: 1
+    });
+  }
+  return acc;
+}, [] as Array<{ name: string; slug: string; count: number; }>).sort((a, b) => a.slug.localeCompare(b.slug));
+
+// Load category content
+let categoryData;
+try {
+  const categoryEntry = await getCollection('categories');
+  const categoryContent = categoryEntry.find(entry => entry.slug === categorySlug);
+  categoryData = categoryContent?.data;
+} catch (error) {
+  categoryData = null;
+}
+
+// Fallback values
+const title = categoryData?.title || categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1).replace('-', ' ');
+const description = categoryData?.description || `Browse all ${title.toLowerCase()} posts covering web development, design trends, and digital strategy.`;
+---
+
+<Layout 
+  title={`${title} - Blog`} 
+  description={description}
+>
+  <BlogCategoryArchive 
+    client:load 
+    data-theme="bright-dark" 
+    posts={posts} 
+    categories={blogCategories} 
+    activeCategory={categorySlug}
+    title={title}
+    description={description}
+  />
+</Layout>

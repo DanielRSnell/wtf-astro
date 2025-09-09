@@ -1,16 +1,63 @@
 ---
+import Layout from '../layouts/base.astro';
+import { Hero24 } from '../components/hero24.tsx';
+import { About8 } from '../components/about8.tsx';
+import { ResourceHub } from '../components/resource-hub.tsx';
+import { Feature261 } from '../components/feature261.tsx';
+import { Services10 } from '../components/services10.tsx';
+import { Timeline4 } from '../components/timeline4.tsx';
+import { Blog11 } from '../components/blog11.tsx';
+import { Cta19 } from '../components/cta19.tsx';
+import { Separator } from '../components/ui/separator.tsx';
+import { getHeroContent, getAboutContent, getFeaturesContent, getServicesContent, getTimelineContent, getCtaContent } from '../lib/content.ts';
+import { getCollection } from 'astro:content';
 
+const heroContent = getHeroContent();
+const aboutContent = getAboutContent();
+const featuresContent = getFeaturesContent();
+const servicesContent = getServicesContent();
+const timelineContent = getTimelineContent();
+const ctaContent = getCtaContent();
+
+// Load markdown blog content
+const blogPosts = await getCollection('blog', ({ data }) => {
+  return !data.draft;
+});
+
+// Sort posts by date (newest first)
+const sortedPosts = blogPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Get unique categories with counts
+const blogCategories = blogPosts.reduce((acc, post) => {
+  const category = post.data.category;
+  const existing = acc.find(cat => cat.slug === category);
+  if (existing) {
+    existing.count++;
+  } else {
+    acc.push({
+      name: category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' '),
+      slug: category,
+      count: 1
+    });
+  }
+  return acc;
+}, [] as Array<{ name: string; slug: string; count: number; }>);
+
+// Load WordPress resources
+const wordpressResources = await getCollection('wordpress-resource');
+const wordpressCategories = await getCollection('wordpress-category');
+const wordpressReviews = await getCollection('wordpress-review');
+
+console.log(`Loaded ${sortedPosts.length} blog posts across ${blogCategories.length} categories`);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Home">
+	<Hero24 client:load data-theme="bright-dark" content={heroContent} />
+	<About8 client:load data-theme="bright-dark" content={aboutContent} />
+	<ResourceHub client:load data-theme="bright-dark" resources={wordpressResources} categories={wordpressCategories} reviews={wordpressReviews} />
+	<Feature261 client:load data-theme="bright-dark" content={featuresContent} />
+	<Services10 client:load data-theme="bright-dark" content={servicesContent} />
+	<Timeline4 client:load data-theme="bright-dark" content={timelineContent} />
+	<Blog11 client:load data-theme="bright-dark" posts={sortedPosts} categories={blogCategories} />
+	<Cta19 client:load data-theme="bright-dark" content={ctaContent} />
+</Layout>
