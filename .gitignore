@@ -1,3 +1,12 @@
 
 # Local Netlify folder
 .netlify
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+bun.lock
+bun.lockb.lock
+bun.lockb.lock.lock
+bun.lockb.lock.lock.lock
+bun.lockb.lock.lock.lock.lock
