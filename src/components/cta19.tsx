@@ -1,7 +1,7 @@
 import { FileCode, Layers, Headphones } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import type { CtaContent } from "@/lib/content";
@@ -61,15 +61,12 @@ const Cta19 = ({ "data-theme": dataTheme, content }: Cta19Props) => {
               </p>
             </div>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <ShimmerButton 
+              <GradientButton 
                 variant={getCTAVariant(content.buttons.primary.type)}
-                shimmerSize="0.1em"
-                shimmerDuration="2.5s"
-                borderRadius="9999px"
-                className="h-12 px-8 font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                size="md"
               >
                 {content.buttons.primary.text}
-              </ShimmerButton>
+              </GradientButton>
               <Button variant="link" className="text-foreground hover:text-primary transition-colors duration-300 px-0 h-auto font-medium">
                 {content.buttons.secondary.text}
               </Button>

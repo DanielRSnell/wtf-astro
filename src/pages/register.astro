@@ -1,0 +1,237 @@
+---
+import FocusedLayout from '@layouts/focused.astro';
+import { createSupabaseSSR } from '@/lib/supabase-ssr';
+import { GradientButton } from '@/components/ui/gradient-button';
+
+export const prerender = false;
+
+// Check if user is already logged in
+const supabase = createSupabaseSSR(Astro.cookies);
+const { data: { user } } = await supabase.auth.getUser();
+
+// Redirect if already logged in
+if (user) {
+  return Astro.redirect('/profile');
+}
+---
+
+<FocusedLayout title="Sign Up - WooThatsFast" description="Create your account">
+  <section class="relative bg-background min-h-screen text-foreground overflow-hidden" data-theme="bright-dark">
+    <!-- Dot Pattern Background -->
+    <div class="absolute inset-0 h-full w-full [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]">
+      <div class="absolute inset-0 opacity-80">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dot-pattern-register" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="15" cy="15" r="2" fill="currentColor" class="text-primary"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dot-pattern-register)"/>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+    
+    <!-- Blur elements for depth -->
+    <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+    <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+
+    <!-- Back to Site Button -->
+    <div class="absolute top-6 left-6 z-20">
+      <a 
+        href="/" 
+        class="inline-flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-card/20"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Site
+      </a>
+    </div>
+
+    <div class="container relative z-10 pt-24 pb-12">
+      <div class="max-w-lg mx-auto">
+          
+          <!-- Logo and Header -->
+          <div class="text-center mb-8">
+            <div class="avatar w-16 h-16 mx-auto mb-6 [&>div]:scale-65" style="width: 64px; height: 64px;">
+              <div class="loader">
+                <span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+                <div class="base">
+                  <span></span>
+                  <div class="face"></div>
+                </div>
+              </div>
+              <div class="longfazers">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <h1 class="text-4xl font-bold tracking-tight text-balance mb-4 leading-tight bg-gradient-to-br from-foreground via-foreground/80 to-muted-foreground bg-clip-text text-transparent">
+              Create Account
+            </h1>
+            <p class="text-muted-foreground">Join us today</p>
+          </div>
+
+          <!-- Sign Up Form -->
+          <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+            <div class="absolute inset-0">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent"></div>
+            </div>
+          
+          <div class="relative z-10 p-8">
+            <form id="registerForm" class="space-y-6">
+              <!-- Full Name -->
+              <div>
+                <label for="fullName" class="block text-sm font-medium text-foreground mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  required
+                  class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="email" class="block text-sm font-medium text-foreground mb-2">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <!-- Password -->
+              <div>
+                <label for="password" class="block text-sm font-medium text-foreground mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  minlength="6"
+                  class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
+                  placeholder="Create a password (min 6 characters)"
+                />
+              </div>
+
+              <!-- Confirm Password -->
+              <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  required
+                  class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors"
+                  placeholder="Confirm your password"
+                />
+              </div>
+
+              <!-- Submit Button -->
+              <GradientButton
+                variant="secondary"
+                size="lg"
+                type="submit"
+                className="w-full"
+                client:load
+              >
+                Create Account
+              </GradientButton>
+            </form>
+
+            <!-- Error/Success Messages -->
+            <div id="message" class="mt-4 text-sm text-center"></div>
+
+            <!-- Link to Login -->
+            <div class="mt-6 text-center text-sm text-muted-foreground">
+              Already have an account? 
+              <a href="/login" class="text-primary hover:text-primary/80 transition-colors">
+                Sign in
+              </a>
+            </div>
+          </div>
+          
+          <!-- Hover border highlight -->
+          <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { supabase } from '@/lib/supabase';
+
+    const form = document.getElementById('registerForm') as HTMLFormElement;
+    const messageDiv = document.getElementById('message') as HTMLDivElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const fullName = (document.getElementById('fullName') as HTMLInputElement).value;
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      const password = (document.getElementById('password') as HTMLInputElement).value;
+      const confirmPassword = (document.getElementById('confirmPassword') as HTMLInputElement).value;
+      
+      // Clear previous messages
+      messageDiv.innerHTML = '';
+
+      // Validate passwords match
+      if (password !== confirmPassword) {
+        messageDiv.innerHTML = '<div class="text-red-500">Passwords do not match</div>';
+        return;
+      }
+
+      // Validate password length
+      if (password.length < 6) {
+        messageDiv.innerHTML = '<div class="text-red-500">Password must be at least 6 characters</div>';
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+            }
+          }
+        });
+
+        if (error) {
+          messageDiv.innerHTML = `<div class="text-red-500">Error: ${error.message}</div>`;
+          return;
+        }
+
+        messageDiv.innerHTML = '<div class="text-green-500">Success! Please check your email to verify your account.</div>';
+        
+        // Clear form
+        form.reset();
+
+      } catch (error) {
+        messageDiv.innerHTML = `<div class="text-red-500">Network error: ${error.message}</div>`;
+      }
+    });
+  </script>
+</FocusedLayout>

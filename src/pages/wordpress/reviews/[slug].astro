@@ -1,25 +1,26 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import Layout from '@layouts/base.astro';
 import { ReviewHero } from '@components/review-hero.tsx';
 
-export async function getStaticPaths() {
-  const reviews = await getCollection('wordpress-review');
-  
-  return reviews.map((review) => ({
-    params: { 
-      slug: review.data.slug 
-    },
-    props: { review }
-  }));
+export const prerender = false;
+
+// 1. Get the slug from the incoming server request
+const { slug } = Astro.params;
+if (slug === undefined) {
+  return Astro.redirect("/404");
 }
 
-type Props = {
-  review: CollectionEntry<'wordpress-review'>;
-};
+// 2. Query for the entry directly using the request slug
+const review = await getEntry('wordpress-review', slug);
 
-const { review } = Astro.props;
-const { Content } = await review.render();
+// 3. Redirect if the entry does not exist
+if (review === undefined) {
+  return Astro.redirect("/404");
+}
+
+// 4. Render the entry to HTML
+const { Content } = await render(review);
 
 // Calculate overall rating from individual ratings
 const overallRating = review.data.overallRating || 

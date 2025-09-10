@@ -1,6 +1,17 @@
 
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
 # Local Netlify folder
 .netlify
+
+# MCP
+.mcp.json
+
+# Lock files
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
@@ -10,3 +21,8 @@ bun.lockb.lock
 bun.lockb.lock.lock
 bun.lockb.lock.lock.lock
 bun.lockb.lock.lock.lock.lock
+
+# Dependencies
+node_modules/
+dist/
+.astro/

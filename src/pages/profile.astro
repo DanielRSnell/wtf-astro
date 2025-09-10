@@ -1,0 +1,38 @@
+---
+import Layout from '@layouts/base.astro';
+import { createSupabaseSSR } from '@/lib/supabase-ssr';
+
+export const prerender = false;
+
+// Redirect to user's own profile
+const supabase = createSupabaseSSR(Astro.cookies);
+
+try {
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError || !user) {
+    return Astro.redirect('/login');
+  }
+  
+  // Get the user's profile to find their username
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .single();
+    
+  if (profileError || !profileData) {
+    // If no profile found, redirect to profile creation or use ID
+    return Astro.redirect(`/user/${user.id}`);
+  }
+  
+  // Redirect to semantic username URL
+  return Astro.redirect(`/user/${profileData.username}`);
+  
+} catch (e) {
+  console.error('Profile redirect error:', e);
+  return Astro.redirect('/login');
+}
+---
+
+<!-- This page redirects to the user's semantic profile URL -->

@@ -1,21 +1,29 @@
 ---
-import { getCollection } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import Layout from '../../layouts/base.astro';
 import { Blogpost4 } from '../../components/blogpost4.tsx';
 import { ShareButtons } from '../../components/ShareButtons.tsx';
 import { ScrollToTop } from '../../components/ScrollToTop.tsx';
 import { TableOfContents } from '../../components/TableOfContents.tsx';
 
-export async function getStaticPaths() {
-  const blogEntries = await getCollection('blog');
-  return blogEntries.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+export const prerender = false;
+
+// 1. Get the slug from the incoming server request
+const { slug } = Astro.params;
+if (slug === undefined) {
+  return Astro.redirect("/404");
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+// 2. Query for the entry directly using the request slug
+const entry = await getEntry('blog', slug);
+
+// 3. Redirect if the entry does not exist
+if (entry === undefined) {
+  return Astro.redirect("/404");
+}
+
+// 4. Render the entry to HTML
+const { Content } = await render(entry);
 
 // Format date for display
 const formattedDate = new Intl.DateTimeFormat('en-US', {

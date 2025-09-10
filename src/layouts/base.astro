@@ -1,8 +1,9 @@
 ---
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
-import { Header } from "../components/global/header.tsx";
+import { Header } from "../components/global/header-ssr.tsx";
 import { Footer } from "../components/global/footer.tsx";
+import { createSupabaseSSR } from '@/lib/supabase-ssr';
 
 export interface Props {
   title?: string;
@@ -10,6 +11,28 @@ export interface Props {
 }
 
 const { title = "Blocksy Components", description = "Premium component library for modern web applications" } = Astro.props;
+
+// Get user session for SSR
+let user = null;
+let profile = null;
+
+const supabase = createSupabaseSSR(Astro.cookies);
+
+try {
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  user = authUser;
+  
+  if (user) {
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    profile = profileData;
+  }
+} catch (e) {
+  // Silent fail for auth - user just won't be authenticated
+}
 ---
 
 <html lang="en">
@@ -18,24 +41,12 @@ const { title = "Blocksy Components", description = "Premium component library f
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <ViewTransitions />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
-  <body 
-    class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased"
-    style={{
-      backgroundImage: `
-        radial-gradient(circle at 25% 25%, oklch(0.7059 0.2157 180.8627 / 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, oklch(0.6863 0.2157 120.5490 / 0.05) 0%, transparent 50%),
-        linear-gradient(90deg, transparent 24px, rgba(255, 255, 255, 0.02) 25px, rgba(255, 255, 255, 0.02) 26px, transparent 27px, transparent 99px),
-        linear-gradient(transparent 24px, rgba(255, 255, 255, 0.02) 25px, rgba(255, 255, 255, 0.02) 26px, transparent 27px, transparent 99px)
-      `,
-      backgroundSize: '100% 100%, 100% 100%, 100px 100px, 100px 100px',
-      backgroundAttachment: 'fixed'
-    }}
-  >
-    <Header client:load data-theme="bright-dark" />
+  <body class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
+    <ViewTransitions />
+    <Header client:load data-theme="bright-dark" user={user} profile={profile} />
     <main>
       <slot />
     </main>

@@ -1,13 +1,80 @@
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogIn, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
+import { UserMenu } from "@/components/auth/UserMenu";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 interface HeaderProps {
   "data-theme"?: string;
 }
 
-const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
+const AuthButtons = () => {
+  const { user, profile, loading } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+
+  const handleSignIn = () => {
+    setAuthMode('signin');
+    setShowAuthModal(true);
+  };
+
+  const handleSignUp = () => {
+    setAuthMode('signup');
+    setShowAuthModal(true);
+  };
+
+  // Show loading state while auth is being checked
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-muted/30 animate-pulse"></div>
+        <div className="hidden md:block">
+          <div className="w-20 h-4 bg-muted/30 rounded animate-pulse mb-1"></div>
+          <div className="w-16 h-3 bg-muted/30 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <UserMenu />;
+  }
+
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleSignIn}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
+        >
+          <LogIn className="w-4 h-4" />
+          Sign In
+        </button>
+        
+        <ShimmerButton
+          onClick={handleSignUp}
+          variant="secondary"
+          className="shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 py-1.5 px-4 flex items-center gap-2"
+          shimmerSize="0.08em"
+          shimmerDuration="2.5s"
+        >
+          <UserPlus className="w-4 h-4" />
+          Sign Up
+        </ShimmerButton>
+      </div>
+
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authMode}
+      />
+    </>
+  );
+};
+
+const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -82,15 +149,8 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
               Contact
             </a>
             
-            {/* CTA Button */}
-            <ShimmerButton
-              variant="secondary"
-              className="shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 py-1.5 px-6"
-              shimmerSize="0.08em"
-              shimmerDuration="2.5s"
-            >
-              Get Started →
-            </ShimmerButton>
+            {/* Auth Buttons */}
+            <AuthButtons />
           </div>
         </nav>
 
@@ -128,17 +188,10 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
                   Contact
                 </a>
                 
-                {/* Mobile CTA */}
+                {/* Mobile Auth */}
                 <div className="pt-4 border-t border-border/40">
                   <div onClick={() => setIsMobileMenuOpen(false)}>
-                    <ShimmerButton
-                      variant="secondary"
-                      className="w-full shadow-xl hover:shadow-2xl py-2.5"
-                      shimmerSize="0.08em"
-                      shimmerDuration="2.5s"
-                    >
-                      Get Started →
-                    </ShimmerButton>
+                    <AuthButtons />
                   </div>
                 </div>
               </div>
@@ -147,6 +200,14 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
         )}
       </div>
     </header>
+  );
+};
+
+const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
+  return (
+    <AuthProvider>
+      <HeaderContent data-theme={dataTheme} />
+    </AuthProvider>
   );
 };
 

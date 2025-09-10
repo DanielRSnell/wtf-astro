@@ -3,7 +3,7 @@ import { Expand, Globe, MoveRight, Rocket, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { RocketLogo } from "@/components/ui/rocket-logo";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { PictureCard } from "@/components/ui/picture-card";
 
 import type { HeroContent } from "@/lib/content";
@@ -83,16 +83,13 @@ const Hero24 = ({ "data-theme": dataTheme, content }: Hero24Props) => {
             Hey, I'm {content.hero.name}, {content.hero.title}
           </h1>
           <div className="flex justify-center">
-            <ShimmerButton
-            variant={getCTAVariant(content.cta.type)}
-            shimmerSize="0.1em"
-            shimmerDuration="2.5s"
-            borderRadius="9999px"
-            className="h-12 px-8 font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-          >
-            {content.cta.text}
-            <MoveRight className="ml-2" strokeWidth={1.5} />
-          </ShimmerButton>
+            <GradientButton
+              variant={getCTAVariant(content.cta.type)}
+              size="lg"
+            >
+              {content.cta.text}
+              <MoveRight className="ml-2" strokeWidth={1.5} />
+            </GradientButton>
           </div>
         </div>
         <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-4">

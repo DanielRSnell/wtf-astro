@@ -3,6 +3,8 @@ import Layout from '../../../layouts/base.astro';
 import { BlogCategoryArchive } from '../../../components/blog-category-archive.tsx';
 import { getCollection } from 'astro:content';
 
+export const prerender = false;
+
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog', ({ data }) => !data.draft);
   
