@@ -8,6 +8,9 @@ import { DosDontsSection } from '../components/dos-donts-section.tsx';
 import { PerspectiveComparison } from '../components/perspective-comparison.tsx';
 import { GuidesCards } from '../components/guides-cards.tsx';
 import { ResourceHub } from '../components/resource-hub.tsx';
+import { ResourceHubRanked } from '../components/resource-hub-ranked.tsx';
+import { ResourceRanking } from '../components/resource-ranking.tsx';
+import { Leaderboard } from '../components/leaderboard.tsx';
 ---
 
 <Layout title="Mock Components" description="High-fidelity component demonstrations and examples.">
@@ -262,6 +265,378 @@ import { ResourceHub } from '../components/resource-hub.tsx';
     />
     
     <CoreWebVitalsComparison client:load data-theme="bright-dark" />
+
+    <ResourceHubRanked
+      client:load
+      data-theme="bright-dark"
+      count={10}
+      resources={[
+        {
+          data: {
+            title: "Picostrap",
+            subtitle: "Ultra Light Bootstrap Theme",
+            description: "An ultra-lightweight WordPress starter theme built on Bootstrap 5, designed for developers who want maximum performance.",
+            category: "themes",
+            slug: "picostrap",
+            featured: false,
+            badge: "Ultra Light",
+            ratings: [
+              { name: "Performance", value: 4.9 },
+              { name: "Code Quality", value: 4.7 },
+              { name: "Minimalism", value: 4.9 },
+              { name: "Developer Focus", value: 4.8 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Bricks",
+            subtitle: "Visual Builder Theme",
+            description: "A revolutionary WordPress theme and visual builder that generates clean code and offers exceptional performance.",
+            category: "themes",
+            slug: "bricks",
+            featured: true,
+            badge: "Performance Leader",
+            ratings: [
+              { name: "Performance", value: 4.9 },
+              { name: "Code Quality", value: 4.9 },
+              { name: "Design Freedom", value: 4.8 },
+              { name: "Developer Tools", value: 4.7 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Blocksy",
+            subtitle: "Modern Block Theme",
+            description: "A modern, fast, and highly customizable WordPress theme built with the block editor in mind.",
+            category: "themes",
+            slug: "blocksy",
+            featured: true,
+            badge: "Editor's Choice",
+            ratings: [
+              { name: "Design Quality", value: 4.8 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.6 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Genesis Framework",
+            subtitle: "Classic Developer Framework",
+            description: "The industry-standard framework preferred by professional developers for building robust, custom WordPress websites.",
+            category: "themes",
+            slug: "genesis",
+            featured: false,
+            badge: "Developer's Choice",
+            ratings: [
+              { name: "Code Quality", value: 4.9 },
+              { name: "Flexibility", value: 4.8 },
+              { name: "Developer Tools", value: 4.9 },
+              { name: "SEO Ready", value: 4.8 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "GeneratePress",
+            subtitle: "Lightweight Performance Theme",
+            description: "Ultra-fast and flexible WordPress theme focused on speed, stability and accessibility.",
+            category: "themes",
+            slug: "generatepress",
+            featured: false,
+            badge: "Best Performance",
+            ratings: [
+              { name: "Design Quality", value: 4.5 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.6 },
+              { name: "Support", value: 4.8 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Kadence",
+            subtitle: "Clean Design Theme",
+            description: "A modern WordPress theme with clean UI design, extensive template library, and powerful Kadence Blocks plugin integration.",
+            category: "themes",
+            slug: "kadence",
+            featured: false,
+            badge: "Clean UI",
+            ratings: [
+              { name: "Design Quality", value: 4.7 },
+              { name: "Performance", value: 4.5 },
+              { name: "Block Editor", value: 4.8 },
+              { name: "Templates", value: 4.6 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Ollie",
+            subtitle: "Block Theme",
+            description: "A modern WordPress block theme that embraces the full site editing experience, offering beautiful designs and seamless Gutenberg integration.",
+            category: "themes",
+            slug: "ollie",
+            featured: false,
+            badge: "Block Native",
+            ratings: [
+              { name: "Block Editor", value: 4.8 },
+              { name: "Performance", value: 4.6 },
+              { name: "Modern Design", value: 4.7 },
+              { name: "FSE Integration", value: 4.9 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Astra",
+            subtitle: "Versatile Multi-Purpose Theme",
+            description: "Popular multipurpose theme with great performance and extensive customization options.",
+            category: "themes",
+            slug: "astra",
+            featured: false,
+            badge: "Most Popular",
+            ratings: [
+              { name: "Design Quality", value: 4.4 },
+              { name: "Performance", value: 4.6 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.5 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Neve",
+            subtitle: "Trendy Features Theme",
+            description: "A modern, lightweight WordPress theme with beautiful designs, cloud library integration, and exceptional customer support.",
+            category: "themes",
+            slug: "neve",
+            featured: false,
+            badge: "Great Support",
+            ratings: [
+              { name: "Design Quality", value: 4.6 },
+              { name: "Performance", value: 4.4 },
+              { name: "Customization", value: 4.5 },
+              { name: "Support", value: 4.9 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Thrive Themes",
+            subtitle: "Conversion-Focused Suite",
+            description: "A comprehensive conversion-focused theme and plugin suite designed for marketers and businesses who prioritize lead generation.",
+            category: "themes",
+            slug: "thrive-themes",
+            featured: false,
+            badge: "Conversion Focus",
+            ratings: [
+              { name: "Conversion Tools", value: 4.8 },
+              { name: "Performance", value: 4.2 },
+              { name: "Marketing Focus", value: 4.9 },
+              { name: "Visual Builder", value: 4.5 }
+            ]
+          }
+        }
+      ]}
+      categories={[
+        {
+          data: {
+            title: "WordPress Themes",
+            category: "themes",
+            count: 10,
+            topRecommendation: { 
+              slug: "blocksy",
+              editorsNote: "Excellent for WooCommerce sites, saving time, value, and performance.",
+              level: "Intermediate"
+            },
+            runnerUp: { 
+              slug: "generatepress",
+              editorsNote: "Great for customization and performance optimization.",
+              level: "Advanced"
+            },
+            honorableMention: { 
+              slug: "kadence",
+              editorsNote: "Easy, fast, fun, and good for performance on simple sites.",
+              level: "Beginner"
+            }
+          }
+        }
+      ]}
+    />
+
+    <ResourceRanking
+      client:load
+      data-theme="bright-dark"
+      resources={[
+        {
+          data: {
+            title: "Blocksy",
+            subtitle: "Modern Block Theme",
+            description: "A modern, fast, and highly customizable WordPress theme built with the block editor in mind.",
+            category: "themes",
+            slug: "blocksy",
+            featured: true,
+            badge: "Editor's Choice",
+            ratings: [
+              { name: "Design Quality", value: 4.8 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.6 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "GeneratePress",
+            subtitle: "Lightweight Performance Theme",
+            description: "Ultra-fast and flexible WordPress theme focused on speed, stability and accessibility.",
+            category: "themes",
+            slug: "generatepress",
+            featured: false,
+            badge: "Best Performance",
+            ratings: [
+              { name: "Design Quality", value: 4.5 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.6 },
+              { name: "Support", value: 4.8 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Astra",
+            subtitle: "Versatile Multi-Purpose Theme",
+            description: "Popular multipurpose theme with great performance and extensive customization options.",
+            category: "themes",
+            slug: "astra",
+            featured: false,
+            badge: "Most Popular",
+            ratings: [
+              { name: "Design Quality", value: 4.4 },
+              { name: "Performance", value: 4.6 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.5 }
+            ]
+          }
+        }
+      ]}
+    />
+
+    <Leaderboard
+      client:load
+      data-theme="bright-dark"
+      title="WordPress Leaderboard"
+      description="The top-ranked WordPress themes, plugins, and tools based on our comprehensive analysis and user feedback."
+      activeCategory="themes"
+      resources={[
+        {
+          data: {
+            title: "Blocksy",
+            subtitle: "Modern Block Theme",
+            description: "A modern, fast, and highly customizable WordPress theme built with the block editor in mind.",
+            category: "themes",
+            slug: "blocksy",
+            featured: true,
+            badge: "Editor's Choice",
+            ratings: [
+              { name: "Design Quality", value: 4.8 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.6 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "GeneratePress",
+            subtitle: "Lightweight Performance Theme",
+            description: "Ultra-fast and flexible WordPress theme focused on speed, stability and accessibility.",
+            category: "themes",
+            slug: "generatepress",
+            featured: false,
+            badge: "Best Performance",
+            ratings: [
+              { name: "Design Quality", value: 4.5 },
+              { name: "Performance", value: 4.9 },
+              { name: "Customization", value: 4.6 },
+              { name: "Support", value: 4.8 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Astra",
+            subtitle: "Versatile Multi-Purpose Theme",
+            description: "Popular multipurpose theme with great performance and extensive customization options.",
+            category: "themes",
+            slug: "astra",
+            featured: false,
+            badge: "Most Popular",
+            ratings: [
+              { name: "Design Quality", value: 4.4 },
+              { name: "Performance", value: 4.6 },
+              { name: "Customization", value: 4.7 },
+              { name: "Support", value: 4.5 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "Yoast SEO",
+            subtitle: "Complete SEO Solution",
+            description: "The most comprehensive SEO plugin for WordPress with advanced features and excellent support.",
+            category: "seo",
+            slug: "yoast-seo",
+            featured: true,
+            badge: "Most Popular",
+            ratings: [
+              { name: "Features", value: 4.7 },
+              { name: "Ease of Use", value: 4.5 },
+              { name: "Performance", value: 4.3 },
+              { name: "Support", value: 4.6 }
+            ]
+          }
+        },
+        {
+          data: {
+            title: "SEOPress",
+            subtitle: "Fast & Powerful SEO Plugin",
+            description: "A lightweight yet powerful SEO plugin offering excellent performance and comprehensive features.",
+            category: "seo",
+            slug: "seopress",
+            featured: false,
+            badge: "Best Value",
+            ratings: [
+              { name: "Features", value: 4.6 },
+              { name: "Ease of Use", value: 4.7 },
+              { name: "Performance", value: 4.8 },
+              { name: "Support", value: 4.4 }
+            ]
+          }
+        }
+      ]}
+      categories={[
+        {
+          data: {
+            title: "WordPress Themes",
+            category: "themes",
+            count: 3
+          }
+        },
+        {
+          data: {
+            title: "SEO Plugins",
+            category: "seo", 
+            count: 2
+          }
+        }
+      ]}
+      reviews={[]}
+    />
 
   </div>
 </Layout>

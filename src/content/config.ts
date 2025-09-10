@@ -25,7 +25,7 @@ const wordpressResource = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     description: z.string(),
-    category: z.enum(['themes', 'hosting', 'security', 'performance']),
+    category: z.enum(['themes', 'hosting', 'security', 'performance', 'seo']),
     slug: z.string(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
@@ -61,7 +61,7 @@ const wordpressCategoryIndex = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    category: z.enum(['themes', 'hosting', 'security', 'performance']),
+    category: z.enum(['themes', 'hosting', 'security', 'performance', 'seo']),
     subtitle: z.string().optional(),
     count: z.number(),
     topRecommendation: z.object({
@@ -90,7 +90,7 @@ const wordpressReview = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     description: z.string(),
-    category: z.enum(['themes', 'hosting', 'security', 'performance']),
+    category: z.enum(['themes', 'hosting', 'security', 'performance', 'seo']),
     slug: z.string(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

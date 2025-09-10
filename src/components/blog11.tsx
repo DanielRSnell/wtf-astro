@@ -94,7 +94,7 @@ const Blog11 = ({
               </ul>
             </nav>
           </header>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
             {posts.slice(0, 6).map((post) => {
               const categoryName = post.data.category.charAt(0).toUpperCase() + post.data.category.slice(1).replace('-', ' ');
               
@@ -102,7 +102,7 @@ const Blog11 = ({
                 <div key={post.slug} className="relative">
                   <a
                     href={`/blog/${post.slug}`}
-                    className="group relative flex flex-col overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 min-h-[400px] block"
+                    className="group relative flex flex-col overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 min-h-[400px] block"
                     data-astro-transition-scope={`blog-card-${post.slug}`}
                   >
                     {/* High-fidelity gradient background using theme colors */}

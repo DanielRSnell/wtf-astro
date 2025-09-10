@@ -55,7 +55,7 @@ const Services10 = ({ "data-theme": dataTheme, content }: Services10Props) => {
               return (
               <div
                 key={index}
-                className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+                className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
               >
                 {/* High-fidelity gradient background using theme colors */}
                 <div className="absolute inset-0">
@@ -151,7 +151,7 @@ const Services10 = ({ "data-theme": dataTheme, content }: Services10Props) => {
             })}
           </div>
 
-          <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8 text-center">
+          <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8 text-center">
             {/* High-fidelity gradient background using theme colors */}
             <div className="absolute inset-0">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />

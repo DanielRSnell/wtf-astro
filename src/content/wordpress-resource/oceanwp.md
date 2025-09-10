@@ -1,0 +1,77 @@
+---
+title: "OceanWP"
+subtitle: "Free Starter Theme"
+description: "A popular free WordPress theme that comes with page builder integration and granular control options, though premium features require paid extensions."
+category: themes
+slug: "oceanwp"
+featured: false
+badge: "Free Starter"
+href: "https://oceanwp.org/"
+image:
+  src: "/images/themes/oceanwp-preview.jpg"
+  alt: "OceanWP WordPress Theme Preview"
+ratings:
+  - name: "Free Features"
+    value: 4.2
+  - name: "Performance"
+    value: 4.0
+  - name: "Customization"
+    value: 4.3
+  - name: "Value"
+    value: 3.8
+  - name: "Ease of Use"
+    value: 4.1
+pros:
+  - "Completely free core theme"
+  - "Page builder compatibility"
+  - "Granular script and style control"
+  - "WooCommerce integration"
+  - "Responsive design"
+  - "Active community support"
+cons:
+  - "Requires paid plugins for full functionality"
+  - "Aggressive pricing model for extensions"
+  - "Can feel incomplete without premium add-ons"
+  - "Performance can suffer with many extensions"
+pricing:
+  free: true
+  startingPrice: "$54/year"
+  priceNote: "Premium extensions sold separately, core theme is free"
+metadata:
+  author: "WooThatsFast Team"
+  publishDate: 2024-01-15
+  lastUpdated: 2024-01-15
+  readTime: 7
+---
+
+# OceanWP WordPress Theme Review
+
+OceanWP is a popular free WordPress theme that offers solid functionality out of the box, though users often find themselves needing premium extensions for complete functionality.
+
+## Free Core Features
+
+OceanWP's free version includes essential features like responsive design, WooCommerce compatibility, and basic customization options, making it accessible to budget-conscious users.
+
+## Page Builder Integration
+
+The theme works well with popular page builders like Elementor and Beaver Builder, providing flexibility for users who prefer visual design tools.
+
+## Extension Ecosystem
+
+While the core theme is free, OceanWP's business model relies on selling premium extensions for advanced features, which can add up quickly.
+
+## Performance Considerations
+
+The base theme is relatively lightweight, but performance can be impacted when multiple premium extensions are installed.
+
+## Customization Options
+
+OceanWP offers granular control over scripts and styles, allowing developers to optimize performance by disabling unused features.
+
+## Value Proposition
+
+The aggressive pricing model for extensions means that achieving full functionality can be more expensive than purchasing a premium theme upfront.
+
+## Final Verdict
+
+OceanWP is a decent choice for users who need basic functionality and don't mind the free theme limitations. However, the cost of premium extensions should be considered when evaluating long-term value.

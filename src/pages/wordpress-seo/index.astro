@@ -1,0 +1,40 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+export const prerender = false;
+
+// Get all SEO resources from the wordpress-resource collection
+const seoResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'seo';
+});
+
+// Get SEO-related blog posts
+const seoPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('seo') || 
+    tag.toLowerCase().includes('search') ||
+    seoResources.some(seoTool => 
+      post.data.title.toLowerCase().includes(seoTool.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(seoTool.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress SEO Plugins Directory";
+const pageDescription = "Find the best SEO plugins for WordPress. Compare features, pricing, and effectiveness to boost your website's search rankings.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="seo"
+    title="WordPress SEO Plugins"
+    description="Powerful SEO tools to improve your WordPress site's search rankings"
+    resources={seoResources}
+    relatedPosts={seoPosts}
+    baseUrl="/wordpress-seo"
+  />
+</Layout>

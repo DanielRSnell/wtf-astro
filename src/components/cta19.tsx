@@ -37,7 +37,7 @@ const Cta19 = ({ "data-theme": dataTheme, content }: Cta19Props) => {
       </div>
       
       <div className="container relative">
-        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col lg:flex-row">
+        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col lg:flex-row">
           {/* Layered gradient backgrounds */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
@@ -46,7 +46,7 @@ const Cta19 = ({ "data-theme": dataTheme, content }: Cta19Props) => {
           </div>
           
           <div className="relative z-10 grow px-8 py-8 lg:px-16">
-            <div className="inline-flex items-center gap-2 rounded-full bg-card/60 backdrop-blur-xl border border-border/20 px-4 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 rounded-full bg-card/60 backdrop-blur-xl border border-brand px-4 py-2 mb-6">
               {content.badge.showIndicator && <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
               <span className="text-xs tracking-widest text-muted-foreground font-medium uppercase">
                 {content.badge.text}
@@ -72,7 +72,7 @@ const Cta19 = ({ "data-theme": dataTheme, content }: Cta19Props) => {
               </Button>
             </div>
           </div>
-          <div className="relative z-10 flex grow basis-5/12 flex-col justify-between border-t border-l border-border/20 lg:border-t-0 lg:border-l lg:border-l-border/20">
+          <div className="relative z-10 flex grow basis-5/12 flex-col justify-between border-t border-l border-brand lg:border-t-0 lg:border-l lg:border-l-brand">
             {content.links.map((link, index) => {
               const IconComponent = getIcon(link.icon);
               const gradientVariation = index === 0 ? 
@@ -108,7 +108,7 @@ const Cta19 = ({ "data-theme": dataTheme, content }: Cta19Props) => {
                     {/* Subtle border highlight */}
                     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/link:opacity-100 transition-opacity duration-500" />
                   </a>
-                  {index < content.links.length - 1 && <Separator className="bg-border/20" />}
+                  {index < content.links.length - 1 && <Separator className="bg-brand" />}
                 </div>
               );
             })}

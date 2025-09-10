@@ -56,7 +56,7 @@ const Timeline4 = ({ "data-theme": dataTheme, content }: Timeline4Props) => {
 
             {/* Content card */}
             <div 
-              className={`group relative max-w-lg overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 ${item.reverse ? "lg:ml-auto lg:mr-24" : "lg:mr-auto lg:ml-24"}`}
+              className={`group relative max-w-lg overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 ${item.reverse ? "lg:ml-auto lg:mr-24" : "lg:mr-auto lg:ml-24"}`}
             >
               {/* High-fidelity gradient background */}
               <div className="absolute inset-0">

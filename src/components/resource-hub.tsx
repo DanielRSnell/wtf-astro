@@ -91,7 +91,7 @@ const ResourceHub = ({
     // Convert review posts to links format
     const reviewLinks = categoryReviews.map(review => ({
       title: review.data.title,
-      href: `/wordpress/reviews/${review.data.slug}`,
+      href: `/wordpress-reviews/${review.data.slug}`,
       description: review.data.description
     }));
 
@@ -106,7 +106,7 @@ const ResourceHub = ({
         title: topRecommendation.data.title,
         subtitle: topRecommendation.data.subtitle,
         description: topRecommendation.data.description,
-        href: `/wordpress/${cat.data.category}/${topRecommendation.data.slug}`,
+        href: `/wordpress-${cat.data.category}/${topRecommendation.data.slug}`,
         badge: topRecommendation.data.badge,
         ratings: topRecommendation.data.ratings
       } : {
@@ -118,7 +118,7 @@ const ResourceHub = ({
         title: runnerUp.data.title,
         subtitle: runnerUp.data.subtitle,
         description: runnerUp.data.description,
-        href: `/wordpress/${cat.data.category}/${runnerUp.data.slug}`,
+        href: `/wordpress-${cat.data.category}/${runnerUp.data.slug}`,
         badge: runnerUp.data.badge,
         ratings: runnerUp.data.ratings
       } : undefined,
@@ -126,7 +126,7 @@ const ResourceHub = ({
         title: honorableMention.data.title,
         subtitle: honorableMention.data.subtitle,
         description: honorableMention.data.description,
-        href: `/wordpress/${cat.data.category}/${honorableMention.data.slug}`,
+        href: `/wordpress-${cat.data.category}/${honorableMention.data.slug}`,
         badge: honorableMention.data.badge
       } : undefined
     };

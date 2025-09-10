@@ -1,13 +1,14 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import Layout from '../../../layouts/base.astro';
+import Layout from '../../layouts/base.astro';
 
 export async function getStaticPaths() {
-  const resources = await getCollection('wordpress-resource');
+  const resources = await getCollection('wordpress-resource', (resource) => {
+    return resource.data.category === 'seo';
+  });
   
   return resources.map((resource) => ({
     params: { 
-      category: resource.data.category, 
       slug: resource.data.slug 
     },
     props: { resource }
@@ -19,7 +20,36 @@ type Props = {
 };
 
 const { resource } = Astro.props;
-const { Content } = await resource.render();
+
+// Get all blog posts first
+const allBlogPosts = await getCollection('blog');
+
+// Filter related blog posts for this specific SEO tool
+const relatedPosts = allBlogPosts.filter((post) => {
+  if (!post.data || !resource?.data) return false;
+  
+  const toolName = resource.data.title.toLowerCase();
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes(toolName) ||
+    tag.toLowerCase().includes('seo')
+  ) || post.data.title?.toLowerCase().includes(toolName);
+});
+
+// Separate posts by type
+const guides = relatedPosts.filter(post => 
+  post.data?.tags?.some(tag => tag.toLowerCase().includes('guide')) ||
+  post.data?.category === 'guides'
+);
+
+const reviews = relatedPosts.filter(post => 
+  post.data?.tags?.some(tag => tag.toLowerCase().includes('review')) ||
+  post.data?.category === 'reviews'
+);
+
+const tutorials = relatedPosts.filter(post => 
+  post.data?.tags?.some(tag => tag.toLowerCase().includes('tutorial')) ||
+  post.data?.category === 'tutorials'
+);
 ---
 
 <Layout title={resource.data.title} description={resource.data.description}>
@@ -112,7 +142,9 @@ const { Content } = await resource.render();
 
       {/* Content */}
       <div class="prose prose-lg max-w-none">
-        <Content />
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          {resource.data.description}
+        </p>
       </div>
 
       {/* Pros and Cons */}
@@ -173,6 +205,89 @@ const { Content } = await resource.render();
               <p class="text-xs text-muted-foreground mt-2">{resource.data.pricing.priceNote}</p>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Related Content Section */}
+      {(guides.length > 0 || reviews.length > 0 || tutorials.length > 0 || relatedPosts.length > 0) && (
+        <div class="border-t border-border/20 mt-16 pt-16">
+          <h2 class="text-3xl font-bold mb-8">Related Content & Guides</h2>
+          
+          {/* Content Type Navigation */}
+          <div class="flex flex-wrap gap-2 mb-8">
+            <a 
+              href={`/wordpress-seo/${resource.data.slug}`}
+              class="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium"
+            >
+              Overview
+            </a>
+            {guides.length > 0 && (
+              <a 
+                href={`/wordpress-seo/${resource.data.slug}/guides`}
+                class="px-4 py-2 rounded-lg bg-card/60 border border-brand text-foreground hover:bg-card/80 transition-colors text-sm font-medium"
+              >
+                Guides ({guides.length})
+              </a>
+            )}
+            {tutorials.length > 0 && (
+              <a 
+                href={`/wordpress-seo/${resource.data.slug}/tutorials`}
+                class="px-4 py-2 rounded-lg bg-card/60 border border-brand text-foreground hover:bg-card/80 transition-colors text-sm font-medium"
+              >
+                Tutorials ({tutorials.length})
+              </a>
+            )}
+            {reviews.length > 0 && (
+              <a 
+                href={`/wordpress-seo/${resource.data.slug}/reviews`}
+                class="px-4 py-2 rounded-lg bg-card/60 border border-brand text-foreground hover:bg-card/80 transition-colors text-sm font-medium"
+              >
+                Reviews ({reviews.length})
+              </a>
+            )}
+          </div>
+
+          {/* Recent Related Posts */}
+          {relatedPosts.length > 0 && (
+            <div>
+              <h3 class="text-xl font-semibold mb-6">Latest {resource.data.title} Content</h3>
+              <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {relatedPosts.slice(0, 6).map((post) => (
+                  <a
+                    href={`/blog/${post.slug}`}
+                    class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-6 block"
+                  >
+                    <div class="relative z-10">
+                      <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                          <div class="w-1 h-1 rounded-full bg-primary" />
+                          {post.data.category}
+                        </span>
+                        <span class="text-xs text-muted-foreground">
+                          {new Date(post.data.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      
+                      <h4 class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-300 mb-2">
+                        {post.data.title}
+                      </h4>
+                      
+                      <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                        {post.data.description}
+                      </p>
+                      
+                      <div class="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{post.data.readTime || 5} min read</span>
+                        <svg class="w-4 h-4 group-hover:text-primary transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

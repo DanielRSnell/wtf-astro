@@ -522,3 +522,10 @@
     background-attachment: fixed;
   }
 }
+
+
+@layer utilities {
+  .border-brand {
+    @apply  border border-border/30 ring-1 ring-primary/10 shadow-md shadow-primary/10;
+  }
+}

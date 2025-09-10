@@ -1,0 +1,158 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../../layouts/base.astro';
+
+export async function getStaticPaths() {
+  const resources = await getCollection('wordpress-resource', (resource) => {
+    return resource.data.category === 'themes';
+  });
+  
+  return resources.map((resource) => ({
+    params: { 
+      slug: resource.data.slug 
+    },
+    props: { resource }
+  }));
+}
+
+type Props = {
+  resource: CollectionEntry<'wordpress-resource'>;
+};
+
+const { resource } = Astro.props;
+
+// Get all blog posts first
+const allBlogPosts = await getCollection('blog');
+
+// Filter guides related to this specific theme
+const guides = allBlogPosts.filter((post) => {
+  if (!post.data || !resource?.data) return false;
+  
+  const themeName = resource.data.title.toLowerCase();
+  return (post.data.tags?.some(tag => 
+    tag.toLowerCase().includes(themeName) ||
+    tag.toLowerCase().includes('guide')
+  ) || post.data.category === 'guides') &&
+  (post.data.title?.toLowerCase().includes(themeName) ||
+   post.data.tags?.some(tag => tag.toLowerCase().includes(themeName)));
+});
+
+const pageTitle = `${resource.data.title} Guides & Tutorials`;
+const pageDescription = `Complete guides and tutorials for ${resource.data.title}. Learn how to get the most out of this WordPress theme.`;
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="bg-background py-32 text-foreground" data-theme="bright-dark">
+    <div class="container max-w-6xl mx-auto px-6">
+      {/* Header */}
+      <div class="mb-16">
+        {/* Breadcrumb */}
+        <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+          <a href="/wordpress-themes" class="hover:text-primary transition-colors">WordPress Themes</a>
+          <span>›</span>
+          <a href={`/wordpress-themes/${resource.data.slug}`} class="hover:text-primary transition-colors">{resource.data.title}</a>
+          <span>›</span>
+          <span class="text-foreground">Guides</span>
+        </nav>
+
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+          <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            {resource.data.title} Guides
+          </span>
+        </h1>
+        <p class="text-xl text-muted-foreground max-w-3xl">
+          Complete guides and tutorials to help you master {resource.data.title} and build amazing WordPress websites.
+        </p>
+      </div>
+
+      {/* Content Type Navigation */}
+      <div class="flex flex-wrap gap-2 mb-12">
+        <a 
+          href={`/wordpress-themes/${resource.data.slug}`}
+          class="px-4 py-2 rounded-lg bg-card/60 border border-brand text-foreground hover:bg-card/80 transition-colors text-sm font-medium"
+        >
+          Overview
+        </a>
+        <a 
+          href={`/wordpress-themes/${resource.data.slug}/guides`}
+          class="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium"
+        >
+          Guides ({guides.length})
+        </a>
+      </div>
+
+      {/* Guides Grid */}
+      {guides.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {guides.map((post) => (
+            <a
+              href={`/blog/${post.slug}`}
+              class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-6 block"
+            >
+              {/* Background gradient */}
+              <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+                <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+              </div>
+              
+              <div class="relative z-10">
+                {/* Featured image if available */}
+                {post.data.image && (
+                  <div class="relative h-32 mb-4 overflow-hidden rounded-lg">
+                    <img 
+                      src={post.data.image.src} 
+                      alt={post.data.image.alt}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )}
+                
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                    <div class="w-1 h-1 rounded-full bg-primary" />
+                    {post.data.category}
+                  </span>
+                  <span class="text-xs text-muted-foreground">
+                    {new Date(post.data.date).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                <h3 class="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-3">
+                  {post.data.title}
+                </h3>
+                
+                <p class="text-sm text-muted-foreground mb-4 line-clamp-3">
+                  {post.data.description}
+                </p>
+                
+                <div class="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{post.data.readTime || 5} min read</span>
+                  <span>By {post.data.author}</span>
+                </div>
+              </div>
+              
+              {/* Hover border highlight */}
+              <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16">
+          <div class="h-16 w-16 mx-auto mb-4 rounded-full bg-muted/20 flex items-center justify-center">
+            <svg class="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-foreground mb-2">No guides yet</h2>
+          <p class="text-muted-foreground mb-6">We're working on creating comprehensive guides for {resource.data.title}.</p>
+          <a 
+            href={`/wordpress-themes/${resource.data.slug}`}
+            class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors"
+          >
+            Back to Overview
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

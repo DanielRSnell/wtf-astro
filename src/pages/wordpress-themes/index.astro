@@ -1,0 +1,40 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+export const prerender = false;
+
+// Get all themes from the wordpress-resource collection
+const themeResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'themes';
+});
+
+// Get theme-related blog posts
+const themePosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('theme') || 
+    tag.toLowerCase().includes('wordpress') ||
+    themeResources.some(theme => 
+      post.data.title.toLowerCase().includes(theme.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(theme.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Themes Directory";
+const pageDescription = "Discover the best WordPress themes for your website. Compare features, pricing, and performance to find the perfect theme for your needs.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="themes"
+    title="WordPress Themes"
+    description="Professional WordPress themes for every type of website"
+    resources={themeResources}
+    relatedPosts={themePosts}
+    baseUrl="/wordpress-themes"
+  />
+</Layout>

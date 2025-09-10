@@ -79,8 +79,13 @@ const Hero24 = ({ "data-theme": dataTheme, content }: Hero24Props) => {
               {content.badge.text}
             </span>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-balance lg:text-6xl mb-6 leading-tight bg-gradient-to-br from-foreground via-foreground/80 to-muted-foreground bg-clip-text text-transparent">
-            Hey, I'm {content.hero.name}, {content.hero.title}
+          <h1 className="text-4xl font-bold tracking-tight text-balance lg:text-6xl mb-6 leading-tight bg-gradient-to-r from-foreground via-foreground/60 to-foreground bg-clip-text text-transparent capitalize">
+            Hey I'm {content.hero.name} <PictureCard 
+              name={content.hero.name}
+              role=""
+              imageSrc={content.hero.profileImage}
+              className="inline-flex mx-2"
+            /> and I build lightning fast WooCommerce Stores That Convert.
           </h1>
           <div className="flex justify-center">
             <GradientButton
@@ -97,7 +102,7 @@ const Hero24 = ({ "data-theme": dataTheme, content }: Hero24Props) => {
             const IconComponent = getIcon(feature.icon);
             const gradients = getThemeGradients(feature.theme);
             return (
-              <div key={index} className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-6">
+              <div key={index} className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-6">
                 {/* High-fidelity gradient background */}
                 <div className="absolute inset-0">
                   {gradients.map((gradient, gradIndex) => (
