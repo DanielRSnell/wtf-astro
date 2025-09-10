@@ -1,0 +1,2 @@
+# This directory is required for Netlify SSR support
+# Keep this file to ensure the directory is tracked in git
