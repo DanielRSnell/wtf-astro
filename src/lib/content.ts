@@ -9,7 +9,6 @@ export interface HeroContent {
   };
   hero: {
     name: string;
-    profileImage: string;
     title: string;
   };
   cta: {

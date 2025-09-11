@@ -5,7 +5,6 @@ badge:
 
 hero:
   name: "Daniel"
-  profileImage: "/daniel.jpg"
   title: "focused on building lightning-fast WooCommerce stores"
   
 cta:

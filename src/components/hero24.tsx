@@ -7,6 +7,7 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { PictureCard } from "@/components/ui/picture-card";
 
 import type { HeroContent } from "@/lib/content";
+import danielImage from "@/assets/daniel.jpg";
 
 interface Hero24Props {
   "data-theme"?: string;
@@ -83,7 +84,7 @@ const Hero24 = ({ "data-theme": dataTheme, content }: Hero24Props) => {
             Hey I'm {content.hero.name} <PictureCard 
               name={content.hero.name}
               role=""
-              imageSrc={content.hero.profileImage}
+              imageSrc={danielImage.src}
               className="inline-flex mx-2"
             /> and I build lightning fast WooCommerce Stores That Convert.
           </h1>
