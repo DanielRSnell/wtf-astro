@@ -1,9 +1,9 @@
 ---
+export const prerender = false;
 import FocusedLayout from '@layouts/focused.astro';
 import { createSupabaseSSR } from '@/lib/supabase-ssr';
 import { GradientButton } from '@/components/ui/gradient-button';
 
-export const prerender = false;
 
 // Check if user is already logged in
 const supabase = createSupabaseSSR(Astro.cookies);

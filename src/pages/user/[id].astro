@@ -1,8 +1,8 @@
 ---
+export const prerender = false;
 import Layout from '@layouts/base.astro';
 import { createSupabaseSSR } from '@/lib/supabase-ssr';
 
-export const prerender = false;
 
 // Get the id from URL params (could be username or UUID)
 const { id } = Astro.params;

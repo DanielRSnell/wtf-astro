@@ -1,18 +1,31 @@
 import { Menu, X, LogIn, UserPlus, User, Settings, LogOut } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { UserAvatar } from "@/components/ui/UserAvatar";
+import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { UserProfile } from '@/lib/supabase';
 
 interface HeaderProps {
   "data-theme"?: string;
-  user?: SupabaseUser | null;
-  profile?: UserProfile | null;
 }
 
-const AuthButtons = ({ user, profile }: { user?: SupabaseUser | null; profile?: UserProfile | null }) => {
+const AuthButtons = () => {
+  const { user, profile, loading } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Show loading state while auth is being checked
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-muted/30 animate-pulse"></div>
+        <div className="hidden md:block">
+          <div className="w-20 h-4 bg-muted/30 rounded animate-pulse mb-1"></div>
+          <div className="w-16 h-3 bg-muted/30 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (user && profile) {
     return (
@@ -61,19 +74,6 @@ const AuthButtons = ({ user, profile }: { user?: SupabaseUser | null; profile?: 
     );
   }
 
-  // Fallback for when user exists but profile is loading
-  if (user) {
-    return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-muted/30 animate-pulse"></div>
-        <div className="hidden md:block">
-          <div className="w-20 h-4 bg-muted/30 rounded animate-pulse mb-1"></div>
-          <div className="w-16 h-3 bg-muted/30 rounded animate-pulse"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex items-center gap-3">
       <a
@@ -95,13 +95,19 @@ const AuthButtons = ({ user, profile }: { user?: SupabaseUser | null; profile?: 
   );
 };
 
-const Header = ({ "data-theme": dataTheme, user, profile }: HeaderProps) => {
+const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { loading } = useAuth();
 
   return (
     <header 
       className="fixed top-0 left-0 right-0 z-[9999]" 
       data-theme={dataTheme}
+      style={{ 
+        animation: loading ? 'none' : 'slide-down 0.6s ease-out forwards',
+        transform: loading ? 'translateY(-100%)' : 'translateY(0)',
+        opacity: loading ? 0 : 1
+      }}
     >
       {/* Glassmorphism Header */}
       <div className="relative">
@@ -171,7 +177,7 @@ const Header = ({ "data-theme": dataTheme, user, profile }: HeaderProps) => {
             </a>
             
             {/* Auth Buttons */}
-            <AuthButtons user={user} profile={profile} />
+            <AuthButtons />
           </div>
         </nav>
 
@@ -212,7 +218,7 @@ const Header = ({ "data-theme": dataTheme, user, profile }: HeaderProps) => {
                 {/* Mobile Auth */}
                 <div className="pt-4 border-t border-border/40">
                   <div onClick={() => setIsMobileMenuOpen(false)}>
-                    <AuthButtons user={user} profile={profile} />
+                    <AuthButtons />
                   </div>
                 </div>
               </div>
@@ -221,6 +227,61 @@ const Header = ({ "data-theme": dataTheme, user, profile }: HeaderProps) => {
         )}
       </div>
     </header>
+  );
+};
+
+const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
+  const [shouldLoadAuth, setShouldLoadAuth] = useState(false);
+
+  React.useEffect(() => {
+    const handleFirstInteraction = () => {
+      setShouldLoadAuth(true);
+      // Remove listeners after first interaction
+      document.removeEventListener('mousemove', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('mousemove', handleFirstInteraction);
+    document.addEventListener('scroll', handleFirstInteraction);
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('mousemove', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
+
+  if (!shouldLoadAuth) {
+    // Show static header without auth until first interaction
+    return (
+      <header 
+        className="fixed top-0 left-0 right-0 z-[9999]" 
+        data-theme={dataTheme}
+        style={{ 
+          transform: 'translateY(-100%)',
+          opacity: 0
+        }}
+      >
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-muted/50 to-background/85 backdrop-blur-2xl border-b border-border/60 shadow-2xl shadow-background/20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/10 to-transparent" />
+        </div>
+      </header>
+    );
+  }
+
+  return (
+    <AuthProvider>
+      <HeaderContent data-theme={dataTheme} />
+    </AuthProvider>
   );
 };
 

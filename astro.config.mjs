@@ -10,7 +10,6 @@ import playformInline from '@playform/inline';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
   adapter: netlify(),
   vite: {
     plugins: [tailwindcss()],

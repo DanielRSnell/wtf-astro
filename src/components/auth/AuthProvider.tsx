@@ -33,8 +33,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserProfile = async (userId: string) => {
+  const getCachedProfile = (userId: string): UserProfile | null => {
     try {
+      const cached = localStorage.getItem(`profile_${userId}`);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const setCachedProfile = (userId: string, profile: UserProfile) => {
+    try {
+      localStorage.setItem(`profile_${userId}`, JSON.stringify(profile));
+      localStorage.setItem(`profile_${userId}_timestamp`, Date.now().toString());
+    } catch (error) {
+      console.warn('Failed to cache profile:', error);
+    }
+  };
+
+  const isCacheValid = (userId: string, maxAge: number = 5 * 60 * 1000): boolean => {
+    try {
+      const timestamp = localStorage.getItem(`profile_${userId}_timestamp`);
+      if (!timestamp) return false;
+      return Date.now() - parseInt(timestamp) < maxAge;
+    } catch {
+      return false;
+    }
+  };
+
+  const fetchUserProfile = async (userId: string, useCache: boolean = true) => {
+    try {
+      // Check cache first if enabled
+      if (useCache && isCacheValid(userId)) {
+        const cached = getCachedProfile(userId);
+        if (cached) {
+          console.log('👤 Using cached profile:', cached?.full_name || cached?.email || 'No name');
+          return cached;
+        }
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -49,6 +86,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error('Error fetching profile:', error);
         }
         return null;
+      }
+
+      // Cache the profile data
+      if (data) {
+        setCachedProfile(userId, data);
       }
 
       return data;
@@ -120,6 +162,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+    
+    // Clear cached profile data
+    if (user) {
+      try {
+        localStorage.removeItem(`profile_${user.id}`);
+        localStorage.removeItem(`profile_${user.id}_timestamp`);
+      } catch (error) {
+        console.warn('Failed to clear profile cache:', error);
+      }
+    }
+    
     return { error };
   };
 
@@ -134,7 +187,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       .eq('id', user.id);
 
     if (!error && profile) {
-      setProfile({ ...profile, ...updates });
+      const updatedProfile = { ...profile, ...updates };
+      setProfile(updatedProfile);
+      // Update cache with new profile data
+      setCachedProfile(user.id, updatedProfile);
     }
 
     return { error };

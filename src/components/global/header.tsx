@@ -81,6 +81,7 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
     <header 
       className="fixed top-0 left-0 right-0 z-[9999]" 
       data-theme={dataTheme}
+      style={{ animation: 'slide-down 0.6s ease-out forwards' }}
     >
       {/* Glassmorphism Header */}
       <div className="relative">

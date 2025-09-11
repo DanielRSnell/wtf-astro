@@ -1,4 +1,5 @@
 ---
+
 import Layout from '../layouts/base.astro';
 import { Hero24 } from '../components/hero24.tsx';
 import { About8 } from '../components/about8.tsx';
@@ -12,7 +13,6 @@ import { Separator } from '../components/ui/separator.tsx';
 import { getHeroContent, getAboutContent, getFeaturesContent, getServicesContent, getTimelineContent, getCtaContent } from '../lib/content.ts';
 import { getCollection } from 'astro:content';
 
-export const prerender = false;
 
 const heroContent = getHeroContent();
 const aboutContent = getAboutContent();

@@ -1,9 +1,9 @@
 ---
+
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/base.astro';
 import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
-export const prerender = false;
 
 // Get all themes from the wordpress-resource collection
 const themeResources = await getCollection('wordpress-resource', (resource) => {
