@@ -11,6 +11,7 @@
   "dependencies": {
     "@astrojs/netlify": "^6.5.10",
     "@astrojs/react": "^4.3.0",
+    "@astrojs/sitemap": "^3.5.1",
     "@playform/inline": "^0.1.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.10",

@@ -1,5 +1,5 @@
 ---
-
+export const prerender = true;
 import Layout from '../layouts/base.astro';
 import { Hero24 } from '../components/hero24.tsx';
 import { About8 } from '../components/about8.tsx';
@@ -55,11 +55,11 @@ console.log(`Loaded ${sortedPosts.length} blog posts across ${blogCategories.len
 
 <Layout title="Home">
 	<Hero24 client:load data-theme="bright-dark" content={heroContent} />
-	<About8 client:idle data-theme="bright-dark" content={aboutContent} />
-	<ResourceHub client:idle data-theme="bright-dark" resources={wordpressResources} categories={wordpressCategories} reviews={wordpressReviews} />
-	<Feature261 client:idle data-theme="bright-dark" content={featuresContent} />
-	<Services10 client:idle data-theme="bright-dark" content={servicesContent} />
-	<Timeline4 client:idle data-theme="bright-dark" content={timelineContent} />
-	<Blog11 client:idle data-theme="bright-dark" posts={sortedPosts} categories={blogCategories} />
-	<Cta19 client:idle data-theme="bright-dark" content={ctaContent} />
+	<About8 client:visible data-theme="bright-dark" content={aboutContent} />
+	<ResourceHub client:visible data-theme="bright-dark" resources={wordpressResources} categories={wordpressCategories} reviews={wordpressReviews} />
+	<Feature261 client:visible data-theme="bright-dark" content={featuresContent} />
+	<Services10 client:visible data-theme="bright-dark" content={servicesContent} />
+	<Timeline4 client:visible data-theme="bright-dark" content={timelineContent} />
+	<Blog11 client:visible data-theme="bright-dark" posts={sortedPosts} categories={blogCategories} />
+	<Cta19 client:visible data-theme="bright-dark" content={ctaContent} />
 </Layout>

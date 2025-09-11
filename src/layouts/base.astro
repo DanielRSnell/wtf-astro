@@ -12,27 +12,12 @@ export interface Props {
 
 const { title = "Blocksy Components", description = "Premium component library for modern web applications" } = Astro.props;
 
-// Get user session for SSR
+// Get user session for SSR (only on server-rendered pages)
 let user = null;
 let profile = null;
 
-const supabase = createSupabaseSSR(Astro.cookies);
-
-try {
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  user = authUser;
-  
-  if (user) {
-    const { data: profileData } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-    profile = profileData;
-  }
-} catch (e) {
-  // Silent fail for auth - user just won't be authenticated
-}
+// Skip auth entirely during prerendering to avoid request.headers access
+// This also improves build performance since static pages don't need auth
 ---
 
 <html lang="en">
