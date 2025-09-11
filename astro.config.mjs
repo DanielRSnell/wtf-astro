@@ -15,5 +15,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [react(), playformInline()]
+  integrations: [react(), (await import("@playform/inline")).default()]
 });
