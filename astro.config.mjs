@@ -19,7 +19,6 @@ export default defineConfig({
   },
   integrations: [
     react(), 
-    sitemap(),
-    (await import("@playform/inline")).default()
+    sitemap()
   ]
 });
