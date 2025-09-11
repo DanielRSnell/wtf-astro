@@ -97,16 +97,24 @@ const AuthButtons = () => {
 
 const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const { loading } = useAuth();
+
+  // Trigger animation when auth loading completes
+  React.useEffect(() => {
+    if (!loading && !hasAnimated) {
+      setHasAnimated(true);
+    }
+  }, [loading, hasAnimated]);
 
   return (
     <header 
       className="fixed top-0 left-0 right-0 z-[9999]" 
       data-theme={dataTheme}
       style={{ 
-        animation: loading ? 'none' : 'slide-down 0.6s ease-out forwards',
-        transform: loading ? 'translateY(-100%)' : 'translateY(0)',
-        opacity: loading ? 0 : 1
+        animation: hasAnimated ? 'slide-down 0.6s ease-out forwards' : 'none',
+        transform: hasAnimated ? 'translateY(0)' : 'translateY(-100%)',
+        opacity: hasAnimated ? 1 : 0
       }}
     >
       {/* Glassmorphism Header */}
