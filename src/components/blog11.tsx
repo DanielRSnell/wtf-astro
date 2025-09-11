@@ -120,6 +120,8 @@ const Blog11 = ({
                           alt={post.data.image.alt}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           style={{ viewTransitionName: `blog-image-${post.slug}` }}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     )}
