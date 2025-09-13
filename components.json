@@ -19,10 +19,7 @@
   },
   "registries": {
     "@shadcnblocks": {
-      "url": "https://shadcnblocks.com/r/{name}",
-      "headers": {
-        "Authorization": "Bearer sk_live_BURjQ3QsVjDucD-K06D-oxv78J4gB5uD"
-      }
+      "url": "https://shadcnblocks.com/r/{name}"
     },
     "@magicui": {
       "url": "https://magicui.design/r/{name}"
