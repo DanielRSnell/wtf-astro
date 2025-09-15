@@ -1,5 +1,4 @@
 import { Check, X, CheckCircle, XCircle } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface DosDontsItem {
@@ -25,33 +24,12 @@ const DosDontsSection = ({
   "data-theme": dataTheme
 }: DosDontsSectionProps) => {
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
+  // Removed motion animation variants - using CSS animations instead
 
   const DoItem = ({ item, index }: { item: DosDontsItem; index: number }) => (
-    <motion.div
-      variants={itemVariants}
-      className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-green-500/5 border border-green-500/20 hover:border-green-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
+    <div
+      className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-green-500/5 border border-green-500/20 hover:border-green-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 animate-in fade-in slide-in-from-left-4 duration-500"
+      style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex-shrink-0 mt-0.5">
         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20">
@@ -68,13 +46,13 @@ const DosDontsSection = ({
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 
   const DontItem = ({ item, index }: { item: DosDontsItem; index: number }) => (
-    <motion.div
-      variants={itemVariants}
-      className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-red-500/5 via-rose-500/5 to-red-500/5 border border-red-500/20 hover:border-red-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10"
+    <div
+      className="group flex items-start gap-3 p-4 rounded-xl bg-gradient-to-r from-red-500/5 via-rose-500/5 to-red-500/5 border border-red-500/20 hover:border-red-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10 animate-in fade-in slide-in-from-left-4 duration-500"
+      style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex-shrink-0 mt-0.5">
         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20">
@@ -91,18 +69,15 @@ const DosDontsSection = ({
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
     <section className={cn("py-24 bg-background", className)} data-theme={dataTheme}>
       <div className="container max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
+          className="text-center mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
@@ -112,15 +87,13 @@ const DosDontsSection = ({
               {subtitle}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Dos and Don'ts Grid */}
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Dos Column */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+          <div
+            className="animate-in fade-in slide-in-from-left-8 duration-700 delay-200"
           >
             {/* Dos Header */}
             <div className="flex items-center gap-3 mb-8">
@@ -139,13 +112,11 @@ const DosDontsSection = ({
                 <DoItem key={index} item={item} index={index} />
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Don'ts Column */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+          <div
+            className="animate-in fade-in slide-in-from-right-8 duration-700 delay-200"
           >
             {/* Don'ts Header */}
             <div className="flex items-center gap-3 mb-8">
@@ -164,7 +135,7 @@ const DosDontsSection = ({
                 <DontItem key={index} item={item} index={index} />
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

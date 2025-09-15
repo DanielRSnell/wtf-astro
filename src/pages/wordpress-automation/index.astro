@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all automation resources from the wordpress-resource collection
+const automationResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'automation';
+});
+
+// Get automation-related blog posts
+const automationPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('automation') || 
+    tag.toLowerCase().includes('workflow') ||
+    tag.toLowerCase().includes('zapier') ||
+    automationResources.some(automation => 
+      post.data.title.toLowerCase().includes(automation.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(automation.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Automation Tools & Workflows";
+const pageDescription = "Automate your WordPress workflow with powerful automation tools and plugins. Save time, reduce errors, and streamline repetitive tasks.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="automation"
+    title="WordPress Automation"
+    description="Streamline your workflow with powerful automation tools"
+    resources={automationResources}
+    relatedPosts={automationPosts}
+    baseUrl="/wordpress-automation"
+  />
+</Layout>

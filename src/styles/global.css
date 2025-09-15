@@ -3,7 +3,10 @@
 /* Theme imports */
 @import "./themes/dark.css";
 @import "./themes/bright-dark.css";
+@import "./themes/bright-dark-transparencies.css";
 
+/* Component styles */
+@import "./layered-gradient.css";
 
 /* Rocket logo */
 @import "./rocket-logo.css";
@@ -539,5 +542,9 @@
 @layer utilities {
   .border-brand {
     @apply  border border-border/30 ring-1 ring-primary/10 shadow-md shadow-primary/10;
+  }
+  
+  .brand-gradient {
+    @apply bg-gradient-to-br from-transparent via-muted/5 to-primary/3;
   }
 }

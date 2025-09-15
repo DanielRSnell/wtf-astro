@@ -132,14 +132,16 @@ const Services10 = ({ "data-theme": dataTheme, content }: Services10Props) => {
                           Custom quotes available
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        variant={service.featured ? "default" : "outline"}
-                        className="transition-all group-hover:shadow-md"
-                      >
-                        Get Started
-                        <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                      </Button>
+                      <a href={service.slug ? `/services/${service.slug}` : '#'}>
+                        <Button
+                          size="sm"
+                          variant={service.featured ? "default" : "outline"}
+                          className="transition-all group-hover:shadow-md"
+                        >
+                          Learn More
+                          <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </a>
                     </div>
                   </div>
                 </div>

@@ -1,0 +1,42 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all security resources from the wordpress-resource collection
+const securityResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'security';
+});
+
+// Get security-related blog posts
+const securityPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('security') || 
+    tag.toLowerCase().includes('firewall') ||
+    tag.toLowerCase().includes('malware') ||
+    tag.toLowerCase().includes('backup') ||
+    securityResources.some(security => 
+      post.data.title.toLowerCase().includes(security.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(security.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Security Plugins & Best Practices";
+const pageDescription = "Protect your WordPress site with the best security plugins, firewalls, and security practices. Keep your site safe from hackers and malware.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="security"
+    title="WordPress Security"
+    description="Essential security tools to protect your WordPress site"
+    resources={securityResources}
+    relatedPosts={securityPosts}
+    baseUrl="/wordpress-security"
+  />
+</Layout>

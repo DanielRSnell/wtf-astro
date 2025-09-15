@@ -1,5 +1,4 @@
 import { Clock, Gauge, Eye, TrendingUp, AlertTriangle, CheckCircle, Zap } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BeforeAfterCards } from "@/components/ui/before-after-cards";
 
@@ -190,11 +189,8 @@ const CoreWebVitalsComparison = ({ "data-theme": dataTheme }: CoreWebVitalsCompa
         />
 
         {/* Improvement Summary */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+        <div
+          className="text-center animate-in fade-in slide-in-from-bottom-5 duration-700 delay-700"
         >
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-green-500/10 border border-green-500/20 backdrop-blur-sm mb-6">
             <TrendingUp className="h-5 w-5 text-green-500" />
@@ -203,7 +199,7 @@ const CoreWebVitalsComparison = ({ "data-theme": dataTheme }: CoreWebVitalsCompa
           <p className="text-lg text-muted-foreground">
             Transforming user experience through optimized Core Web Vitals
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

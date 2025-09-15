@@ -1,0 +1,217 @@
+/* Layered Gradient Effect using pseudo-elements */
+/* This creates the same effect as multiple gradient divs but with a single parent-child structure */
+
+.layered-gradient {
+  position: relative;
+  overflow: hidden;
+}
+
+/* First gradient layer - using the parent's background */
+.layered-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--primary-t-5, oklch(0.7059 0.2157 180.8627 / 0.05)) 0%,
+    transparent 40%,
+    var(--secondary-t-5, oklch(0.1765 0.0235 240.9877 / 0.05)) 100%
+  );
+}
+
+/* Second gradient layer - using ::before pseudo-element */
+.layered-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--card-t-40, oklch(0.1373 0.0196 240.9877 / 0.4)) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Third gradient layer - using ::after pseudo-element */
+.layered-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--muted-t-5, oklch(0.1569 0.0216 240.9877 / 0.05)) 50%,
+    var(--primary-t-30, oklch(0.7059 0.2157 180.8627 / 0.3)) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Inner content container - ensures content appears above all gradient layers */
+.layered-gradient-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Variant classes for different gradient themes */
+
+/* Primary theme gradient */
+.layered-gradient--primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-t-5) 0%,
+    transparent 40%,
+    var(--secondary-t-5) 100%
+  );
+}
+
+.layered-gradient--primary::before {
+  background: linear-gradient(
+    to top,
+    var(--card-t-40) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+}
+
+.layered-gradient--primary::after {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--muted-t-5) 50%,
+    var(--primary-t-30) 100%
+  );
+}
+
+/* Secondary theme gradient */
+.layered-gradient--secondary {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-t-8) 0%,
+    transparent 40%,
+    var(--primary-t-8) 100%
+  );
+}
+
+.layered-gradient--secondary::before {
+  background: linear-gradient(
+    to top,
+    var(--card-t-50) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+}
+
+.layered-gradient--secondary::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--muted-t-5) 50%,
+    var(--secondary-t-5) 100%
+  );
+}
+
+/* Accent theme gradient */
+.layered-gradient--accent {
+  background: linear-gradient(
+    135deg,
+    var(--primary-t-10) 0%,
+    transparent 40%,
+    var(--muted-t-20) 100%
+  );
+}
+
+.layered-gradient--accent::before {
+  background: linear-gradient(
+    to top,
+    var(--card-t-50) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+}
+
+.layered-gradient--accent::after {
+  background: linear-gradient(
+    225deg,
+    transparent 0%,
+    var(--primary-t-5) 50%,
+    var(--secondary-t-10) 100%
+  );
+}
+
+/* Muted theme gradient */
+.layered-gradient--muted {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-t-20) 0%,
+    transparent 40%,
+    var(--primary-t-25) 100%
+  );
+}
+
+.layered-gradient--muted::before {
+  background: linear-gradient(
+    to top,
+    var(--card-t-70) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+}
+
+.layered-gradient--muted::after {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    var(--muted-t-12) 50%,
+    var(--primary-t-8) 100%
+  );
+}
+
+/* Glass variant - for glassmorphism effect */
+.layered-gradient--glass {
+  background: linear-gradient(
+    135deg,
+    var(--foreground-t-5) 0%,
+    transparent 50%,
+    var(--primary-t-10) 100%
+  );
+  backdrop-filter: blur(12px);
+}
+
+.layered-gradient--glass::before {
+  background: linear-gradient(
+    to bottom,
+    var(--card-t-20) 0%,
+    transparent 60%
+  );
+}
+
+.layered-gradient--glass::after {
+  background: linear-gradient(
+    135deg,
+    var(--primary-t-5) 0%,
+    transparent 70%,
+    var(--accent-t-10) 100%
+  );
+}
+
+/* Utility class for cards and components */
+.layered-gradient-card {
+  @apply rounded-2xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(
+    135deg,
+    var(--primary-t-5, oklch(0.7059 0.2157 180.8627 / 0.05)) 0%,
+    transparent 40%,
+    var(--secondary-t-5, oklch(0.1765 0.0235 240.9877 / 0.05)) 100%
+  );
+}
+
+/* Example usage:
+<div class="layered-gradient layered-gradient--primary">
+  <div class="layered-gradient-content">
+    <!-- Your content here -->
+  </div>
+</div>
+*/

@@ -1,5 +1,4 @@
 import { BookOpen, Clock, User, ArrowRight, Layers } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface GuideCard {
@@ -31,28 +30,6 @@ const GuidesCards = ({
   "data-theme": dataTheme
 }: GuidesCardsProps) => {
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  };
 
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -72,55 +49,35 @@ const GuidesCards = ({
     const SCALE_FACTOR = 0.04;
 
     return (
-      <motion.div
-        variants={cardVariants}
-        className="group relative"
-        style={{ minHeight: '420px' }}
-        whileHover="hover"
+      <div
+        className="group relative animate-in fade-in slide-in-from-bottom-8 duration-600"
+        style={{ minHeight: '420px', animationDelay: `${200 + index * 100}ms` }}
       >
         <a href={guide.href} className="block relative">
           {/* Background Cards for Stacked Effect */}
-          <motion.div 
-            className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-background to-foreground/5 ring-1 ring-foreground/10 shadow-lg"
+          <div
+            className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-background to-foreground/5 ring-1 ring-foreground/10 shadow-lg transition-all duration-300 group-hover:-top-2 group-hover:-right-2"
             style={{
               transform: `scale(${1 - SCALE_FACTOR * 2})`,
               transformOrigin: "top left",
               zIndex: 1,
-            }}
-            variants={{
-              hover: {
-                top: `-${CARD_OFFSET / 2}px`,
-                right: `-${CARD_OFFSET / 2}px`,
-              }
-            }}
-            initial={{
               top: `-${CARD_OFFSET * 2}px`,
               right: `-${CARD_OFFSET * 2}px`,
             }}
-            transition={{ duration: 0.3 }}
           />
-          <motion.div 
-            className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-background to-foreground/8 ring-1 ring-foreground/10 shadow-xl"
+          <div
+            className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-background to-foreground/8 ring-1 ring-foreground/10 shadow-xl transition-all duration-300 group-hover:-top-1 group-hover:-right-1"
             style={{
               transform: `scale(${1 - SCALE_FACTOR})`,
               transformOrigin: "top left",
               zIndex: 2,
-            }}
-            variants={{
-              hover: {
-                top: `-${CARD_OFFSET / 4}px`,
-                right: `-${CARD_OFFSET / 4}px`,
-              }
-            }}
-            initial={{
               top: `-${CARD_OFFSET}px`,
               right: `-${CARD_OFFSET}px`,
             }}
-            transition={{ duration: 0.3 }}
           />
           
           {/* Main Card with Full Content */}
-          <motion.div
+          <div
             className="relative rounded-2xl bg-card backdrop-blur-xl hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden"
             style={{ zIndex: 3 }}
           >
@@ -208,9 +165,9 @@ const GuidesCards = ({
             
             {/* Shimmer Effect */}
             <div className="absolute inset-0 -top-4 -bottom-4 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-700 ease-out transform -translate-x-full skew-x-12 pointer-events-none" />
-          </motion.div>
+          </div>
         </a>
-      </motion.div>
+      </div>
     );
   };
 
@@ -218,12 +175,7 @@ const GuidesCards = ({
     <section className={cn("py-24 bg-background", className)} data-theme={dataTheme}>
       <div className="container max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="text-center mb-16 animate-in fade-in slide-in-from-top-8 duration-600">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
           </h2>
@@ -232,19 +184,14 @@ const GuidesCards = ({
               {subtitle}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Guides Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {guides.map((guide, index) => (
             <GuideCard key={index} guide={guide} index={index} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

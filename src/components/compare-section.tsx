@@ -1,5 +1,4 @@
 import { Star, ArrowRight, Zap, Shield } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface RatingItem {
@@ -137,11 +136,9 @@ const CompareSection = ({
     const emptyStars = 5 - filledStars - (hasHalfStar ? 1 : 0);
 
     return (
-      <motion.div
-        initial={{ opacity: 0, x: index === 0 ? -40 : 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: index * 0.2 }}
-        className="group relative"
+      <div
+        className={cn("group relative animate-in fade-in duration-600", index === 0 ? "slide-in-from-left-10" : "slide-in-from-right-10")}
+        style={{animationDelay: `${index * 200}ms`}}
       >
         <div className={cn(
           "relative overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl cursor-pointer p-6",
@@ -220,7 +217,7 @@ const CompareSection = ({
           {/* Subtle border highlight */}
           <div className={cn("absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500", `via-${colors.primary.split('-')[1]}-${colors.primary.split('-')[2]}/50`)} />
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -228,12 +225,7 @@ const CompareSection = ({
     <section className={cn("py-24 bg-background", className)} data-theme={dataTheme}>
       <div className="container max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="text-center mb-16 animate-in fade-in slide-in-from-top-8 duration-600">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
           </h2>
@@ -242,7 +234,7 @@ const CompareSection = ({
               {subtitle}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Comparison Cards */}
         <div className="grid md:grid-cols-2 gap-8 items-stretch relative">
@@ -250,14 +242,9 @@ const CompareSection = ({
           
           {/* VS Divider */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden md:block">
-            <motion.div
-              className="flex items-center justify-center w-16 h-16 rounded-full bg-card/80 backdrop-blur-xl border border-foreground/20 shadow-2xl shadow-foreground/20"
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-card/80 backdrop-blur-xl border border-foreground/20 shadow-2xl shadow-foreground/20 animate-in zoom-in spin-in-180 duration-800 delay-400">
               <span className="text-xl font-bold text-foreground">VS</span>
-            </motion.div>
+            </div>
           </div>
           
           <CompareCard item={itemB} index={1} />

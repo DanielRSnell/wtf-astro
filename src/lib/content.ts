@@ -54,7 +54,7 @@ export interface AboutContent {
 }
 
 export function getHeroContent(): HeroContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/hero.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/hero.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   
@@ -93,6 +93,7 @@ export interface ServicesContent {
     featured: boolean;
     items: string[];
     deliverables: string[];
+    slug?: string;
   }>;
   customSolution: {
     title: string;
@@ -116,7 +117,7 @@ export interface TimelineContent {
 }
 
 export function getAboutContent(): AboutContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/about.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/about.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   
@@ -124,7 +125,7 @@ export function getAboutContent(): AboutContent {
 }
 
 export function getFeaturesContent(): FeaturesContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/features.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/features.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   
@@ -132,7 +133,7 @@ export function getFeaturesContent(): FeaturesContent {
 }
 
 export function getServicesContent(): ServicesContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/services.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/services.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   
@@ -163,7 +164,7 @@ export interface CtaContent {
 }
 
 export function getTimelineContent(): TimelineContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/timeline.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/timeline.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   
@@ -171,7 +172,7 @@ export function getTimelineContent(): TimelineContent {
 }
 
 export function getCtaContent(): CtaContent {
-  const filePath = path.join(process.cwd(), 'src/content/pages/home/cta.md');
+  const filePath = path.join(process.cwd(), 'src/content/pages/home/cta.mdx');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
   

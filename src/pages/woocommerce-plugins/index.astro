@@ -1,0 +1,40 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all WooCommerce plugin resources from the wordpress-resource collection
+const wooPluginResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'woocommerce-plugins';
+});
+
+// Get WooCommerce plugin-related blog posts
+const wooPluginPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('woocommerce') && tag.toLowerCase().includes('plugin') ||
+    tag.toLowerCase().includes('ecommerce') ||
+    wooPluginResources.some(plugin => 
+      post.data.title.toLowerCase().includes(plugin.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(plugin.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "Essential WooCommerce Plugins";
+const pageDescription = "Discover the best WooCommerce plugins to enhance your online store. From payments to shipping, marketing to analytics.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="woocommerce-plugins"
+    title="WooCommerce Plugins"
+    description="Essential plugins to power up your WooCommerce store"
+    resources={wooPluginResources}
+    relatedPosts={wooPluginPosts}
+    baseUrl="/woocommerce-plugins"
+  />
+</Layout>

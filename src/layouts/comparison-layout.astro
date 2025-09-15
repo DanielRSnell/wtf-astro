@@ -1,0 +1,807 @@
+---
+import Layout from './base.astro';
+import { CompareSection } from '../components/compare-section.tsx';
+import { DosDontsSection } from '../components/dos-donts-section.tsx';
+import { PerspectiveComparison } from '../components/perspective-comparison.tsx';
+import { DotPattern } from '../components/magicui/dot-pattern.tsx';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  resourceA: CollectionEntry<'wordpress-resource'>;
+  resourceB: CollectionEntry<'wordpress-resource'>;
+  categoryName?: string;
+}
+
+const { resourceA, resourceB, categoryName = "WordPress" } = Astro.props;
+
+// Generate review URLs based on categories
+const getReviewUrl = (resource: CollectionEntry<'wordpress-resource'>) => {
+  const categories = Array.isArray(resource.data.category) ? resource.data.category : [resource.data.category];
+  
+  // Check for specific category routes
+  if (categories.includes('wordpress-hosting')) {
+    return `/wordpress-hosting/${resource.data.slug}`;
+  }
+  if (categories.includes('woocommerce-hosting')) {
+    return `/woocommerce-hosting/${resource.data.slug}`;
+  }
+  if (categories.includes('themes') || categories.includes('woocommerce-themes')) {
+    return `/wordpress/${resource.data.slug}`;
+  }
+  if (categories.includes('woocommerce-plugins')) {
+    return `/wordpress/${resource.data.slug}`;
+  }
+  
+  // Default fallback
+  return `/wordpress/${resource.data.slug}`;
+};
+
+const reviewUrlA = getReviewUrl(resourceA);
+const reviewUrlB = getReviewUrl(resourceB);
+
+// Calculate overall ratings
+const overallRatingA = resourceA.data.ratings && resourceA.data.ratings.length > 0
+  ? resourceA.data.ratings.reduce((sum, r) => sum + r.value, 0) / resourceA.data.ratings.length
+  : 0;
+
+const overallRatingB = resourceB.data.ratings && resourceB.data.ratings.length > 0
+  ? resourceB.data.ratings.reduce((sum, r) => sum + r.value, 0) / resourceB.data.ratings.length
+  : 0;
+
+// Determine winner
+const winner = overallRatingA > overallRatingB ? resourceA : resourceB;
+const loser = overallRatingA > overallRatingB ? resourceB : resourceA;
+
+// Generate comparison insights
+const getComparisonInsights = () => {
+  const insights = {
+    performance: [],
+    features: [],
+    pricing: [],
+    support: []
+  };
+
+  // Performance comparison
+  const perfA = resourceA.data.ratings?.find(r => r.name.toLowerCase().includes('performance'))?.value || 0;
+  const perfB = resourceB.data.ratings?.find(r => r.name.toLowerCase().includes('performance'))?.value || 0;
+  
+  if (perfA > perfB) {
+    insights.performance.push(`${resourceA.data.title} delivers superior performance with optimized code`);
+  } else if (perfB > perfA) {
+    insights.performance.push(`${resourceB.data.title} excels in performance and speed optimization`);
+  }
+
+  // Pricing comparison
+  if (resourceA.data.pricing?.free && !resourceB.data.pricing?.free) {
+    insights.pricing.push(`${resourceA.data.title} offers a free version, making it more accessible`);
+  } else if (resourceB.data.pricing?.free && !resourceA.data.pricing?.free) {
+    insights.pricing.push(`${resourceB.data.title} provides a free tier for budget-conscious users`);
+  }
+
+  return insights;
+};
+
+const insights = getComparisonInsights();
+
+// Generate dos and don'ts based on category
+const generateDosAndDonts = () => {
+  const category = Array.isArray(resourceA.data.category) ? resourceA.data.category[0] : resourceA.data.category;
+  
+  const categoryGuidelines = {
+    themes: {
+      dos: [
+        {
+          text: "Compare performance metrics before choosing",
+          description: `Both ${resourceA.data.title} and ${resourceB.data.title} have different performance profiles. Test page speed with your content.`
+        },
+        {
+          text: "Consider your technical skill level",
+          description: "Choose based on your comfort with customization. Some themes require more technical knowledge than others."
+        },
+        {
+          text: "Check compatibility with your plugins",
+          description: "Ensure your essential plugins work well with your chosen theme before committing."
+        },
+        {
+          text: "Evaluate the support and documentation",
+          description: "Good documentation and responsive support can save hours of troubleshooting."
+        },
+        {
+          text: "Test mobile responsiveness thoroughly",
+          description: "With mobile traffic dominating, ensure your theme looks great on all device sizes."
+        }
+      ],
+      donts: [
+        {
+          text: "Don't choose based on demos alone",
+          description: "Demo sites often use optimized content and hosting. Your real-world performance may differ."
+        },
+        {
+          text: "Don't ignore update frequency",
+          description: "Themes that aren't regularly updated can become security risks and compatibility issues."
+        },
+        {
+          text: "Don't overlook license restrictions",
+          description: "Understand whether you're buying for one site or multiple, and what support is included."
+        },
+        {
+          text: "Don't forget about SEO structure",
+          description: "Poor HTML structure and schema markup can hurt your search rankings."
+        },
+        {
+          text: "Don't skip the free trial or demo",
+          description: "Most premium themes offer trials or money-back guarantees. Use them to test thoroughly."
+        }
+      ]
+    },
+    seo: {
+      dos: [
+        {
+          text: "Analyze your specific SEO needs",
+          description: "Different plugins excel at different aspects - technical SEO, content optimization, or local SEO."
+        },
+        {
+          text: "Consider integration with other tools",
+          description: "Check compatibility with your page builder, caching plugin, and other essential tools."
+        },
+        {
+          text: "Evaluate the learning curve",
+          description: "Some SEO plugins are beginner-friendly while others offer more power with complexity."
+        },
+        {
+          text: "Test performance impact",
+          description: "SEO plugins can affect site speed. Monitor Core Web Vitals after installation."
+        },
+        {
+          text: "Review schema markup capabilities",
+          description: "Rich snippets can significantly improve click-through rates from search results."
+        }
+      ],
+      donts: [
+        {
+          text: "Don't use multiple SEO plugins",
+          description: "Running multiple SEO plugins causes conflicts and duplicate functionality."
+        },
+        {
+          text: "Don't ignore plugin weight",
+          description: "Heavier plugins can slow down your admin area and frontend performance."
+        },
+        {
+          text: "Don't rely solely on plugin recommendations",
+          description: "SEO success requires quality content and good technical implementation, not just plugins."
+        },
+        {
+          text: "Don't skip configuration",
+          description: "Default settings are rarely optimal. Take time to configure properly for your site."
+        },
+        {
+          text: "Don't forget about updates",
+          description: "Search algorithms change frequently. Keep your SEO plugin updated for best results."
+        }
+      ]
+    }
+  };
+
+  return categoryGuidelines[category] || categoryGuidelines.themes;
+};
+
+const guidelines = generateDosAndDonts();
+---
+
+<Layout 
+  title={`${resourceA.data.title} vs ${resourceB.data.title} - ${categoryName} Comparison`} 
+  description={`Comprehensive comparison between ${resourceA.data.title} and ${resourceB.data.title}. Compare features, performance, pricing, and find out which is best for your needs.`}
+>
+  <article class="bg-background text-foreground" data-theme="bright-dark">
+    {/* Hero Section with Premium Background */}
+    <section class="relative pt-48 pb-24 bg-background overflow-hidden">
+      {/* Dot Pattern Background */}
+      <DotPattern
+        client:load
+        className="[mask-image:radial-gradient(1000px_circle_at_center,white,transparent)] absolute inset-0 h-full w-full"
+      />
+      
+      {/* Gradient Overlay */}
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+      
+      <div class="container max-w-7xl mx-auto px-6 relative z-10">
+        {/* Badge */}
+        <div class="flex justify-center mb-6">
+          <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2">
+            <div class="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <span class="text-sm font-medium text-primary">In-Depth Comparison</span>
+          </div>
+        </div>
+        
+        {/* Main Title */}
+        <div class="text-center mb-8">
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <span class="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent inline-block transform hover:scale-105 transition-transform duration-300">{resourceA.data.title}</span>
+            <span class="block md:inline-block text-muted-foreground mx-4 my-4 md:my-0 text-3xl md:text-5xl">vs</span>
+            <span class="bg-gradient-to-r from-primary/60 via-primary/80 to-primary bg-clip-text text-transparent inline-block transform hover:scale-105 transition-transform duration-300">{resourceB.data.title}</span>
+          </h1>
+          <p class="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            An in-depth comparison to help you choose the best {categoryName.toLowerCase()} solution for your needs
+          </p>
+        </div>
+        
+        {/* Quick Stats */}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
+          <div class="text-center p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-border/10">
+            <div class="text-2xl font-bold text-primary">{Math.abs(overallRatingA - overallRatingB).toFixed(1)}</div>
+            <div class="text-xs text-muted-foreground uppercase tracking-wider">Rating Difference</div>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-border/10">
+            <div class="text-2xl font-bold text-primary">{resourceA.data.ratings?.length || 0}</div>
+            <div class="text-xs text-muted-foreground uppercase tracking-wider">Criteria Compared</div>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-border/10">
+            <div class="text-2xl font-bold text-primary">
+              {resourceA.data.pricing?.free || resourceB.data.pricing?.free ? 'Yes' : 'No'}
+            </div>
+            <div class="text-xs text-muted-foreground uppercase tracking-wider">Free Options</div>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-border/10">
+            <div class="text-2xl font-bold text-primary">
+              {overallRatingA > overallRatingB ? resourceA.data.title : resourceB.data.title}
+            </div>
+            <div class="text-xs text-muted-foreground uppercase tracking-wider">Winner</div>
+          </div>
+        </div>
+        
+        {/* Visual Comparison Preview */}
+        <div class="relative max-w-5xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-6">
+            {/* Resource A Card */}
+            <div class={`relative overflow-hidden rounded-2xl bg-card/40 backdrop-blur-xl border ${overallRatingA > overallRatingB ? 'border-primary/30 shadow-lg shadow-primary/20' : 'border-border/20'} p-6 transform hover:scale-105 transition-all duration-300`}>
+              {overallRatingA > overallRatingB && (
+                <div class="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 rounded-bl-xl text-xs font-semibold">
+                  WINNER
+                </div>
+              )}
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-foreground">{resourceA.data.title}</h3>
+                {resourceA.data.badge && (
+                  <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
+                    {resourceA.data.badge}
+                  </span>
+                )}
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <svg 
+                      key={i}
+                      class={`w-4 h-4 ${i < Math.floor(overallRatingA) ? 'text-primary fill-current' : 'text-muted-foreground/30'}`}
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <span class="text-2xl font-bold text-primary">{overallRatingA.toFixed(1)}</span>
+              </div>
+              <p class="text-sm text-muted-foreground line-clamp-2">{resourceA.data.subtitle}</p>
+            </div>
+            
+            {/* Resource B Card */}
+            <div class={`relative overflow-hidden rounded-2xl bg-card/40 backdrop-blur-xl border ${overallRatingB > overallRatingA ? 'border-primary/30 shadow-lg shadow-primary/20' : 'border-border/20'} p-6 transform hover:scale-105 transition-all duration-300`}>
+              {overallRatingB > overallRatingA && (
+                <div class="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 rounded-bl-xl text-xs font-semibold">
+                  WINNER
+                </div>
+              )}
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-foreground">{resourceB.data.title}</h3>
+                {resourceB.data.badge && (
+                  <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
+                    {resourceB.data.badge}
+                  </span>
+                )}
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <svg 
+                      key={i}
+                      class={`w-4 h-4 ${i < Math.floor(overallRatingB) ? 'text-primary fill-current' : 'text-muted-foreground/30'}`}
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <span class="text-2xl font-bold text-primary">{overallRatingB.toFixed(1)}</span>
+              </div>
+              <p class="text-sm text-muted-foreground line-clamp-2">{resourceB.data.subtitle}</p>
+            </div>
+          </div>
+          
+          {/* VS Badge in Center */}
+          <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+            <div class="bg-background border-2 border-primary rounded-full w-16 h-16 flex items-center justify-center shadow-2xl">
+              <span class="text-primary font-bold text-lg">VS</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div class="flex justify-center mt-12">
+          <div class="animate-bounce">
+            <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container max-w-7xl mx-auto px-6 py-12">
+      {/* Hero Comparison Section */}
+      <div class="mb-16">
+        <CompareSection
+          client:load
+          data-theme="bright-dark"
+          title=""
+          subtitle=""
+          itemA={{
+            title: resourceA.data.title,
+            subtitle: resourceA.data.subtitle || "",
+            description: resourceA.data.description,
+            overallRating: overallRatingA,
+            accent: resourceA.data.slug,
+            badge: resourceA.data.badge || "",
+            href: resourceA.data.href || "#",
+            ratings: resourceA.data.ratings || []
+          }}
+          itemB={{
+            title: resourceB.data.title,
+            subtitle: resourceB.data.subtitle || "",
+            description: resourceB.data.description,
+            overallRating: overallRatingB,
+            accent: resourceB.data.slug,
+            badge: resourceB.data.badge || "",
+            href: resourceB.data.href || "#",
+            ratings: resourceB.data.ratings || []
+          }}
+        />
+      </div>
+
+      {/* Quick Verdict */}
+      <div class="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-8 mb-16">
+        <h2 class="text-2xl font-bold text-foreground mb-4">Quick Verdict</h2>
+        <div class="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground">
+          <p class="text-lg">
+            <strong class="text-primary">{winner.data.title}</strong> edges out {loser.data.title} with an overall rating of 
+            <strong class="text-primary"> {overallRatingA > overallRatingB ? overallRatingA.toFixed(1) : overallRatingB.toFixed(1)}/5</strong> compared to 
+            <strong class="text-muted-foreground"> {overallRatingA > overallRatingB ? overallRatingB.toFixed(1) : overallRatingA.toFixed(1)}/5</strong>.
+          </p>
+          
+          {/* Review Links */}
+          <div class="flex flex-wrap gap-4 mt-6 mb-6">
+            <a 
+              href={reviewUrlA} 
+              class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span class="text-sm font-medium">Read Full {resourceA.data.title} Review</span>
+            </a>
+            <a 
+              href={reviewUrlB} 
+              class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span class="text-sm font-medium">Read Full {resourceB.data.title} Review</span>
+            </a>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <h3 class="text-lg font-semibold text-primary mb-2">Choose {resourceA.data.title} if:</h3>
+              <ul class="space-y-2 text-muted-foreground">
+                {resourceA.data.pros?.slice(0, 3).map((pro) => (
+                  <li class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {pro}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-semibold text-primary mb-2">Choose {resourceB.data.title} if:</h3>
+              <ul class="space-y-2 text-muted-foreground">
+                {resourceB.data.pros?.slice(0, 3).map((pro) => (
+                  <li class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {pro}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Comparison Table */}
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-foreground mb-8">Feature Comparison</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl overflow-hidden">
+            <thead>
+              <tr class="bg-muted/20">
+                <th class="text-left p-4 font-semibold text-foreground">Feature</th>
+                <th class="text-center p-4 font-semibold text-primary">{resourceA.data.title}</th>
+                <th class="text-center p-4 font-semibold text-primary">{resourceB.data.title}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border/20">
+              {/* Pricing Row */}
+              <tr>
+                <td class="p-4 text-muted-foreground">Starting Price</td>
+                <td class="p-4 text-center font-medium">
+                  {resourceA.data.pricing?.free ? (
+                    <span class="text-green-500">Free Available</span>
+                  ) : (
+                    <span class="text-foreground">{resourceA.data.pricing?.startingPrice || 'Premium Only'}</span>
+                  )}
+                </td>
+                <td class="p-4 text-center font-medium">
+                  {resourceB.data.pricing?.free ? (
+                    <span class="text-green-500">Free Available</span>
+                  ) : (
+                    <span class="text-foreground">{resourceB.data.pricing?.startingPrice || 'Premium Only'}</span>
+                  )}
+                </td>
+              </tr>
+              
+              {/* Ratings Rows */}
+              {resourceA.data.ratings?.map((rating, index) => {
+                const ratingB = resourceB.data.ratings?.find(r => r.name === rating.name);
+                return (
+                  <tr key={index}>
+                    <td class="p-4 text-muted-foreground">{rating.name}</td>
+                    <td class="p-4 text-center">
+                      <div class="flex items-center justify-center gap-2">
+                        <span class={`font-medium ${rating.value >= (ratingB?.value || 0) ? 'text-primary' : 'text-muted-foreground'}`}>
+                          {rating.value.toFixed(1)}
+                        </span>
+                        {rating.value > (ratingB?.value || 0) && (
+                          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <div class="flex items-center justify-center gap-2">
+                        <span class={`font-medium ${(ratingB?.value || 0) >= rating.value ? 'text-primary' : 'text-muted-foreground'}`}>
+                          {ratingB?.value.toFixed(1) || 'N/A'}
+                        </span>
+                        {(ratingB?.value || 0) > rating.value && (
+                          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Dos and Don'ts Section */}
+      <DosDontsSection
+        client:load
+        data-theme="bright-dark"
+        title={`Choosing Between ${resourceA.data.title} and ${resourceB.data.title}`}
+        subtitle="Key considerations to help you make the right decision for your specific needs"
+        dos={guidelines.dos}
+        donts={guidelines.donts}
+      />
+
+      {/* Pricing Plans Comparison */}
+      {(resourceA.data.pricingPlans || resourceB.data.pricingPlans) && (
+        <div class="mb-16">
+          <h2 class="text-3xl font-bold text-foreground mb-8">Pricing Plans Comparison</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            {/* Resource A Pricing */}
+            {resourceA.data.pricingPlans && (
+              <div>
+                <h3 class="text-xl font-semibold text-primary mb-4">{resourceA.data.title} Plans</h3>
+                <div class="space-y-4">
+                  {resourceA.data.pricingPlans.map((plan) => (
+                    <div class={`p-6 rounded-xl bg-card/60 backdrop-blur-xl border ${plan.recommended ? 'border-primary/30' : 'border-border/20'}`}>
+                      {plan.recommended && (
+                        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-2">
+                          RECOMMENDED
+                        </span>
+                      )}
+                      <h4 class="font-semibold text-foreground mb-2">{plan.name}</h4>
+                      <div class="text-2xl font-bold text-primary mb-3">
+                        {plan.price}
+                        {plan.billingCycle && <span class="text-sm text-muted-foreground">/{plan.billingCycle}</span>}
+                      </div>
+                      <ul class="space-y-1">
+                        {plan.features.slice(0, 3).map((feature) => (
+                          <li class="text-sm text-muted-foreground">• {feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Resource B Pricing */}
+            {resourceB.data.pricingPlans && (
+              <div>
+                <h3 class="text-xl font-semibold text-primary mb-4">{resourceB.data.title} Plans</h3>
+                <div class="space-y-4">
+                  {resourceB.data.pricingPlans.map((plan) => (
+                    <div class={`p-6 rounded-xl bg-card/60 backdrop-blur-xl border ${plan.recommended ? 'border-primary/30' : 'border-border/20'}`}>
+                      {plan.recommended && (
+                        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-2">
+                          RECOMMENDED
+                        </span>
+                      )}
+                      <h4 class="font-semibold text-foreground mb-2">{plan.name}</h4>
+                      <div class="text-2xl font-bold text-primary mb-3">
+                        {plan.price}
+                        {plan.billingCycle && <span class="text-sm text-muted-foreground">/{plan.billingCycle}</span>}
+                      </div>
+                      <ul class="space-y-1">
+                        {plan.features.slice(0, 3).map((feature) => (
+                          <li class="text-sm text-muted-foreground">• {feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Final Recommendation Section */}
+      <div class="relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border border-border/30 p-12 mt-16">
+        {/* Background gradients */}
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+        <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+        
+        {/* Decorative elements */}
+        <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+        
+        <div class="relative z-10">
+          {/* Section Header */}
+          <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-6">
+              <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-sm font-medium text-primary">Our Expert Recommendation</span>
+            </div>
+            
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                The Verdict
+              </span>
+            </h2>
+            
+            <p class="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Based on our comprehensive analysis, <strong class="text-foreground">{winner.data.title}</strong> takes the lead with 
+              a {(overallRatingA > overallRatingB ? overallRatingA : overallRatingB).toFixed(1)}/5 rating, 
+              but both solutions excel in different areas.
+            </p>
+          </div>
+          
+          {/* Winner Highlight */}
+          <div class="relative max-w-2xl mx-auto mb-12">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent p-8 border border-primary/30">
+              <div class="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-bl-2xl">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span class="font-semibold">TOP CHOICE</span>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-2xl font-bold text-foreground">{winner.data.title}</h3>
+                <div class="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg 
+                      key={i}
+                      class={`w-5 h-5 ${i < Math.floor(overallRatingA > overallRatingB ? overallRatingA : overallRatingB) ? 'text-primary fill-current' : 'text-muted-foreground/30'}`}
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              
+              <p class="text-muted-foreground mb-6">{winner.data.description}</p>
+              
+              {/* Winner Strengths */}
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                {winner.data.pros?.slice(0, 4).map((pro) => (
+                  <div class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm text-foreground">{pro}</span>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Review Link CTA */}
+              <div class="flex justify-center">
+                <a 
+                  href={winner === resourceA ? reviewUrlA : reviewUrlB} 
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white hover:bg-primary/90 rounded-lg font-medium transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Read Full {winner.data.title} Review
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {/* Both Review Links Section */}
+          <div class="grid md:grid-cols-2 gap-6 mb-12">
+            <a 
+              href={reviewUrlA}
+              class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-300 p-6"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div class="relative z-10">
+                <h3 class="text-lg font-semibold text-foreground mb-2">{resourceA.data.title} Review</h3>
+                <p class="text-sm text-muted-foreground mb-4">{resourceA.data.description}</p>
+                <div class="flex items-center gap-2 text-primary">
+                  <span class="text-sm font-medium">Read In-Depth Review</span>
+                  <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+            
+            <a 
+              href={reviewUrlB}
+              class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-300 p-6"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div class="relative z-10">
+                <h3 class="text-lg font-semibold text-foreground mb-2">{resourceB.data.title} Review</h3>
+                <p class="text-sm text-muted-foreground mb-4">{resourceB.data.description}</p>
+                <div class="flex items-center gap-2 text-primary">
+                  <span class="text-sm font-medium">Read In-Depth Review</span>
+                  <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+          
+          {/* Decision Helper */}
+          <div class="grid md:grid-cols-2 gap-6 mb-12">
+            <div class="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border/20 p-6">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
+              <div class="relative z-10">
+                <h4 class="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <span class="text-primary font-bold">A</span>
+                  </div>
+                  Choose {resourceA.data.title} if you:
+                </h4>
+                <ul class="space-y-2">
+                  {resourceA.data.pros?.slice(0, 3).map((pro) => (
+                    <li class="flex items-start gap-2">
+                      <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm text-muted-foreground">{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            
+            <div class="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border/20 p-6">
+              <div class="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent" />
+              <div class="relative z-10">
+                <h4 class="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <span class="text-primary font-bold">B</span>
+                  </div>
+                  Choose {resourceB.data.title} if you:
+                </h4>
+                <ul class="space-y-2">
+                  {resourceB.data.pros?.slice(0, 3).map((pro) => (
+                    <li class="flex items-start gap-2">
+                      <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm text-muted-foreground">{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          {/* CTA Buttons */}
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href={`/${Array.isArray(winner.data.category) ? `wordpress-${winner.data.category[0]}` : `wordpress-${winner.data.category}`}/${winner.data.slug}`}
+              class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Get {winner.data.title}
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            
+            <a 
+              href={`/${Array.isArray(loser.data.category) ? `wordpress-${loser.data.category[0]}` : `wordpress-${loser.data.category}`}/${loser.data.slug}`}
+              class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-card/80 backdrop-blur-sm border border-border/30 rounded-xl font-semibold hover:bg-muted hover:border-primary/20 transition-all duration-300 hover:scale-105"
+            >
+              Learn More About {loser.data.title}
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+          
+          {/* Trust Indicators */}
+          <div class="flex items-center justify-center gap-8 mt-12 pt-8 border-t border-border/20">
+            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Unbiased Analysis
+            </div>
+            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+              </svg>
+              Expert Reviews
+            </div>
+            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+              </svg>
+              Updated {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </div>
+          </div>
+        </div>
+        
+        {/* Subtle border highlight */}
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      </div>
+    </div>
+  </article>
+</Layout>

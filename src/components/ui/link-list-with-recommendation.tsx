@@ -1,11 +1,11 @@
 import { ExternalLink, Star, ArrowRight, Medal, Award } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface LinkItem {
   title: string;
   href?: string;
   description?: string;
+  badge?: string;
 }
 
 interface RatingItem {
@@ -106,42 +106,6 @@ const LinkListWithRecommendation = ({
     );
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const recommendationVariants = {
-    hidden: { opacity: 0, x: 20, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut",
-        delay: 0.3
-      }
-    }
-  };
 
   return (
     <div className={cn("w-full", className)} data-theme={dataTheme}>
@@ -163,11 +127,7 @@ const LinkListWithRecommendation = ({
           layout === "standalone" ? "lg:grid-cols-2" : "grid-cols-1"
         )}>
           {/* Left side - Link List */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <div>
             {/* Header */}
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -187,11 +147,10 @@ const LinkListWithRecommendation = ({
             </div>
 
             {/* Links */}
-            <motion.div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               {links.map((link, index) => (
-                <motion.div
+                <div
                   key={index}
-                  variants={itemVariants}
                   className="group"
                 >
                   <a
@@ -200,9 +159,17 @@ const LinkListWithRecommendation = ({
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-primary/60 flex-shrink-0" />
-                      <div>
-                        <div className="font-medium text-foreground group-hover:text-primary transition-colors duration-200">
-                          {link.title}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-foreground group-hover:text-primary transition-colors duration-200">
+                            {link.title}
+                          </span>
+                          {link.badge && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5">
+                              <Star className="h-2.5 w-2.5 text-primary fill-current" />
+                              <span className="text-xs font-semibold text-primary">{link.badge}</span>
+                            </span>
+                          )}
                         </div>
                         {link.description && (
                           <div className="text-xs text-muted-foreground mt-1">
@@ -215,18 +182,13 @@ const LinkListWithRecommendation = ({
                       <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors duration-200 flex-shrink-0" />
                     )}
                   </a>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Right side - Recommendations */}
-          <motion.div
-            variants={recommendationVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative"
-          >
+          <div className="relative">
             <div className={cn(
               "space-y-6",
               layout === "standalone" ? "sticky top-8" : ""
@@ -395,7 +357,7 @@ const LinkListWithRecommendation = ({
                 </div>
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

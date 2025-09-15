@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all WooCommerce theme resources from the wordpress-resource collection
+const wooThemeResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'woocommerce-themes';
+});
+
+// Get WooCommerce theme-related blog posts
+const wooThemePosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('woocommerce') && tag.toLowerCase().includes('theme') ||
+    tag.toLowerCase().includes('ecommerce') ||
+    tag.toLowerCase().includes('storefront') ||
+    wooThemeResources.some(theme => 
+      post.data.title.toLowerCase().includes(theme.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(theme.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "Best WooCommerce Themes";
+const pageDescription = "Find the perfect WooCommerce theme for your online store. Compare features, performance, and design to boost conversions.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="woocommerce-themes"
+    title="WooCommerce Themes"
+    description="Professional themes designed for eCommerce success"
+    resources={wooThemeResources}
+    relatedPosts={wooThemePosts}
+    baseUrl="/woocommerce-themes"
+  />
+</Layout>

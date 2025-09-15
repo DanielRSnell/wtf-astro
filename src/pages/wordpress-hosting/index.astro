@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all hosting resources from the wordpress-resource collection
+const hostingResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'hosting';
+});
+
+// Get hosting-related blog posts
+const hostingPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('hosting') || 
+    tag.toLowerCase().includes('server') ||
+    tag.toLowerCase().includes('performance') ||
+    hostingResources.some(hosting => 
+      post.data.title.toLowerCase().includes(hosting.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(hosting.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Hosting Reviews & Comparisons";
+const pageDescription = "Find the best WordPress hosting for your needs. Compare performance, features, pricing, and support from top hosting providers.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="hosting"
+    title="WordPress Hosting"
+    description="Fast, reliable hosting solutions for WordPress"
+    resources={hostingResources}
+    relatedPosts={hostingPosts}
+    baseUrl="/wordpress-hosting"
+  />
+</Layout>

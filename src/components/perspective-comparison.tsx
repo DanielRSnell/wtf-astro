@@ -1,5 +1,4 @@
 import { User, Users, Quote, MessageCircle, Heart, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface PerspectivePoint {
@@ -39,28 +38,6 @@ const PerspectiveComparison = ({
   "data-theme": dataTheme
 }: PerspectiveComparisonProps) => {
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
 
   const PerspectivePoint = ({ point, type }: { point: PerspectivePoint; type: "personal" | "community" }) => {
     const isPersonal = type === "personal";
@@ -70,10 +47,9 @@ const PerspectiveComparison = ({
     const shadowColor = isPersonal ? "hover:shadow-blue-500/10" : "hover:shadow-purple-500/10";
 
     return (
-      <motion.div
-        variants={itemVariants}
+      <div
         className={cn(
-          "group relative p-4 rounded-xl bg-gradient-to-r border transition-all duration-300 hover:shadow-lg",
+          "group relative p-4 rounded-xl bg-gradient-to-r border transition-all duration-300 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500",
           bgColor,
           borderColor,
           shadowColor,
@@ -114,7 +90,7 @@ const PerspectiveComparison = ({
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -122,11 +98,8 @@ const PerspectiveComparison = ({
     <section className={cn("py-24 bg-background", className)} data-theme={dataTheme}>
       <div className="container max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
+          className="text-center mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
@@ -140,16 +113,13 @@ const PerspectiveComparison = ({
             <div className="h-2 w-2 rounded-full bg-primary" />
             <span className="text-sm font-medium text-primary">Analyzing: {topic}</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Perspective Grid */}
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Personal Perspective */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative"
+          <div
+            className="relative animate-in fade-in slide-in-from-left-8 duration-700 delay-200"
           >
             {/* Personal Header */}
             <div className="flex items-start gap-4 mb-8">
@@ -177,14 +147,13 @@ const PerspectiveComparison = ({
 
             {/* Personal Intro */}
             {personalPerspective.intro && (
-              <motion.div
-                variants={itemVariants}
-                className="mb-6 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10"
+              <div
+                className="mb-6 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300"
               >
                 <p className="text-sm text-foreground leading-relaxed italic">
                   "{personalPerspective.intro}"
                 </p>
-              </motion.div>
+              </div>
             )}
 
             {/* Personal Points */}
@@ -197,14 +166,11 @@ const PerspectiveComparison = ({
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Community Perspective */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative"
+          <div
+            className="relative animate-in fade-in slide-in-from-right-8 duration-700 delay-200"
           >
             {/* Community Header */}
             <div className="flex items-start gap-4 mb-8">
@@ -229,9 +195,8 @@ const PerspectiveComparison = ({
 
             {/* Community Intro */}
             {communityPerspective.intro && (
-              <motion.div
-                variants={itemVariants}
-                className="mb-6 p-4 rounded-xl bg-purple-500/5 border border-purple-500/10"
+              <div
+                className="mb-6 p-4 rounded-xl bg-purple-500/5 border border-purple-500/10 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300"
               >
                 <div className="flex items-start gap-3">
                   <MessageCircle className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
@@ -239,7 +204,7 @@ const PerspectiveComparison = ({
                     {communityPerspective.intro}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Community Points */}
@@ -252,15 +217,12 @@ const PerspectiveComparison = ({
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom Insights */}
-        <motion.div
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+        <div
+          className="mt-16 text-center animate-in fade-in slide-in-from-bottom-5 duration-700 delay-700"
         >
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border border-primary/20">
             <Heart className="h-4 w-4 text-primary" />
@@ -268,7 +230,7 @@ const PerspectiveComparison = ({
               Both perspectives provide valuable insights for informed decisions
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

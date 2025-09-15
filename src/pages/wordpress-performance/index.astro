@@ -1,0 +1,42 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all performance resources from the wordpress-resource collection
+const performanceResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'performance';
+});
+
+// Get performance-related blog posts
+const performancePosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('performance') || 
+    tag.toLowerCase().includes('speed') ||
+    tag.toLowerCase().includes('optimization') ||
+    tag.toLowerCase().includes('cache') ||
+    performanceResources.some(perf => 
+      post.data.title.toLowerCase().includes(perf.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(perf.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Performance Optimization Tools";
+const pageDescription = "Speed up your WordPress site with the best performance optimization tools, caching plugins, and speed optimization techniques.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="performance"
+    title="WordPress Performance"
+    description="Tools and techniques to make WordPress lightning fast"
+    resources={performanceResources}
+    relatedPosts={performancePosts}
+    baseUrl="/wordpress-performance"
+  />
+</Layout>

@@ -1,0 +1,38 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all review resources from the wordpress-review collection
+const reviewResources = await getCollection('wordpress-review');
+
+// Get review-related blog posts
+const reviewPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('review') || 
+    tag.toLowerCase().includes('comparison') ||
+    reviewResources.some(review => 
+      post.data.title.toLowerCase().includes(review.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(review.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Product Reviews & Comparisons";
+const pageDescription = "In-depth reviews and comparisons of WordPress themes, plugins, and services. Make informed decisions with expert analysis.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="reviews"
+    title="WordPress Reviews"
+    description="Expert reviews and comparisons of WordPress products"
+    resources={reviewResources}
+    relatedPosts={reviewPosts}
+    baseUrl="/wordpress-reviews"
+  />
+</Layout>

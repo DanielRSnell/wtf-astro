@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.5",
     "@astrojs/netlify": "^6.5.10",
     "@astrojs/react": "^4.3.0",
     "@astrojs/sitemap": "^3.5.1",
@@ -35,7 +36,6 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.542.0",
     "magicui-cli": "^0.1.6",
-    "motion": "^12.23.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwind-merge": "^3.3.1",

@@ -1,0 +1,262 @@
+---
+export const prerender = true;
+import Layout from '../../layouts/base.astro';
+import { DotPattern } from '../../components/magicui/dot-pattern.tsx';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// Get all resources
+const resources = await getCollection('wordpress-resource');
+
+// Group resources by category
+const resourcesByCategory = new Map<string, CollectionEntry<'wordpress-resource'>[]>();
+
+resources.forEach(resource => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  
+  categories.forEach(category => {
+    if (!resourcesByCategory.has(category)) {
+      resourcesByCategory.set(category, []);
+    }
+    resourcesByCategory.get(category)!.push(resource);
+  });
+});
+
+// Generate comparison data
+const categoryNames: Record<string, string> = {
+  themes: 'WordPress Themes',
+  hosting: 'WordPress Hosting',
+  security: 'WordPress Security',
+  performance: 'WordPress Performance',
+  seo: 'WordPress SEO',
+  'woocommerce-themes': 'WooCommerce Themes',
+  'woocommerce-plugins': 'WooCommerce Plugins',
+  forms: 'WordPress Forms',
+  automation: 'WordPress Automation',
+  admin: 'WordPress Admin'
+};
+
+const comparisons: Array<{
+  category: string;
+  categoryName: string;
+  items: Array<{
+    slug: string;
+    titleA: string;
+    titleB: string;
+    ratingA: number;
+    ratingB: number;
+  }>;
+}> = [];
+
+resourcesByCategory.forEach((categoryResources, category) => {
+  if (categoryResources.length >= 2) {
+    const categoryComparisons: Array<{
+      slug: string;
+      titleA: string;
+      titleB: string;
+      ratingA: number;
+      ratingB: number;
+    }> = [];
+    
+    // Sort resources by rating for better display
+    const sortedResources = categoryResources.sort((a, b) => {
+      const ratingA = a.data.ratings?.reduce((sum, r) => sum + r.value, 0) / (a.data.ratings?.length || 1) || 0;
+      const ratingB = b.data.ratings?.reduce((sum, r) => sum + r.value, 0) / (b.data.ratings?.length || 1) || 0;
+      return ratingB - ratingA;
+    });
+    
+    // Generate top comparisons (limit to top 6 to avoid too many)
+    const topResources = sortedResources.slice(0, 4);
+    for (let i = 0; i < topResources.length; i++) {
+      for (let j = i + 1; j < topResources.length; j++) {
+        const resourceA = topResources[i];
+        const resourceB = topResources[j];
+        
+        const slugs = [resourceA.data.slug, resourceB.data.slug].sort();
+        const comparisonSlug = `${slugs[0]}-vs-${slugs[1]}`;
+        
+        const ratingA = resourceA.data.ratings?.reduce((sum, r) => sum + r.value, 0) / (resourceA.data.ratings?.length || 1) || 0;
+        const ratingB = resourceB.data.ratings?.reduce((sum, r) => sum + r.value, 0) / (resourceB.data.ratings?.length || 1) || 0;
+        
+        categoryComparisons.push({
+          slug: comparisonSlug,
+          titleA: slugs[0] === resourceA.data.slug ? resourceA.data.title : resourceB.data.title,
+          titleB: slugs[0] === resourceA.data.slug ? resourceB.data.title : resourceA.data.title,
+          ratingA: slugs[0] === resourceA.data.slug ? ratingA : ratingB,
+          ratingB: slugs[0] === resourceA.data.slug ? ratingB : ratingA
+        });
+      }
+    }
+    
+    if (categoryComparisons.length > 0) {
+      comparisons.push({
+        category,
+        categoryName: categoryNames[category] || 'WordPress',
+        items: categoryComparisons
+      });
+    }
+  }
+});
+---
+
+<Layout title="WordPress Comparisons" description="Compare WordPress themes, plugins, and tools side by side to make the best choice for your needs.">
+  <div class="bg-background text-foreground" data-theme="bright-dark">
+    {/* Hero Section with Premium Background */}
+    <section class="relative pt-48 pb-20 bg-background overflow-hidden">
+      {/* Dot Pattern Background */}
+      <DotPattern
+        client:load
+        className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] absolute inset-0 h-full w-full"
+      />
+      
+      {/* Gradient Overlay */}
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+      
+      <div class="container max-w-7xl mx-auto px-6 relative z-10">
+        <header class="text-center">
+          <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/60 to-foreground bg-clip-text text-transparent">
+            WordPress Comparisons
+          </h1>
+          <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Side-by-side comparisons of the best WordPress themes, plugins, and tools. 
+            Make informed decisions with detailed feature breakdowns and performance metrics.
+          </p>
+        </header>
+      </div>
+    </section>
+
+    <div class="container max-w-7xl mx-auto px-6 py-12">
+
+      {/* Comparisons by Category */}
+      <div class="space-y-16">
+        {comparisons.map((categoryGroup) => (
+          <section>
+            <h2 class="text-2xl font-bold text-foreground mb-8">{categoryGroup.categoryName} Comparisons</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categoryGroup.items.map((comparison) => (
+                <a 
+                  href={`/compare/${comparison.slug}`}
+                  class="group relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:scale-[1.02]"
+                >
+                  {/* Multi-layer gradient background for depth */}
+                  <div class="absolute inset-0">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-muted/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                  
+                  <div class="relative z-10 p-8">
+                    {/* Enhanced VS Badge with glow */}
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div class="relative">
+                        <div class="absolute inset-0 bg-primary/20 blur-xl animate-pulse" />
+                        <div class="relative bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-sm text-primary text-xs font-bold px-3 py-1.5 rounded-full border border-primary/30 shadow-lg shadow-primary/10">
+                          VS
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Enhanced Titles and Ratings with better hierarchy */}
+                    <div class="grid grid-cols-2 gap-8">
+                      <div class="text-center space-y-3">
+                        <div class="h-12 flex items-center justify-center">
+                          <h3 class="font-bold text-foreground group-hover:text-primary transition-colors duration-300 text-sm line-clamp-2">
+                            {comparison.titleA}
+                          </h3>
+                        </div>
+                        <div class="flex flex-col items-center gap-1">
+                          <div class="flex items-center gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <svg 
+                                class={`w-4 h-4 ${i < Math.floor(comparison.ratingA) ? 'text-yellow-500 fill-current' : 'text-muted-foreground/20 fill-current'}`} 
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span class="text-xs font-semibold text-muted-foreground">
+                            {comparison.ratingA.toFixed(1)} / 5.0
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div class="text-center space-y-3">
+                        <div class="h-12 flex items-center justify-center">
+                          <h3 class="font-bold text-foreground group-hover:text-primary transition-colors duration-300 text-sm line-clamp-2">
+                            {comparison.titleB}
+                          </h3>
+                        </div>
+                        <div class="flex flex-col items-center gap-1">
+                          <div class="flex items-center gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <svg 
+                                class={`w-4 h-4 ${i < Math.floor(comparison.ratingB) ? 'text-yellow-500 fill-current' : 'text-muted-foreground/20 fill-current'}`} 
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span class="text-xs font-semibold text-muted-foreground">
+                            {comparison.ratingB.toFixed(1)} / 5.0
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Enhanced Compare Button with gradient */}
+                    <div class="mt-8 text-center">
+                      <span class="inline-flex items-center gap-2 px-6 py-2 text-sm font-semibold text-primary bg-primary/10 rounded-full group-hover:bg-primary/20 transition-all duration-300">
+                        <span>View Comparison</span>
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced hover border highlight */}
+                  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* Popular Comparisons Section */}
+      <section class="mt-16 p-8 bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl">
+        <h2 class="text-2xl font-bold text-foreground mb-6">Popular Comparisons</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <a href="/compare/blocksy-vs-generatepress" class="flex items-center justify-between p-4 rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+            <span class="font-medium text-foreground">Blocksy vs GeneratePress</span>
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a href="/compare/astra-vs-kadence" class="flex items-center justify-between p-4 rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+            <span class="font-medium text-foreground">Astra vs Kadence</span>
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a href="/compare/rankmath-vs-yoast-seo" class="flex items-center justify-between p-4 rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+            <span class="font-medium text-foreground">RankMath vs Yoast SEO</span>
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a href="/compare/seopress-vs-yoast-seo" class="flex items-center justify-between p-4 rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+            <span class="font-medium text-foreground">SEOPress vs Yoast SEO</span>
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>

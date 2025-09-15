@@ -3,6 +3,7 @@ import { Search, Filter, Star, Users, DollarSign, ChevronRight } from 'lucide-re
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DotPattern } from '@/components/magicui/dot-pattern';
 import type { CollectionEntry } from 'astro:content';
 
 interface ResourceDirectoryProps {
@@ -77,18 +78,39 @@ const ResourceDirectory = ({
   };
 
   return (
-    <section className="bg-background py-32 text-foreground" data-theme={dataTheme}>
-      <div className="container">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+    <div className="bg-background text-foreground" data-theme={dataTheme}>
+      {/* Hero Section with Dot Pattern */}
+      <section className="relative py-32">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0">
+          {/* Dot pattern background */}
+          <DotPattern
+            glow={true}
+            className="text-primary opacity-80"
+            width={30}
+            height={30}
+            cx={1}
+            cy={1}
+            cr={2}
+          />
+          
+          {/* Gradient overlay for smooth blend */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background pointer-events-none" />
+          
+          {/* Original blur elements matching Hero24 */}
+          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+        
+        <div className="container relative">
+          {/* Header */}
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/60 to-foreground bg-clip-text text-transparent">
               {title}
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            {description}
-          </p>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              {description}
+            </p>
           
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
@@ -128,17 +150,22 @@ const ResourceDirectory = ({
             </div>
           </div>
         </div>
+      </div>
+      </section>
 
-        {/* Results Count */}
-        <div className="mb-8">
-          <p className="text-muted-foreground">
-            Showing {filteredResources.length} of {resources.length} {category}
-            {searchTerm && ` for "${searchTerm}"`}
-          </p>
-        </div>
+      {/* Main Content Section */}
+      <section className="py-16">
+        <div className="container">
+          {/* Results Count */}
+          <div className="mb-8">
+            <p className="text-muted-foreground">
+              Showing {filteredResources.length} of {resources.length} {category}
+              {searchTerm && ` for "${searchTerm}"`}
+            </p>
+          </div>
 
-        {/* Resource Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-16">
+          {/* Resource Grid */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-16">
           {filteredResources.map((resource) => (
             <a
               key={resource.data.slug}
@@ -251,8 +278,9 @@ const ResourceDirectory = ({
             </div>
           </div>
         )}
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 };
 

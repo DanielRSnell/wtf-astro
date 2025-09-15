@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import netlify from '@astrojs/netlify';
 import sitemap from '@astrojs/sitemap';
+import mdx from '@astrojs/mdx';
 
 import playformInline from '@playform/inline';
 
@@ -18,6 +19,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   integrations: [
+    mdx(),
     react(), 
     sitemap()
   ]

@@ -1,0 +1,96 @@
+---
+export const prerender = true;
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ComparisonLayout from '../../layouts/comparison-layout.astro';
+
+export async function getStaticPaths() {
+  const resources = await getCollection('wordpress-resource');
+  
+  // Group resources by category
+  const resourcesByCategory = new Map<string, CollectionEntry<'wordpress-resource'>[]>();
+  
+  resources.forEach(resource => {
+    const categories = Array.isArray(resource.data.category) 
+      ? resource.data.category 
+      : [resource.data.category];
+    
+    categories.forEach(category => {
+      if (!resourcesByCategory.has(category)) {
+        resourcesByCategory.set(category, []);
+      }
+      resourcesByCategory.get(category)!.push(resource);
+    });
+  });
+  
+  // Generate all possible comparisons within each category
+  const comparisons: Array<{
+    params: { slug: string };
+    props: {
+      resourceA: CollectionEntry<'wordpress-resource'>;
+      resourceB: CollectionEntry<'wordpress-resource'>;
+      categoryName: string;
+    };
+  }> = [];
+  
+  const categoryNames: Record<string, string> = {
+    themes: 'WordPress Themes',
+    hosting: 'WordPress Hosting',
+    'wordpress-hosting': 'WordPress Hosting',
+    'woocommerce-hosting': 'WooCommerce Hosting',
+    security: 'WordPress Security',
+    performance: 'WordPress Performance',
+    seo: 'WordPress SEO',
+    'woocommerce-themes': 'WooCommerce Themes',
+    'woocommerce-plugins': 'WooCommerce Plugins',
+    forms: 'WordPress Forms',
+    automation: 'WordPress Automation',
+    admin: 'WordPress Admin'
+  };
+  
+  resourcesByCategory.forEach((categoryResources, category) => {
+    // Only generate comparisons if there are at least 2 resources in the category
+    if (categoryResources.length >= 2) {
+      for (let i = 0; i < categoryResources.length; i++) {
+        for (let j = i + 1; j < categoryResources.length; j++) {
+          const resourceA = categoryResources[i];
+          const resourceB = categoryResources[j];
+          
+          // Create comparison slug (alphabetically ordered for consistency)
+          const slugs = [resourceA.data.slug, resourceB.data.slug].sort();
+          const comparisonSlug = `${slugs[0]}-vs-${slugs[1]}`;
+          
+          comparisons.push({
+            params: { slug: comparisonSlug },
+            props: {
+              resourceA: slugs[0] === resourceA.data.slug ? resourceA : resourceB,
+              resourceB: slugs[0] === resourceA.data.slug ? resourceB : resourceA,
+              categoryName: categoryNames[category] || 'WordPress'
+            }
+          });
+        }
+      }
+    }
+  });
+  
+  return comparisons;
+}
+
+type Props = {
+  resourceA: CollectionEntry<'wordpress-resource'>;
+  resourceB: CollectionEntry<'wordpress-resource'>;
+  categoryName: string;
+};
+
+const { resourceA, resourceB, categoryName } = Astro.props;
+
+// Safety check
+if (!resourceA || !resourceB) {
+  return Astro.redirect('/404');
+}
+---
+
+<ComparisonLayout 
+  resourceA={resourceA} 
+  resourceB={resourceB} 
+  categoryName={categoryName} 
+/>

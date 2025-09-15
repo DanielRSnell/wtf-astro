@@ -1,0 +1,29 @@
+---
+// This is a catch-all route for comparison redirects
+// It handles reversed comparison URLs and redirects to the correct alphabetical order
+
+const slug = Astro.params.slug;
+
+if (!slug || !slug.includes('-vs-')) {
+  return Astro.redirect('/compare', 301);
+}
+
+// Parse the comparison slug
+const [first, second] = slug.split('-vs-');
+
+if (!first || !second) {
+  return Astro.redirect('/compare', 301);
+}
+
+// Check if they're in the wrong order (not alphabetical)
+const sortedSlugs = [first, second].sort();
+const correctSlug = `${sortedSlugs[0]}-vs-${sortedSlugs[1]}`;
+
+// If the slug is already correct, this means the comparison doesn't exist
+if (slug === correctSlug) {
+  return Astro.redirect('/compare', 301);
+}
+
+// Redirect to the correct alphabetical order
+return Astro.redirect(`/compare/${correctSlug}`, 301);
+---

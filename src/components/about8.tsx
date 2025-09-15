@@ -6,6 +6,8 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import type { AboutContent } from "@/lib/content";
+import danielImage from "@/assets/daniel.jpg";
+import { BeforeAfterCards } from "@/components/ui/before-after-cards";
 
 interface About8Props {
   "data-theme"?: string;
@@ -111,34 +113,149 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
         </div>
       </section>
 
-      {/* Image Grid Section */}
-      <section className="my-5 pb-10 md:my-8 md:pb-12 lg:my-12 lg:pb-15">
-        <Carousel
-          opts={{
-            align: "start",
-          }}
-        >
-          <CarouselContent className="-ml-4">
-            {content.carousel.items.map((item, index) => {
-              const gradients = getThemeGradients(item.theme);
-              return (
-                <CarouselItem key={index} className="basis-[80%] lg:basis-1/3 xl:basis-[40%]">
-                  <div className="group relative h-[330px] lg:h-[440px] xl:h-[600px] overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
-                    {/* High-fidelity gradient background */}
-                    <div className="absolute inset-0">
-                      {gradients.map((gradient, gradIndex) => (
-                        <div key={gradIndex} className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
-                      ))}
-                    </div>
-                    
-                    {/* Subtle border highlight */}
-                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Performance Showcase Section */}
+      <section className="container max-w-5xl py-10 md:py-12 lg:py-15">
+        <BeforeAfterCards
+          title="Real Client Transformations"
+          subtitle="Actual performance improvements from recent WooCommerce optimization projects"
+          beforeTitle="Before Optimization"
+          afterTitle="After WooThatsFast"
+          beforeAccent="red"
+          afterAccent="green"
+          data-theme={dataTheme}
+          beforeContent={
+            <div className="space-y-6">
+              {/* Core Web Vitals Before */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Core Web Vitals</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Performance Score</span>
+                    <span className="text-2xl font-bold text-red-500">42/100</span>
                   </div>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">LCP (Largest Contentful Paint)</span>
+                      <span className="font-medium text-red-500">4.8s</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">FID (First Input Delay)</span>
+                      <span className="font-medium text-red-500">250ms</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">CLS (Cumulative Layout Shift)</span>
+                      <span className="font-medium text-red-500">0.35</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Load Times Before */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Page Load Metrics</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Full Page Load</span>
+                    <span className="font-medium text-red-500">7.2s</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Time to First Byte</span>
+                    <span className="font-medium text-red-500">1.8s</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">JavaScript Execution</span>
+                    <span className="font-medium text-red-500">3.4s</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Impact Before */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Business Metrics</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Bounce Rate</span>
+                    <span className="font-medium text-red-500">68%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Cart Abandonment</span>
+                    <span className="font-medium text-red-500">78%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Mobile Conversion</span>
+                    <span className="font-medium text-red-500">0.8%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          afterContent={
+            <div className="space-y-6">
+              {/* Core Web Vitals After */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Core Web Vitals</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Performance Score</span>
+                    <span className="text-2xl font-bold text-green-500">98/100</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">LCP (Largest Contentful Paint)</span>
+                      <span className="font-medium text-green-500">0.8s</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">FID (First Input Delay)</span>
+                      <span className="font-medium text-green-500">12ms</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">CLS (Cumulative Layout Shift)</span>
+                      <span className="font-medium text-green-500">0.02</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Load Times After */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Page Load Metrics</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Full Page Load</span>
+                    <span className="font-medium text-green-500">0.9s</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Time to First Byte</span>
+                    <span className="font-medium text-green-500">45ms</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">JavaScript Execution</span>
+                    <span className="font-medium text-green-500">280ms</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Impact After */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-3">Business Metrics</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Bounce Rate</span>
+                    <span className="font-medium text-green-500">32%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Cart Abandonment</span>
+                    <span className="font-medium text-green-500">45%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Mobile Conversion</span>
+                    <span className="font-medium text-green-500">3.2%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        />
       </section>
 
       {/* CoreAPI Section */}
@@ -192,7 +309,12 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
               </p>
             </div>
             <div className="order-1 md:order-2 relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 min-h-[400px]">
-              {/* Placeholder for team image with gradient background */}
+              {/* Daniel Snell's image */}
+              <img 
+                src={danielImage.src} 
+                alt="Daniel Snell - Founder of WooThatsFast" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
               <div className="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
             </div>

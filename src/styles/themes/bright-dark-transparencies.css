@@ -1,0 +1,199 @@
+:root[data-theme="bright-dark"], 
+[data-theme="bright-dark"] {
+  /* Background transparencies */
+  --background-t-5: oklch(0.1059 0.0157 240.9877 / 0.05);
+  --background-t-10: oklch(0.1059 0.0157 240.9877 / 0.1);
+  --background-t-20: oklch(0.1059 0.0157 240.9877 / 0.2);
+  --background-t-30: oklch(0.1059 0.0157 240.9877 / 0.3);
+  --background-t-40: oklch(0.1059 0.0157 240.9877 / 0.4);
+  --background-t-50: oklch(0.1059 0.0157 240.9877 / 0.5);
+  --background-t-60: oklch(0.1059 0.0157 240.9877 / 0.6);
+  --background-t-70: oklch(0.1059 0.0157 240.9877 / 0.7);
+  --background-t-80: oklch(0.1059 0.0157 240.9877 / 0.8);
+  --background-t-90: oklch(0.1059 0.0157 240.9877 / 0.9);
+  
+  /* Foreground transparencies */
+  --foreground-t-5: oklch(0.9647 0.0039 106.423 / 0.05);
+  --foreground-t-10: oklch(0.9647 0.0039 106.423 / 0.1);
+  --foreground-t-20: oklch(0.9647 0.0039 106.423 / 0.2);
+  --foreground-t-30: oklch(0.9647 0.0039 106.423 / 0.3);
+  --foreground-t-40: oklch(0.9647 0.0039 106.423 / 0.4);
+  --foreground-t-50: oklch(0.9647 0.0039 106.423 / 0.5);
+  --foreground-t-60: oklch(0.9647 0.0039 106.423 / 0.6);
+  --foreground-t-70: oklch(0.9647 0.0039 106.423 / 0.7);
+  --foreground-t-80: oklch(0.9647 0.0039 106.423 / 0.8);
+  --foreground-t-90: oklch(0.9647 0.0039 106.423 / 0.9);
+  
+  /* Card transparencies */
+  --card-t-5: oklch(0.1373 0.0196 240.9877 / 0.05);
+  --card-t-10: oklch(0.1373 0.0196 240.9877 / 0.1);
+  --card-t-20: oklch(0.1373 0.0196 240.9877 / 0.2);
+  --card-t-30: oklch(0.1373 0.0196 240.9877 / 0.3);
+  --card-t-40: oklch(0.1373 0.0196 240.9877 / 0.4);
+  --card-t-50: oklch(0.1373 0.0196 240.9877 / 0.5);
+  --card-t-60: oklch(0.1373 0.0196 240.9877 / 0.6);
+  --card-t-70: oklch(0.1373 0.0196 240.9877 / 0.7);
+  --card-t-80: oklch(0.1373 0.0196 240.9877 / 0.8);
+  --card-t-90: oklch(0.1373 0.0196 240.9877 / 0.9);
+  
+  /* Primary transparencies */
+  --primary-t-5: oklch(0.7059 0.2157 180.8627 / 0.05);
+  --primary-t-10: oklch(0.7059 0.2157 180.8627 / 0.1);
+  --primary-t-15: oklch(0.7059 0.2157 180.8627 / 0.15);
+  --primary-t-20: oklch(0.7059 0.2157 180.8627 / 0.2);
+  --primary-t-25: oklch(0.7059 0.2157 180.8627 / 0.25);
+  --primary-t-30: oklch(0.7059 0.2157 180.8627 / 0.3);
+  --primary-t-40: oklch(0.7059 0.2157 180.8627 / 0.4);
+  --primary-t-50: oklch(0.7059 0.2157 180.8627 / 0.5);
+  --primary-t-60: oklch(0.7059 0.2157 180.8627 / 0.6);
+  --primary-t-70: oklch(0.7059 0.2157 180.8627 / 0.7);
+  --primary-t-80: oklch(0.7059 0.2157 180.8627 / 0.8);
+  --primary-t-90: oklch(0.7059 0.2157 180.8627 / 0.9);
+  
+  /* Secondary transparencies */
+  --secondary-t-5: oklch(0.1765 0.0235 240.9877 / 0.05);
+  --secondary-t-10: oklch(0.1765 0.0235 240.9877 / 0.1);
+  --secondary-t-15: oklch(0.1765 0.0235 240.9877 / 0.15);
+  --secondary-t-20: oklch(0.1765 0.0235 240.9877 / 0.2);
+  --secondary-t-30: oklch(0.1765 0.0235 240.9877 / 0.3);
+  --secondary-t-40: oklch(0.1765 0.0235 240.9877 / 0.4);
+  --secondary-t-50: oklch(0.1765 0.0235 240.9877 / 0.5);
+  --secondary-t-60: oklch(0.1765 0.0235 240.9877 / 0.6);
+  --secondary-t-70: oklch(0.1765 0.0235 240.9877 / 0.7);
+  --secondary-t-80: oklch(0.1765 0.0235 240.9877 / 0.8);
+  --secondary-t-90: oklch(0.1765 0.0235 240.9877 / 0.9);
+  
+  /* Muted transparencies */
+  --muted-t-5: oklch(0.1569 0.0216 240.9877 / 0.05);
+  --muted-t-8: oklch(0.1569 0.0216 240.9877 / 0.08);
+  --muted-t-10: oklch(0.1569 0.0216 240.9877 / 0.1);
+  --muted-t-12: oklch(0.1569 0.0216 240.9877 / 0.12);
+  --muted-t-15: oklch(0.1569 0.0216 240.9877 / 0.15);
+  --muted-t-20: oklch(0.1569 0.0216 240.9877 / 0.2);
+  --muted-t-30: oklch(0.1569 0.0216 240.9877 / 0.3);
+  --muted-t-40: oklch(0.1569 0.0216 240.9877 / 0.4);
+  --muted-t-50: oklch(0.1569 0.0216 240.9877 / 0.5);
+  --muted-t-60: oklch(0.1569 0.0216 240.9877 / 0.6);
+  --muted-t-70: oklch(0.1569 0.0216 240.9877 / 0.7);
+  --muted-t-80: oklch(0.1569 0.0216 240.9877 / 0.8);
+  --muted-t-90: oklch(0.1569 0.0216 240.9877 / 0.9);
+  
+  /* Accent transparencies */
+  --accent-t-5: oklch(0.2157 0.0275 240.9877 / 0.05);
+  --accent-t-10: oklch(0.2157 0.0275 240.9877 / 0.1);
+  --accent-t-20: oklch(0.2157 0.0275 240.9877 / 0.2);
+  --accent-t-30: oklch(0.2157 0.0275 240.9877 / 0.3);
+  --accent-t-40: oklch(0.2157 0.0275 240.9877 / 0.4);
+  --accent-t-50: oklch(0.2157 0.0275 240.9877 / 0.5);
+  --accent-t-60: oklch(0.2157 0.0275 240.9877 / 0.6);
+  --accent-t-70: oklch(0.2157 0.0275 240.9877 / 0.7);
+  --accent-t-80: oklch(0.2157 0.0275 240.9877 / 0.8);
+  --accent-t-90: oklch(0.2157 0.0275 240.9877 / 0.9);
+  
+  /* Border transparencies */
+  --border-t-5: oklch(0.2353 0.0314 240.9877 / 0.05);
+  --border-t-10: oklch(0.2353 0.0314 240.9877 / 0.1);
+  --border-t-20: oklch(0.2353 0.0314 240.9877 / 0.2);
+  --border-t-30: oklch(0.2353 0.0314 240.9877 / 0.3);
+  --border-t-40: oklch(0.2353 0.0314 240.9877 / 0.4);
+  --border-t-50: oklch(0.2353 0.0314 240.9877 / 0.5);
+  --border-t-60: oklch(0.2353 0.0314 240.9877 / 0.6);
+  --border-t-70: oklch(0.2353 0.0314 240.9877 / 0.7);
+  --border-t-80: oklch(0.2353 0.0314 240.9877 / 0.8);
+  --border-t-90: oklch(0.2353 0.0314 240.9877 / 0.9);
+  
+  /* Input transparencies */
+  --input-t-5: oklch(0.1961 0.0255 240.9877 / 0.05);
+  --input-t-10: oklch(0.1961 0.0255 240.9877 / 0.1);
+  --input-t-20: oklch(0.1961 0.0255 240.9877 / 0.2);
+  --input-t-30: oklch(0.1961 0.0255 240.9877 / 0.3);
+  --input-t-40: oklch(0.1961 0.0255 240.9877 / 0.4);
+  --input-t-50: oklch(0.1961 0.0255 240.9877 / 0.5);
+  --input-t-60: oklch(0.1961 0.0255 240.9877 / 0.6);
+  --input-t-70: oklch(0.1961 0.0255 240.9877 / 0.7);
+  --input-t-80: oklch(0.1961 0.0255 240.9877 / 0.8);
+  --input-t-90: oklch(0.1961 0.0255 240.9877 / 0.9);
+  
+  /* Status color transparencies */
+  
+  /* Destructive transparencies */
+  --destructive-t-5: oklch(0.5765 0.2157 29.2338 / 0.05);
+  --destructive-t-10: oklch(0.5765 0.2157 29.2338 / 0.1);
+  --destructive-t-20: oklch(0.5765 0.2157 29.2338 / 0.2);
+  --destructive-t-25: oklch(0.5765 0.2157 29.2338 / 0.25);
+  --destructive-t-30: oklch(0.5765 0.2157 29.2338 / 0.3);
+  --destructive-t-40: oklch(0.5765 0.2157 29.2338 / 0.4);
+  --destructive-t-50: oklch(0.5765 0.2157 29.2338 / 0.5);
+  --destructive-t-60: oklch(0.5765 0.2157 29.2338 / 0.6);
+  --destructive-t-70: oklch(0.5765 0.2157 29.2338 / 0.7);
+  --destructive-t-80: oklch(0.5765 0.2157 29.2338 / 0.8);
+  --destructive-t-90: oklch(0.5765 0.2157 29.2338 / 0.9);
+  
+  /* Warning transparencies */
+  --warning-t-5: oklch(0.7451 0.1804 85.8746 / 0.05);
+  --warning-t-10: oklch(0.7451 0.1804 85.8746 / 0.1);
+  --warning-t-20: oklch(0.7451 0.1804 85.8746 / 0.2);
+  --warning-t-25: oklch(0.7451 0.1804 85.8746 / 0.25);
+  --warning-t-30: oklch(0.7451 0.1804 85.8746 / 0.3);
+  --warning-t-40: oklch(0.7451 0.1804 85.8746 / 0.4);
+  --warning-t-50: oklch(0.7451 0.1804 85.8746 / 0.5);
+  --warning-t-60: oklch(0.7451 0.1804 85.8746 / 0.6);
+  --warning-t-70: oklch(0.7451 0.1804 85.8746 / 0.7);
+  --warning-t-80: oklch(0.7451 0.1804 85.8746 / 0.8);
+  --warning-t-90: oklch(0.7451 0.1804 85.8746 / 0.9);
+  
+  /* Success transparencies */
+  --success-t-5: oklch(0.6863 0.2157 120.5490 / 0.05);
+  --success-t-10: oklch(0.6863 0.2157 120.5490 / 0.1);
+  --success-t-20: oklch(0.6863 0.2157 120.5490 / 0.2);
+  --success-t-25: oklch(0.6863 0.2157 120.5490 / 0.25);
+  --success-t-30: oklch(0.6863 0.2157 120.5490 / 0.3);
+  --success-t-40: oklch(0.6863 0.2157 120.5490 / 0.4);
+  --success-t-50: oklch(0.6863 0.2157 120.5490 / 0.5);
+  --success-t-60: oklch(0.6863 0.2157 120.5490 / 0.6);
+  --success-t-70: oklch(0.6863 0.2157 120.5490 / 0.7);
+  --success-t-80: oklch(0.6863 0.2157 120.5490 / 0.8);
+  --success-t-90: oklch(0.6863 0.2157 120.5490 / 0.9);
+  
+  /* Chart color transparencies */
+  
+  /* Chart 1 (Cyan) transparencies */
+  --chart-1-t-5: oklch(0.7059 0.2157 180.8627 / 0.05);
+  --chart-1-t-10: oklch(0.7059 0.2157 180.8627 / 0.1);
+  --chart-1-t-20: oklch(0.7059 0.2157 180.8627 / 0.2);
+  --chart-1-t-30: oklch(0.7059 0.2157 180.8627 / 0.3);
+  --chart-1-t-40: oklch(0.7059 0.2157 180.8627 / 0.4);
+  --chart-1-t-50: oklch(0.7059 0.2157 180.8627 / 0.5);
+  
+  /* Chart 2 (Green) transparencies */
+  --chart-2-t-5: oklch(0.6863 0.2157 120.5490 / 0.05);
+  --chart-2-t-10: oklch(0.6863 0.2157 120.5490 / 0.1);
+  --chart-2-t-20: oklch(0.6863 0.2157 120.5490 / 0.2);
+  --chart-2-t-30: oklch(0.6863 0.2157 120.5490 / 0.3);
+  --chart-2-t-40: oklch(0.6863 0.2157 120.5490 / 0.4);
+  --chart-2-t-50: oklch(0.6863 0.2157 120.5490 / 0.5);
+  
+  /* Chart 3 (Yellow) transparencies */
+  --chart-3-t-5: oklch(0.6667 0.2157 60.2745 / 0.05);
+  --chart-3-t-10: oklch(0.6667 0.2157 60.2745 / 0.1);
+  --chart-3-t-20: oklch(0.6667 0.2157 60.2745 / 0.2);
+  --chart-3-t-30: oklch(0.6667 0.2157 60.2745 / 0.3);
+  --chart-3-t-40: oklch(0.6667 0.2157 60.2745 / 0.4);
+  --chart-3-t-50: oklch(0.6667 0.2157 60.2745 / 0.5);
+  
+  /* Chart 4 (Purple) transparencies */
+  --chart-4-t-5: oklch(0.6471 0.2157 300.8235 / 0.05);
+  --chart-4-t-10: oklch(0.6471 0.2157 300.8235 / 0.1);
+  --chart-4-t-20: oklch(0.6471 0.2157 300.8235 / 0.2);
+  --chart-4-t-30: oklch(0.6471 0.2157 300.8235 / 0.3);
+  --chart-4-t-40: oklch(0.6471 0.2157 300.8235 / 0.4);
+  --chart-4-t-50: oklch(0.6471 0.2157 300.8235 / 0.5);
+  
+  /* Chart 5 (Pink) transparencies */
+  --chart-5-t-5: oklch(0.6275 0.2157 0.0000 / 0.05);
+  --chart-5-t-10: oklch(0.6275 0.2157 0.0000 / 0.1);
+  --chart-5-t-20: oklch(0.6275 0.2157 0.0000 / 0.2);
+  --chart-5-t-30: oklch(0.6275 0.2157 0.0000 / 0.3);
+  --chart-5-t-40: oklch(0.6275 0.2157 0.0000 / 0.4);
+  --chart-5-t-50: oklch(0.6275 0.2157 0.0000 / 0.5);
+}

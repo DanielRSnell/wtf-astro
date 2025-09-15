@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all admin resources from the wordpress-resource collection
+const adminResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'admin';
+});
+
+// Get admin-related blog posts
+const adminPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('admin') || 
+    tag.toLowerCase().includes('dashboard') ||
+    tag.toLowerCase().includes('wordpress') ||
+    adminResources.some(admin => 
+      post.data.title.toLowerCase().includes(admin.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(admin.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Admin Tools & Customization";
+const pageDescription = "Discover the best WordPress admin tools and customization plugins. Enhance your dashboard, improve workflow, and streamline site management.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="admin"
+    title="WordPress Admin Tools"
+    description="Powerful tools to enhance your WordPress admin experience"
+    resources={adminResources}
+    relatedPosts={adminPosts}
+    baseUrl="/wordpress-admin"
+  />
+</Layout>

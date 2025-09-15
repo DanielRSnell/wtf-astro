@@ -36,8 +36,8 @@ export const ShimmerButton = React.forwardRef<
     const variantDefaults = {
       primary: {
         shimmerColor: shimmerColor || "rgba(255, 255, 255, 0.8)",
-        background: background || "linear-gradient(135deg, var(--primary), var(--secondary))",
-        textColor: "text-primary-foreground",
+        background: background || "linear-gradient(135deg, hsl(var(--background)), hsl(var(--foreground)))",
+        textColor: "text-white",
         borderStyle: "border-0"
       },
       secondary: {

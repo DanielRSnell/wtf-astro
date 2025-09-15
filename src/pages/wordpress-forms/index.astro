@@ -1,0 +1,42 @@
+---
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all form resources from the wordpress-resource collection
+const formResources = await getCollection('wordpress-resource', (resource) => {
+  return resource.data.category === 'forms';
+});
+
+// Get form-related blog posts
+const formPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('form') || 
+    tag.toLowerCase().includes('contact') ||
+    tag.toLowerCase().includes('gravity') ||
+    tag.toLowerCase().includes('wpforms') ||
+    formResources.some(form => 
+      post.data.title.toLowerCase().includes(form.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(form.data.title.toLowerCase()))
+    )
+  );
+});
+
+const pageTitle = "WordPress Form Plugins & Builders";
+const pageDescription = "Find the best WordPress form plugins and builders. Compare features, pricing, and integrations to choose the perfect form solution.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="forms"
+    title="WordPress Forms"
+    description="Professional form builders for every need"
+    resources={formResources}
+    relatedPosts={formPosts}
+    baseUrl="/wordpress-forms"
+  />
+</Layout>

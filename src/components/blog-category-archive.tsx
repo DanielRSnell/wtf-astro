@@ -1,5 +1,4 @@
 import { FileText } from "lucide-react";
-import { motion } from "framer-motion";
 
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import type { CollectionEntry } from "astro:content";
@@ -34,34 +33,7 @@ const BlogCategoryArchive = ({
   // Calculate total posts count from all categories
   const totalPostsCount = allCategories.reduce((total, category) => total + category.count, 0);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.1,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 20,
-      scale: 0.95
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut"
-      }
-    }
-  };
+  // Removed motion animation variants - using CSS animations instead
   
   // Helper functions
   const formatDate = (date: Date): string => {
@@ -177,20 +149,17 @@ const BlogCategoryArchive = ({
       {/* Posts Grid Section */}
       <section className="py-16">
         <div className="container">
-          <motion.div 
-            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+          <div
+            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 animate-in fade-in duration-700 delay-200"
           >
             {posts.map((post, index) => {
               const categoryName = post.data.category.charAt(0).toUpperCase() + post.data.category.slice(1).replace('-', ' ');
               
               return (
-                <motion.article 
-                  key={post.slug} 
-                  className="group"
-                  variants={cardVariants}
+                <article
+                  key={post.slug}
+                  className="group animate-in fade-in slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <a
                     href={`/blog/${post.slug}`}
@@ -258,10 +227,10 @@ const BlogCategoryArchive = ({
                     {/* Subtle border highlight */}
                     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </a>
-                </motion.article>
+                </article>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

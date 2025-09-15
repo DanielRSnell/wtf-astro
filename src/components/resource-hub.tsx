@@ -1,4 +1,4 @@
-import { FileText, Server, Palette, Shield, Zap, Globe } from "lucide-react";
+import { FileText, Server, Palette, Shield, Zap, Globe, FormInput, Workflow, Settings } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { LinkListWithRecommendation } from "./ui/link-list-with-recommendation";
@@ -76,37 +76,85 @@ const ResourceHub = ({
     themes: Palette,
     hosting: Server,
     security: Shield,
-    performance: Zap
+    performance: Zap,
+    'woocommerce-themes': Palette,
+    'woocommerce-plugins': Server,
+    seo: Globe,
+    forms: FormInput,
+    automation: Workflow,
+    admin: Settings
   };
 
   const categoryData: ResourceCategory[] = categories.map(cat => {
-    const categoryResources = resources.filter(r => r.data.category === cat.data.category);
-    const categoryReviews = reviews.filter(r => r.data.category === cat.data.category);
+    // Handle both string and array categories
+    const categoryResources = resources.filter(r => {
+      const resourceCategory = r.data.category;
+      if (Array.isArray(resourceCategory)) {
+        return resourceCategory.includes(cat.data.category);
+      }
+      return resourceCategory === cat.data.category;
+    });
+    
+    const categoryReviews = reviews.filter(r => {
+      const reviewCategory = r.data.category;
+      if (Array.isArray(reviewCategory)) {
+        return reviewCategory.includes(cat.data.category);
+      }
+      return reviewCategory === cat.data.category;
+    });
     
     // Find recommendations based on category data
     const topRecommendation = categoryResources.find(r => r.data.slug === cat.data.topRecommendation?.slug);
     const runnerUp = categoryResources.find(r => r.data.slug === cat.data.runnerUp?.slug);
     const honorableMention = categoryResources.find(r => r.data.slug === cat.data.honorableMention?.slug);
 
+    // Calculate average rating for each resource
+    const resourcesWithRatings = categoryResources.map(resource => {
+      const ratings = resource.data.ratings || [];
+      const avgRating = ratings.length > 0 
+        ? ratings.reduce((sum, r) => sum + r.value, 0) / ratings.length 
+        : 0;
+      return { ...resource, avgRating };
+    });
+
+    // Sort resources by average rating (highest first)
+    const sortedResources = resourcesWithRatings.sort((a, b) => b.avgRating - a.avgRating);
+
+    // Generate links from sorted resources with rating badges
+    // Use wordpress- prefix for all categories except woocommerce ones
+    const categoryPath = cat.data.category.startsWith('woocommerce-') 
+      ? cat.data.category
+      : `wordpress-${cat.data.category}`;
+    
+    const resourceLinks = sortedResources.slice(0, 10).map(resource => ({
+      title: resource.data.title,
+      href: `/${categoryPath}/${resource.data.slug}`,
+      description: resource.data.description,
+      badge: resource.avgRating > 0 ? resource.avgRating.toFixed(1) : undefined
+    }));
+    
     // Convert review posts to links format
     const reviewLinks = categoryReviews.map(review => ({
       title: review.data.title,
       href: `/wordpress-reviews/${review.data.slug}`,
       description: review.data.description
     }));
+    
+    // Combine resource links and review links
+    const allLinks = [...resourceLinks, ...reviewLinks].slice(0, 10);
 
     return {
       id: cat.data.category,
       name: cat.data.title,
       slug: cat.data.category,
       icon: categoryIconMap[cat.data.category] || FileText,
-      count: cat.data.count || categoryResources.length,
-      links: reviewLinks.length > 0 ? reviewLinks : cat.data.links || [],
+      count: categoryResources.length,
+      links: allLinks.length > 0 ? allLinks : [],
       recommendation: topRecommendation ? {
         title: topRecommendation.data.title,
         subtitle: topRecommendation.data.subtitle,
         description: topRecommendation.data.description,
-        href: `/wordpress-${cat.data.category}/${topRecommendation.data.slug}`,
+        href: `/${categoryPath}/${topRecommendation.data.slug}`,
         badge: topRecommendation.data.badge,
         ratings: topRecommendation.data.ratings
       } : {
@@ -118,7 +166,7 @@ const ResourceHub = ({
         title: runnerUp.data.title,
         subtitle: runnerUp.data.subtitle,
         description: runnerUp.data.description,
-        href: `/wordpress-${cat.data.category}/${runnerUp.data.slug}`,
+        href: `/${categoryPath}/${runnerUp.data.slug}`,
         badge: runnerUp.data.badge,
         ratings: runnerUp.data.ratings
       } : undefined,
@@ -126,7 +174,7 @@ const ResourceHub = ({
         title: honorableMention.data.title,
         subtitle: honorableMention.data.subtitle,
         description: honorableMention.data.description,
-        href: `/wordpress-${cat.data.category}/${honorableMention.data.slug}`,
+        href: `/${categoryPath}/${honorableMention.data.slug}`,
         badge: honorableMention.data.badge
       } : undefined
     };

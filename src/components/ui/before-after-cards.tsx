@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -109,40 +108,12 @@ const BeforeAfterCards = ({
   const beforeColors = accentColors[beforeAccent];
   const afterColors = accentColors[afterAccent];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
 
   return (
     <div className={cn("w-full", className)} data-theme={dataTheme}>
       {/* Header */}
       {(title || subtitle) && (
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="text-center mb-12 animate-in fade-in slide-in-from-top-4 duration-600">
           {title && (
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
               {title}
@@ -153,21 +124,13 @@ const BeforeAfterCards = ({
               {subtitle}
             </p>
           )}
-        </motion.div>
+        </div>
       )}
 
       {/* Cards */}
-      <motion.div
-        className="grid gap-8 lg:grid-cols-2"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <div className="grid gap-8 lg:grid-cols-2 animate-in fade-in duration-700 delay-200">
         {/* Before Card */}
-        <motion.div
-          className="relative group"
-          variants={cardVariants}
-        >
+        <div className="relative group animate-in fade-in slide-in-from-left-5 duration-500 delay-300">
           <div className={cn(
             "relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border border-border/30 transition-all duration-700 hover:shadow-2xl p-8",
             beforeColors.hover,
@@ -203,13 +166,10 @@ const BeforeAfterCards = ({
             {/* Subtle border highlight */}
             <div className={cn("absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700", beforeColors.highlight)} />
           </div>
-        </motion.div>
+        </div>
 
         {/* After Card */}
-        <motion.div
-          className="relative group"
-          variants={cardVariants}
-        >
+        <div className="relative group animate-in fade-in slide-in-from-right-5 duration-500 delay-400">
           <div className={cn(
             "relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border border-border/30 transition-all duration-700 hover:shadow-2xl p-8",
             afterColors.hover,
@@ -245,8 +205,8 @@ const BeforeAfterCards = ({
             {/* Subtle border highlight */}
             <div className={cn("absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700", afterColors.highlight)} />
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 };
