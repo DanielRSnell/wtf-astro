@@ -1,6 +1,7 @@
 ---
 import Layout from './base.astro';
 import { ReviewHero } from '../components/review-hero.tsx';
+import { CommentsSection } from '../components/comments/comments-section.tsx';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -158,61 +159,75 @@ const isSkip = resource.data.review_status === 'skip';
       {resource.data.pricingPlans && resource.data.pricingPlans.length > 0 ? (
         <div class="mt-12">
           <h3 class="text-2xl font-bold text-foreground mb-6">Pricing Plans</h3>
-          <div class={`grid gap-6 ${resource.data.pricingPlans.length === 1 ? 'md:grid-cols-1 max-w-md mx-auto' : resource.data.pricingPlans.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
+          <div class="space-y-4 max-w-3xl">
             {resource.data.pricingPlans.map((plan) => (
-              <div class={`relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border ${plan.recommended ? 'border-primary/30' : 'border-border/20'} p-6 hover:border-primary/40 transition-all duration-300`}>
-                {/* Recommended Badge */}
-                {plan.recommended && (
-                  <div class="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 rounded-bl-xl text-xs font-semibold">
-                    RECOMMENDED
+              <div class={`relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border ${plan.recommended ? 'border-primary/30' : 'border-border/20'} hover:border-primary/40 transition-all duration-300`}>
+                <div class="p-6">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    {/* Left Section: Name, Price, and Badges */}
+                    <div class="flex-1">
+                      <div class="flex items-start gap-3 mb-3">
+                        <div>
+                          {/* Plan Name and Price */}
+                          <div class="flex items-baseline gap-3 mb-2">
+                            <h4 class="text-lg font-semibold text-foreground">{plan.name}</h4>
+                            <span class="text-2xl font-bold text-primary">{plan.price}</span>
+                            {plan.billingCycle && (
+                              <span class="text-sm text-muted-foreground">/{plan.billingCycle}</span>
+                            )}
+                          </div>
+                          
+                          {/* Badges */}
+                          <div class="flex items-center gap-2">
+                            {plan.recommended && (
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary/20 text-xs font-semibold text-primary">
+                                RECOMMENDED
+                              </span>
+                            )}
+                            {plan.badge && (
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary/10 text-xs font-medium text-primary">
+                                {plan.badge}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Features List */}
+                      <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2 mt-4">
+                        {plan.features.map((feature: string) => (
+                          <li class="flex items-start gap-2 text-sm text-foreground/90">
+                            <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    {/* Right Section: CTA Button */}
+                    {plan.href && (
+                      <div class="sm:flex-shrink-0">
+                        <a 
+                          href={plan.href}
+                          class={`inline-flex items-center px-5 py-2.5 rounded-lg font-medium transition-colors ${
+                            plan.recommended 
+                              ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                              : 'bg-card border border-border hover:bg-muted'
+                          }`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Get Started
+                          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    )}
                   </div>
-                )}
-                
-                {/* Plan Badge */}
-                {plan.badge && (
-                  <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 mb-4">
-                    <span class="text-xs font-medium text-primary">{plan.badge}</span>
-                  </div>
-                )}
-                
-                {/* Plan Name */}
-                <h4 class="text-lg font-semibold text-foreground mb-2">{plan.name}</h4>
-                
-                {/* Price */}
-                <div class="mb-4">
-                  <span class="text-3xl font-bold text-primary">{plan.price}</span>
-                  {plan.billingCycle && (
-                    <span class="text-sm text-muted-foreground ml-1">/{plan.billingCycle}</span>
-                  )}
                 </div>
-                
-                {/* Features */}
-                <ul class="space-y-2 mb-6">
-                  {plan.features.map((feature: string) => (
-                    <li class="flex items-start gap-2 text-sm text-foreground">
-                      <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                
-                {/* CTA Button */}
-                {plan.href && (
-                  <a 
-                    href={plan.href}
-                    class={`block w-full text-center px-4 py-2 rounded-lg font-medium transition-colors ${
-                      plan.recommended 
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                        : 'bg-card border border-border hover:bg-muted'
-                    }`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Get Started
-                  </a>
-                )}
               </div>
             ))}
           </div>
@@ -240,22 +255,21 @@ const isSkip = resource.data.review_status === 'skip';
         </div>
       )}
 
-      {/* CTA Button */}
-      {resource.data.href && (
-        <div class="flex gap-4 mt-8">
-          <a 
-            href={resource.data.href}
-            class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit {resource.data.title}
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+      {/* Comments Section */}
+      <div class="mt-16 border-t border-border/50 pt-12">
+        <div class="bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl p-8">
+          <h3 class="text-2xl font-bold text-foreground mb-4">Comments</h3>
+          <p class="text-muted-foreground mb-6">
+            Join the discussion about {resource.data.title}. Share your experience, ask questions, or help others.
+          </p>
+          
+          <CommentsSection
+            client:load
+            resourceType="wordpress-resource"
+            resourceSlug={resource.data.slug}
+          />
         </div>
-      )}
+      </div>
     </div>
   </article>
 </Layout>

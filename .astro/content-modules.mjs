@@ -76,5 +76,9 @@ export default new Map([
 ["src/content/wordpress-resource/wp-rocket.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fwp-rocket.mdx&astroContentModuleFlag=true")],
 ["src/content/wordpress-resource/yoast-seo.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fyoast-seo.mdx&astroContentModuleFlag=true")],
 ["src/content/wordpress-resource/wpbakery.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fwpbakery.mdx&astroContentModuleFlag=true")],
-["src/content/wordpress-resource/x-theme.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fx-theme.mdx&astroContentModuleFlag=true")]]);
+["src/content/wordpress-resource/x-theme.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fx-theme.mdx&astroContentModuleFlag=true")],
+["src/content/wordpress-resource/kadence-blocks.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fkadence-blocks.mdx&astroContentModuleFlag=true")],
+["src/content/wordpress-resource/generateblocks.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fgenerateblocks.mdx&astroContentModuleFlag=true")],
+["src/content/wordpress-resource/spectra.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fspectra.mdx&astroContentModuleFlag=true")],
+["src/content/wordpress-resource/essential-blocks.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fwordpress-resource%2Fessential-blocks.mdx&astroContentModuleFlag=true")]]);
 		

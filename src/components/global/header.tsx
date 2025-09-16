@@ -26,6 +26,25 @@ const AuthButtons = () => {
     setShowAuthModal(true);
   };
 
+  // Expose auth modal functions globally
+  useEffect(() => {
+    // Create global auth modal functions
+    window.showAuthModal = (mode: 'signin' | 'signup' = 'signin') => {
+      setAuthMode(mode);
+      setShowAuthModal(true);
+    };
+
+    window.hideAuthModal = () => {
+      setShowAuthModal(false);
+    };
+
+    // Cleanup on unmount
+    return () => {
+      delete window.showAuthModal;
+      delete window.hideAuthModal;
+    };
+  }, []);
+
   // Show loading state while auth is being checked
   if (loading) {
     return (
