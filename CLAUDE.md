@@ -1,5 +1,15 @@
 # Blocksy Components - Design System Guide
 
+## Documentation Organization
+
+All project documentation files (except this CLAUDE.mdx file) are located in the `./docs` directory. This includes:
+- Technical setup guides (AUTH_MODAL_USAGE.md, COMMENTS_SETUP.md, CONTENT_REVIEW_SYSTEM.md)
+- Content management documentation (content-projects.md, content-review-template.md)
+- Persona and agent files (daniel-snell-persona.md, daniel-snell-content-reviewer.md)
+- Any other project-related markdown files
+
+When looking for or creating documentation, refer to the `./docs` folder.
+
 ## Design Direction & High-Fidelity Standards
 
 This project follows a premium, enterprise-grade design aesthetic inspired by modern platforms like Bright. The focus is on creating sophisticated, high-fidelity UI components that automatically adapt to theme variations.
