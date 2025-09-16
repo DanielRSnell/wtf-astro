@@ -42,8 +42,16 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
   const [expandedThreads, setExpandedThreads] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'popular'>('newest');
   const [submitting, setSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Handle client-side mounting to avoid hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     checkUser();
     loadComments();
 
@@ -67,7 +75,7 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
     return () => {
       subscription.unsubscribe();
     };
-  }, [resourceType, resourceSlug, sortBy]);
+  }, [mounted, resourceType, resourceSlug, sortBy]);
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -169,8 +177,8 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
     }
   };
 
-  const handleSubmitReply = async (parentId: string) => {
-    if (!user || !replyContent.trim() || submitting) return;
+  const handleSubmitReply = async (parentId: string, content: string) => {
+    if (!user || !content.trim() || submitting) return;
 
     setSubmitting(true);
     try {
@@ -179,12 +187,11 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
         resource_type: resourceType,
         resource_slug: resourceSlug,
         parent_id: parentId,
-        content: replyContent.trim(),
+        content: content.trim(),
       });
 
       if (error) throw error;
 
-      setReplyContent('');
       setReplyingTo(null);
       await loadComments();
     } catch (error) {
@@ -329,6 +336,8 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
     const isAuthor = user?.id === comment.user_id;
     const hasReplies = comment.replies && comment.replies.length > 0;
     const isExpanded = expandedThreads.has(comment.id);
+    const [localReplyContent, setLocalReplyContent] = useState('');
+    const isReplying = replyingTo === comment.id;
 
     return (
       <div className={cn("group", isReply && "ml-8 sm:ml-12")}>
@@ -448,13 +457,13 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
                     triggerAuthModal();
                     return;
                   }
-                  setReplyingTo(comment.id);
-                  setReplyContent('');
+                  setReplyingTo(isReplying ? null : comment.id);
+                  setLocalReplyContent('');
                 }}
                 className="flex items-center gap-1 px-2 py-1 hover:bg-muted rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Reply className="w-3 h-3" />
-                Reply
+                {isReplying ? 'Cancel' : 'Reply'}
               </button>
 
               {isAuthor && (
@@ -481,30 +490,34 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
             </div>
 
             {/* Reply Form */}
-            {replyingTo === comment.id && (
+            {isReplying && (
               <form onSubmit={(e) => {
                 e.preventDefault();
-                handleSubmitReply(comment.id);
+                handleSubmitReply(comment.id, localReplyContent);
+                setLocalReplyContent('');
               }} className="mt-3">
                 <textarea
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
+                  value={localReplyContent}
+                  onChange={(e) => setLocalReplyContent(e.target.value)}
                   placeholder="Write your reply..."
-                  className="w-full p-3 bg-muted/50 border border-border rounded-lg text-sm resize-none"
+                  className="w-full p-3 bg-muted/50 border border-border rounded-lg text-sm resize-none focus:outline-none focus:border-primary/50 transition-colors"
                   rows={3}
                   autoFocus
                 />
                 <div className="flex gap-2 mt-2">
                   <button
                     type="submit"
-                    disabled={submitting || !replyContent.trim()}
+                    disabled={submitting || !localReplyContent.trim()}
                     className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm disabled:opacity-50"
                   >
                     Post Reply
                   </button>
                   <button
                     type="button"
-                    onClick={() => setReplyingTo(null)}
+                    onClick={() => {
+                      setReplyingTo(null);
+                      setLocalReplyContent('');
+                    }}
                     className="px-3 py-1.5 bg-muted hover:bg-muted/80 rounded-lg text-sm"
                   >
                     Cancel
@@ -546,6 +559,11 @@ export function CommentsSection({ resourceType, resourceSlug, className }: Comme
       </div>
     );
   };
+
+  // Don't render anything until mounted to avoid hydration issues
+  if (!mounted) {
+    return null;
+  }
 
   if (loading) {
     return (

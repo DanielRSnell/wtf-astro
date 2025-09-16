@@ -317,13 +317,16 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5 transition-transform duration-200 hover:scale-105">
               <span className="sr-only">WooThatsFast</span>
-              <div className="relative">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-muted-foreground via-foreground to-muted-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
-                  WooThatsFast
-                </h1>
-                {/* Glow effect */}
-                <div className="absolute inset-0 text-xl font-bold bg-gradient-to-r from-muted-foreground via-foreground to-muted-foreground/70 bg-clip-text text-transparent blur-sm opacity-30 -z-10">
-                  WooThatsFast
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-primary" />
+                <div className="relative">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-muted-foreground via-foreground to-muted-foreground/70 bg-clip-text text-transparent drop-shadow-lg">
+                    WooThatsFast
+                  </h1>
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 text-xl font-bold bg-gradient-to-r from-muted-foreground via-foreground to-muted-foreground/70 bg-clip-text text-transparent blur-sm opacity-30 -z-10">
+                    WooThatsFast
+                  </div>
                 </div>
               </div>
             </a>

@@ -1,0 +1,487 @@
+---
+import Layout from '@/layouts/base.astro';
+import { supabase } from '@/lib/supabase';
+import { ArrowLeft, User, Mail, Shield, AlertCircle, Check } from 'lucide-react';
+
+// Get the user ID from the URL
+const { id } = Astro.params;
+
+// Server-side authentication check
+let currentUser = null;
+let profile = null;
+let error = null;
+let isOwnProfile = false;
+
+try {
+  // Get current logged-in user
+  const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError || !authUser) {
+    error = 'Please sign in to access settings';
+  } else {
+    currentUser = authUser;
+    
+    // Check if the user is viewing their own settings
+    if (currentUser.id !== id) {
+      error = 'You can only edit your own settings';
+    } else {
+      isOwnProfile = true;
+      
+      // Get profile data
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+        
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+        // Profile might not exist yet, that's okay
+        profile = {
+          id: currentUser.id,
+          username: null,
+          full_name: null,
+          avatar_url: null,
+          bio: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+      } else {
+        profile = profileData;
+      }
+    }
+  }
+} catch (e) {
+  console.error('Settings page error:', e);
+  error = 'An error occurred while loading settings';
+}
+
+// Redirect if not authorized
+if (!isOwnProfile && Astro.url.pathname !== '/auth') {
+  return Astro.redirect('/auth');
+}
+---
+
+<Layout title="Account Settings" description="Manage your account settings and preferences">
+  <div class="relative min-h-screen pt-24 pb-16 bg-background text-foreground overflow-hidden" data-theme="bright-dark">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 h-full w-full [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]">
+      <div class="absolute inset-0 opacity-80">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dot-pattern-settings" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="15" cy="15" r="2" fill="currentColor" class="text-primary/20"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dot-pattern-settings)"/>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+    
+    <!-- Blur elements for depth -->
+    <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+    <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+
+    <div class="container relative z-10 mx-auto px-6">
+      <div class="max-w-4xl mx-auto">
+        
+        {error ? (
+          <!-- Error State -->
+          <div class="max-w-2xl mx-auto text-center">
+            <div class="mb-8">
+              <AlertCircle class="w-16 h-16 mx-auto text-destructive" />
+            </div>
+            <h1 class="text-3xl font-bold text-foreground mb-4">Access Denied</h1>
+            <p class="text-muted-foreground mb-8">{error}</p>
+            <button 
+              onclick="window.showAuthModal && window.showAuthModal('signin')"
+              class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
+            >
+              Sign In to Continue
+            </button>
+          </div>
+        ) : (
+          <!-- Settings Content -->
+          <>
+            <!-- Back Navigation -->
+            <div class="mb-6">
+              <a 
+                href={profile?.username ? `/users/${profile.username}` : '/'}
+                class="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft class="w-4 h-4" />
+                <span>Back to Profile</span>
+              </a>
+            </div>
+
+            <!-- Settings Header -->
+            <div class="mb-8">
+              <h1 class="text-4xl font-bold text-foreground mb-2">Account Settings</h1>
+              <p class="text-muted-foreground">Manage your profile and account preferences</p>
+            </div>
+
+            <!-- Settings Sections -->
+            <div class="space-y-8">
+              <!-- Profile Information -->
+              <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-300">
+                <div class="absolute inset-0">
+                  <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+                  <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent"></div>
+                </div>
+                
+                <div class="relative z-10 p-8">
+                  <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                      <div class="p-2 rounded-lg bg-primary/10">
+                        <User class="w-5 h-5 text-primary" />
+                      </div>
+                      <h2 class="text-2xl font-bold text-foreground">Profile Information</h2>
+                    </div>
+                    <button 
+                      id="editProfileBtn"
+                      class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                      Edit Profile
+                    </button>
+                  </div>
+
+                  <form id="profileForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label for="username" class="block text-sm font-medium text-foreground mb-2">
+                          Username
+                        </label>
+                        <div class="relative">
+                          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
+                          <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value={profile?.username || ''}
+                            placeholder="Choose a username"
+                            disabled
+                            class="w-full pl-8 pr-4 py-3 bg-background/50 border border-border/30 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                          />
+                        </div>
+                        <p class="text-xs text-muted-foreground mt-2">
+                          Your profile URL: /users/<span id="usernamePreview">{profile?.username || 'username'}</span>
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <label for="fullName" class="block text-sm font-medium text-foreground mb-2">
+                          Full Name
+                        </label>
+                        <input
+                          type="text"
+                          id="fullName"
+                          name="fullName"
+                          value={profile?.full_name || ''}
+                          placeholder="Your full name"
+                          disabled
+                          class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label for="bio" class="block text-sm font-medium text-foreground mb-2">
+                        Bio
+                      </label>
+                      <textarea
+                        id="bio"
+                        name="bio"
+                        rows="4"
+                        disabled
+                        placeholder="Tell us about yourself..."
+                        class="w-full px-4 py-3 bg-background/50 border border-border/30 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed"
+                      >{profile?.bio || ''}</textarea>
+                      <p class="text-xs text-muted-foreground mt-2">
+                        Brief description for your profile (max 200 characters)
+                      </p>
+                    </div>
+                    
+                    <!-- Action Buttons (Hidden by default) -->
+                    <div class="hidden" id="profileActions">
+                      <div class="flex gap-4 pt-4">
+                        <button
+                          type="submit"
+                          class="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors font-medium"
+                        >
+                          <Check class="w-4 h-4" />
+                          Save Changes
+                        </button>
+                        <button
+                          type="button"
+                          id="cancelEditBtn"
+                          class="px-6 py-3 bg-muted text-foreground rounded-xl hover:bg-muted/80 transition-colors font-medium"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+
+                  <!-- Status Messages -->
+                  <div id="profileMessage" class="mt-4"></div>
+                </div>
+                
+                <!-- Hover border highlight -->
+                <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </div>
+
+              <!-- Account Information (Read-only) -->
+              <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-300">
+                <div class="absolute inset-0">
+                  <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+                </div>
+                
+                <div class="relative z-10 p-8">
+                  <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 rounded-lg bg-primary/10">
+                      <Mail class="w-5 h-5 text-primary" />
+                    </div>
+                    <h2 class="text-2xl font-bold text-foreground">Account Information</h2>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-foreground mb-2">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={currentUser?.email || ''}
+                        disabled
+                        class="w-full px-4 py-3 bg-muted/20 border border-border/20 rounded-xl text-muted-foreground cursor-not-allowed"
+                      />
+                      <p class="text-xs text-muted-foreground mt-2">
+                        Contact support to change your email address
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <label class="block text-sm font-medium text-foreground mb-2">
+                        Account Created
+                      </label>
+                      <p class="text-muted-foreground">
+                        {new Date(profile?.created_at || Date.now()).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Security & Privacy -->
+              <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-destructive/30 transition-all duration-300">
+                <div class="absolute inset-0">
+                  <div class="absolute inset-0 bg-gradient-to-br from-destructive/5 via-transparent to-destructive/5"></div>
+                </div>
+                
+                <div class="relative z-10 p-8">
+                  <div class="flex items-center gap-3 mb-6">
+                    <div class="p-2 rounded-lg bg-destructive/10">
+                      <Shield class="w-5 h-5 text-destructive" />
+                    </div>
+                    <h2 class="text-2xl font-bold text-foreground">Security & Privacy</h2>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <div>
+                      <h3 class="font-medium text-foreground mb-3">Account Actions</h3>
+                      <button
+                        id="signOutBtn"
+                        class="px-6 py-3 bg-destructive text-destructive-foreground rounded-xl hover:bg-destructive/90 transition-colors font-medium"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-border/30">
+                      <p class="text-sm text-muted-foreground mb-3">
+                        Need to delete your account? This action cannot be undone.
+                      </p>
+                      <button
+                        id="deleteAccountBtn"
+                        class="text-sm text-destructive hover:text-destructive/80 transition-colors"
+                      >
+                        Delete Account
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+
+  {!error && (
+    <script define:vars={{ profile, currentUser }}>
+      // Profile editing functionality
+      const editBtn = document.getElementById('editProfileBtn');
+      const cancelBtn = document.getElementById('cancelEditBtn');
+      const profileForm = document.getElementById('profileForm');
+      const profileActions = document.getElementById('profileActions');
+      const usernameInput = document.getElementById('username');
+      const fullNameInput = document.getElementById('fullName');
+      const bioInput = document.getElementById('bio');
+      const usernamePreview = document.getElementById('usernamePreview');
+      const messageDiv = document.getElementById('profileMessage');
+      const signOutBtn = document.getElementById('signOutBtn');
+      const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+      
+      let isEditing = false;
+      let originalValues = {
+        username: usernameInput.value,
+        fullName: fullNameInput.value,
+        bio: bioInput.value
+      };
+
+      // Update username preview
+      usernameInput?.addEventListener('input', () => {
+        const value = usernameInput.value.trim() || 'username';
+        if (usernamePreview) {
+          usernamePreview.textContent = value;
+        }
+      });
+
+      // Edit button handler
+      editBtn?.addEventListener('click', () => {
+        if (!isEditing) {
+          isEditing = true;
+          usernameInput.disabled = false;
+          fullNameInput.disabled = false;
+          bioInput.disabled = false;
+          profileActions.classList.remove('hidden');
+          editBtn.textContent = 'Editing...';
+          editBtn.disabled = true;
+        }
+      });
+
+      // Cancel button handler
+      cancelBtn?.addEventListener('click', () => {
+        isEditing = false;
+        usernameInput.disabled = true;
+        fullNameInput.disabled = true;
+        bioInput.disabled = true;
+        usernameInput.value = originalValues.username;
+        fullNameInput.value = originalValues.fullName;
+        bioInput.value = originalValues.bio;
+        if (usernamePreview) {
+          usernamePreview.textContent = originalValues.username || 'username';
+        }
+        profileActions.classList.add('hidden');
+        editBtn.textContent = 'Edit Profile';
+        editBtn.disabled = false;
+        messageDiv.innerHTML = '';
+      });
+
+      // Form submission handler
+      profileForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        const fullName = fullNameInput.value.trim();
+        const bio = bioInput.value.trim();
+        
+        messageDiv.innerHTML = '';
+        
+        // Validation
+        if (username && !/^[a-zA-Z0-9_-]+$/.test(username)) {
+          messageDiv.innerHTML = '<div class="text-destructive">Username can only contain letters, numbers, underscores, and hyphens</div>';
+          return;
+        }
+        
+        if (username && (username.length < 3 || username.length > 30)) {
+          messageDiv.innerHTML = '<div class="text-destructive">Username must be between 3 and 30 characters</div>';
+          return;
+        }
+
+        if (bio && bio.length > 200) {
+          messageDiv.innerHTML = '<div class="text-destructive">Bio must be 200 characters or less</div>';
+          return;
+        }
+        
+        try {
+          messageDiv.innerHTML = '<div class="text-muted-foreground">Saving changes...</div>';
+          
+          // Import Supabase client
+          const { supabase } = await import('/src/lib/supabase.ts');
+          
+          // Update profile in database
+          const { data, error } = await supabase
+            .from('profiles')
+            .upsert({
+              id: currentUser.id,
+              username: username || null,
+              full_name: fullName || null,
+              bio: bio || null,
+              updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+
+          if (error) {
+            messageDiv.innerHTML = `<div class="text-destructive">Error: ${error.message}</div>`;
+          } else {
+            messageDiv.innerHTML = '<div class="text-green-600 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Profile updated successfully!</div>';
+            
+            // Update original values
+            originalValues.username = username;
+            originalValues.fullName = fullName;
+            originalValues.bio = bio;
+            
+            // Exit editing mode
+            isEditing = false;
+            usernameInput.disabled = true;
+            fullNameInput.disabled = true;
+            bioInput.disabled = true;
+            profileActions.classList.add('hidden');
+            editBtn.textContent = 'Edit Profile';
+            editBtn.disabled = false;
+            
+            // If username changed, redirect to new URL after a delay
+            if (username && username !== profile?.username) {
+              setTimeout(() => {
+                window.location.href = `/users/${currentUser.id}/settings`;
+              }, 1500);
+            }
+          }
+        } catch (error) {
+          messageDiv.innerHTML = `<div class="text-destructive">Error: ${error.message}</div>`;
+        }
+      });
+
+      // Sign out handler
+      signOutBtn?.addEventListener('click', async () => {
+        try {
+          const { supabase } = await import('/src/lib/supabase.ts');
+          await supabase.auth.signOut();
+          window.location.href = '/';
+        } catch (error) {
+          console.error('Sign out error:', error);
+        }
+      });
+
+      // Delete account handler
+      deleteAccountBtn?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+          if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
+            // Implement account deletion logic here
+            alert('Account deletion is not yet implemented. Please contact support.');
+          }
+        }
+      });
+    </script>
+  )}
+</Layout>
