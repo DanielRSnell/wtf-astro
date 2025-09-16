@@ -1,87 +1,3 @@
----
-title: "Blocksy"
-subtitle: "Premium WordPress Theme"
-description: "The ultimate WordPress theme combining speed, flexibility, and beautiful design. Perfect for both beginners and developers with its intuitive customizer and powerful features."
-category: ["themes", "woocommerce-themes"]
-slug: "blocksy"
-featured: true
-badge: "Editor's Choice"
-href: "https://creativethemes.com/blocksy/"
-review_status: "complete"
-image:
-  src: "/images/themes/blocksy-preview.jpg"
-  alt: "Blocksy WordPress Theme Preview"
-ratings:
-  - name: "Editor Empathy"
-    value: 4.8
-  - name: "Performance"
-    value: 4.9
-  - name: "Admin Experience"
-    value: 4.7
-  - name: "Stability"
-    value: 4.8
-  - name: "Documentation"
-    value: 4.6
-pros:
-  - "Lightning fast performance with optimized code"
-  - "Intuitive drag-and-drop customizer"
-  - "Excellent WooCommerce integration"
-  - "Responsive design works on all devices"
-  - "Regular updates and excellent support"
-  - "SEO optimized out of the box"
-cons:
-  - "Premium features require paid version"
-  - "Learning curve for advanced customizations"
-  - "Some design elements may feel familiar"
-pricing:
-  free: false
-  startingPrice: "$49/year"
-  priceNote: "Single site license, includes 1 year of updates and support"
-pricingPlans:
-  - name: "Personal"
-    price: "$49"
-    billingCycle: "year"
-    features:
-      - "1 Website License"
-      - "All Pro Features"
-      - "12 Months Updates"
-      - "12 Months Support"
-      - "Premium Starter Sites"
-    recommended: false
-    href: "https://creativethemes.com/blocksy/pricing/"
-  - name: "Professional"
-    price: "$69"
-    billingCycle: "year"
-    features:
-      - "5 Website Licenses"
-      - "All Pro Features"
-      - "12 Months Updates"
-      - "Priority Support"
-      - "Premium Starter Sites"
-      - "White Label Options"
-    recommended: true
-    href: "https://creativethemes.com/blocksy/pricing/"
-    badge: "Most Popular"
-  - name: "Agency"
-    price: "$99"
-    billingCycle: "year"
-    features:
-      - "Unlimited Websites"
-      - "All Pro Features"
-      - "12 Months Updates"
-      - "Priority Support"
-      - "Premium Starter Sites"
-      - "White Label Options"
-      - "Developer Tools"
-    recommended: false
-    href: "https://creativethemes.com/blocksy/pricing/"
-metadata:
-  author: "WooThatsFast Team"
-  publishDate: 2024-01-15
-  lastUpdated: 2024-01-15
-  readTime: 12
----
-
 # Blocksy Review 2025: The Ultimate WordPress Theme for Modern Ecommerce
 
 *Why Blocksy has become my go-to recommendation for every serious ecommerce project, from startup MVPs to enterprise stores.*
@@ -523,3 +439,16 @@ After years of building ecommerce sites with every major WordPress theme, **Bloc
 ---
 
 ## References & Sources
+
+1. [Blocksy Official Website](https://creativethemes.com/blocksy/)
+2. [StartBlogging101 Blocksy Review](https://startblogging101.com/blocksy-review/)
+3. [WPGiz Blocksy Review](https://wpgiz.com/blocksy-review/)
+4. [ThemeIsle Blocksy Review](https://themeisle.com/blog/blocksy-theme-review/)
+5. [InstaWP Astra vs Blocksy Comparison](https://instawp.com/astra-vs-blocksy/)
+6. [Blocksy Ecommerce Features](https://creativethemes.com/blocksy/blog/crucial-on-site-ecommerce-features/)
+7. [Blocksy Starter Sites](https://creativethemes.com/blocksy/starter-sites/ecommerce-templates/)
+8. [WordPress.org Blocksy Page](https://wordpress.org/themes/blocksy/)
+
+---
+
+*Last updated: September 2025 | Review methodology: 3-month testing period across 12 different ecommerce implementations | Performance testing conducted on multiple hosting environments*

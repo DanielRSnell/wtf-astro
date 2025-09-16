@@ -14,6 +14,13 @@
         "@modelcontextprotocol/server-postgres",
         "postgresql://postgres.ugqbxwlsnqkxyqcheygf:!umbralShared@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
       ]
+    },
+    "contentCreator": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://api.umbral.ai/mcp/69f3b3a9-acad-4c29-8181-acf7b1f70a1b"
+      ]
     }
   }
 }

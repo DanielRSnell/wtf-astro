@@ -1,5 +1,5 @@
 import { Menu, X, ChevronDown, LogIn, UserPlus, Zap, Code, Package, BookOpen, FileText, Shield, Search, Gauge, Server, Palette, Plug, Bot, Lock } from "lucide-react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
@@ -77,6 +77,42 @@ const AuthButtons = () => {
 
 const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const { loading } = useAuth();
+
+  // Set up interaction detection
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      setHasInteracted(true);
+      document.removeEventListener('mousemove', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('mousemove', handleFirstInteraction);
+    document.addEventListener('scroll', handleFirstInteraction);
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('mousemove', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
+
+  // Trigger animation when auth loading completes AND user has interacted
+  useEffect(() => {
+    if (hasInteracted && !loading && !hasAnimated) {
+      setHasAnimated(true);
+    }
+  }, [hasInteracted, loading, hasAnimated]);
 
   // Services mega menu data
   const servicesSections: MegaMenuSection[] = [
@@ -244,7 +280,11 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
     <header 
       className="fixed top-0 left-0 right-0 z-[9999]" 
       data-theme={dataTheme}
-      style={{ animation: 'slide-down 0.6s ease-out forwards' }}
+      style={{ 
+        transform: hasAnimated ? 'translateY(0)' : 'translateY(-100%)',
+        opacity: hasAnimated ? 1 : 0,
+        transition: hasInteracted ? 'transform 0.6s ease-out, opacity 0.6s ease-out' : 'none'
+      }}
     >
       {/* Glassmorphism Header */}
       <div className="relative">
