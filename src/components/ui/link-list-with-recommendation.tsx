@@ -130,17 +130,17 @@ const LinkListWithRecommendation = ({
           <div>
             {/* Header */}
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
+              <h2 className="title text-2xl font-bold text-foreground mb-2">
                 {title}
               </h2>
               <div className="h-1 w-12 rounded-full bg-gradient-to-r from-primary to-primary/60 mb-3" />
               {subtitle && (
-                <p className="text-muted-foreground text-sm mb-2">
+                <p className="subtitle text-muted-foreground text-sm mb-2">
                   {subtitle}
                 </p>
               )}
               {description && (
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="description text-muted-foreground text-sm leading-relaxed">
                   {description}
                 </p>
               )}
@@ -172,14 +172,14 @@ const LinkListWithRecommendation = ({
                           )}
                         </div>
                         {link.description && (
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="text-xs description  pr-2 text-muted-foreground mt-1">
                             {link.description}
                           </div>
                         )}
                       </div>
                     </div>
                     {link.href && (
-                      <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors duration-200 flex-shrink-0" />
+                      <ExternalLink className="h-4 w-4  link-icon text-muted-foreground group-hover:text-primary transition-colors duration-200 flex-shrink-0" />
                     )}
                   </a>
                 </div>

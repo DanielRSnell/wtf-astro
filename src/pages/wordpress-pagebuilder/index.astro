@@ -1,0 +1,44 @@
+---
+export const prerender = true;
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '../../components/resource-directory.tsx';
+import { getCollection } from 'astro:content';
+
+const resources = await getCollection('wordpress-resource', (resource) => {
+  const category = resource.data.category;
+  if (Array.isArray(category)) {
+    return category.includes('wordpress-pagebuilder');
+  }
+  return category === 'wordpress-pagebuilder';
+});
+
+const blogPosts = await getCollection('blog');
+const relatedPosts = blogPosts.filter(post => 
+  post.data.tags?.some(tag => 
+    tag.toLowerCase().includes('builder') || 
+    tag.toLowerCase().includes('elementor') ||
+    tag.toLowerCase().includes('divi') ||
+    tag.toLowerCase().includes('bricks')
+  )
+);
+
+const title = 'WordPress Page Builders';
+const description = 'In-depth reviews and comparisons of WordPress page builders including Elementor, Divi, Bricks Builder, and modern visual development platforms.';
+const baseUrl = '/wordpress-pagebuilder';
+---
+
+<Layout 
+  title={title} 
+  description={description}
+>
+  <ResourceDirectory
+    client:load
+    data-theme="bright-dark"
+    category="WordPress Page Builders"
+    title={title}
+    description={description}
+    resources={resources}
+    relatedPosts={relatedPosts}
+    baseUrl={baseUrl}
+  />
+</Layout>

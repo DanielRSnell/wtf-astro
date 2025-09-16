@@ -1,0 +1,36 @@
+---
+export const prerender = true;
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ResourceLayout from '../../layouts/resource-layout.astro';
+
+export async function getStaticPaths() {
+  const resources = await getCollection('wordpress-resource', (resource) => {
+    const category = resource.data.category;
+    // Handle both string and array categories
+    if (Array.isArray(category)) {
+      return category.includes('wordpress-blocks');
+    }
+    return category === 'wordpress-blocks';
+  });
+  
+  return resources.map((resource) => ({
+    params: { 
+      slug: resource.data.slug 
+    },
+    props: { resource }
+  }));
+}
+
+type Props = {
+  resource: CollectionEntry<'wordpress-resource'>;
+};
+
+const { resource } = Astro.props;
+
+// Safety check - return a 404 if resource is missing
+if (!resource || !resource.data) {
+  return Astro.redirect('/404');
+}
+---
+
+<ResourceLayout resource={resource} categoryName="WordPress Blocks" />

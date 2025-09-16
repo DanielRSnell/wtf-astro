@@ -1,4 +1,4 @@
-import { FileText, Server, Palette, Shield, Zap, Globe, FormInput, Workflow, Settings } from "lucide-react";
+import { FileText, Server, Palette, Shield, Zap, Globe, FormInput, Workflow, Settings, Box, Layers } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { LinkListWithRecommendation } from "./ui/link-list-with-recommendation";
@@ -79,6 +79,8 @@ const ResourceHub = ({
     performance: Zap,
     'woocommerce-themes': Palette,
     'woocommerce-plugins': Server,
+    'wordpress-blocks': Box,
+    'wordpress-pagebuilder': Layers,
     seo: Globe,
     forms: FormInput,
     automation: Workflow,
@@ -121,8 +123,8 @@ const ResourceHub = ({
     const sortedResources = resourcesWithRatings.sort((a, b) => b.avgRating - a.avgRating);
 
     // Generate links from sorted resources with rating badges
-    // Use wordpress- prefix for all categories except woocommerce ones
-    const categoryPath = cat.data.category.startsWith('woocommerce-') 
+    // Use category as-is if it already has a prefix, otherwise add wordpress- prefix
+    const categoryPath = cat.data.category.startsWith('woocommerce-') || cat.data.category.startsWith('wordpress-')
       ? cat.data.category
       : `wordpress-${cat.data.category}`;
     

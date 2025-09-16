@@ -26,8 +26,8 @@ const wordpressResource = defineCollection({
     subtitle: z.string().optional(),
     description: z.string(),
     category: z.union([
-      z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting']),
-      z.array(z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting']))
+      z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting', 'wordpress-blocks', 'wordpress-pagebuilder']),
+      z.array(z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting', 'wordpress-blocks', 'wordpress-pagebuilder']))
     ]),
     slug: z.string(),
     featured: z.boolean().default(false),
@@ -80,7 +80,7 @@ const wordpressCategoryIndex = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    category: z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting']),
+    category: z.enum(['themes', 'hosting', 'security', 'performance', 'seo', 'woocommerce-themes', 'woocommerce-plugins', 'forms', 'automation', 'admin', 'wordpress-hosting', 'woocommerce-hosting', 'wordpress-blocks', 'wordpress-pagebuilder']),
     subtitle: z.string().optional(),
     count: z.number(),
     topRecommendation: z.object({
