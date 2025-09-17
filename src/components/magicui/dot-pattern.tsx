@@ -129,7 +129,6 @@ export function DotPattern({
           r={cr}
           fill={glow ? `url(#${id}-gradient)` : "currentColor"}
           className={cn(
-            "text-neutral-400/80",
             glow && "animate-pulse"
           )}
           style={glow ? {

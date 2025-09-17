@@ -7,7 +7,24 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 // Get all resources
 const resources = await getCollection('wordpress-resource');
 
-// Group resources by category
+// Define valid primary categories for comparisons
+const validPrimaryCategories = new Set([
+  'themes',
+  'wordpress-hosting',
+  'performance',
+  'seo',
+  'security',
+  'woocommerce-themes',
+  'woocommerce-plugins',
+  'woocommerce-hosting',
+  'wordpress-blocks',
+  'wordpress-pagebuilder',
+  'forms',
+  'automation',
+  'admin'
+]);
+
+// Group resources by PRIMARY category only (not subcategories)
 const resourcesByCategory = new Map<string, CollectionEntry<'wordpress-resource'>[]>();
 
 resources.forEach(resource => {
@@ -15,23 +32,29 @@ resources.forEach(resource => {
     ? resource.data.category 
     : [resource.data.category];
   
-  categories.forEach(category => {
-    if (!resourcesByCategory.has(category)) {
-      resourcesByCategory.set(category, []);
+  // Only use the first valid primary category for grouping
+  const primaryCategory = categories.find(cat => validPrimaryCategories.has(cat));
+  
+  if (primaryCategory) {
+    if (!resourcesByCategory.has(primaryCategory)) {
+      resourcesByCategory.set(primaryCategory, []);
     }
-    resourcesByCategory.get(category)!.push(resource);
-  });
+    resourcesByCategory.get(primaryCategory)!.push(resource);
+  }
 });
 
-// Generate comparison data
+// Generate comparison data with proper category names
 const categoryNames: Record<string, string> = {
   themes: 'WordPress Themes',
-  hosting: 'WordPress Hosting',
-  security: 'WordPress Security',
+  'wordpress-hosting': 'WordPress Hosting', 
   performance: 'WordPress Performance',
   seo: 'WordPress SEO',
+  security: 'WordPress Security',
   'woocommerce-themes': 'WooCommerce Themes',
   'woocommerce-plugins': 'WooCommerce Plugins',
+  'woocommerce-hosting': 'WooCommerce Hosting',
+  'wordpress-blocks': 'WordPress Blocks',
+  'wordpress-pagebuilder': 'WordPress Page Builders',
   forms: 'WordPress Forms',
   automation: 'WordPress Automation',
   admin: 'WordPress Admin'
@@ -132,7 +155,7 @@ resourcesByCategory.forEach((categoryResources, category) => {
       <div class="space-y-16">
         {comparisons.map((categoryGroup) => (
           <section>
-            <h2 class="text-2xl font-bold text-foreground mb-8">{categoryGroup.categoryName} Comparisons</h2>
+            <h2 class="text-2xl font-bold text-foreground mb-8">{categoryGroup.categoryName} Compared</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categoryGroup.items.map((comparison) => (
                 <a 

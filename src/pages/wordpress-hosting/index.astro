@@ -7,7 +7,10 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all hosting resources from the wordpress-resource collection
 const hostingResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'hosting';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('wordpress-hosting') || categories.includes('hosting');
 });
 
 // Get hosting-related blog posts

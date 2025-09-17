@@ -325,3 +325,52 @@ Focus on [specific aspects user wants emphasized] and target [audience type].
 **SEO**: Optimized structure and content organization for search visibility
 
 This agent ensures all review content maintains the high standards established in the Blocksy review while scaling content creation efficiently.
+
+---
+
+## Category Recommendations System
+
+### How Category Recommendations Work
+
+Category recommendations (Top Pick, Runner Up, Honorable Mention) are managed through the `wordpress-category` content collection. **DO NOT** add custom recommendation sections to category pages or modify components directly.
+
+### Setting Recommendations
+
+**Process:**
+1. Navigate to `/src/content/wordpress-category/[category].mdx`
+2. Update the frontmatter with resource slugs
+3. The ResourceHub component automatically displays them
+
+**Example:**
+```yaml
+topRecommendation:
+  slug: "spinupwp"           # Must match resource slug exactly
+  badge: "Developer's Choice" # Display badge
+runnerUp:
+  slug: "rocket-net"
+  badge: "Managed Excellence"
+honorableMention:
+  slug: "vultr"
+  badge: "Best Infrastructure"
+```
+
+### Important Rules
+
+- **Slugs must match exactly** - Must correspond to resource slugs in `/src/content/wordpress-resource/`
+- **Use category files only** - Never hardcode recommendations in pages or components
+- **Resources must exist** - Only reference existing resources
+- **Follow the system** - The ResourceHub component handles display automatically
+
+### Common Mistakes to Avoid
+
+❌ **DON'T**: Add custom recommendation sections to pages
+❌ **DON'T**: Modify ResourceHub or other components
+❌ **DON'T**: Create separate recommendation components
+
+✅ **DO**: Update the category MDX file frontmatter
+✅ **DO**: Use exact slug matches
+✅ **DO**: Let the system handle display
+
+For complete documentation, see: `/docs/CATEGORY_RECOMMENDATIONS.md`
+
+This system ensures consistent recommendation display across all categories while maintaining a single source of truth for category recommendations.

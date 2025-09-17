@@ -99,7 +99,7 @@ const isSkip = resource.data.review_status === 'skip';
         </div>
       )}
 
-      {/* MDX Content */}
+      {/* MDX Content with Fallback */}
       <div class="prose prose-lg max-w-none 
         prose-headings:text-foreground 
         prose-p:text-foreground/90 
@@ -115,7 +115,136 @@ const isSkip = resource.data.review_status === 'skip';
         prose-table:text-foreground prose-th:text-foreground prose-td:text-foreground/90
         prose-h1:text-foreground prose-h2:text-foreground prose-h3:text-foreground prose-h4:text-foreground
         prose-lead:text-foreground/90">
-        <Content />
+        
+        {/* Check if content is empty or placeholder */}
+        {resource.data.useFallback || !resource.body || resource.body.trim() === '' ? (
+          <div class="space-y-8">
+            {/* Fallback Content Structure */}
+            <div class="bg-primary/5 border border-primary/20 rounded-2xl p-8 text-center">
+              <h2 class="text-2xl font-bold text-foreground mb-4">
+                Full Review Coming Soon
+              </h2>
+              <p class="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+                We're currently testing and evaluating {resource.data.title} to bring you a comprehensive, 
+                in-depth review. Our team is analyzing performance, features, pricing, and real-world usage.
+              </p>
+              
+              {/* Expected Content Preview */}
+              <div class="grid md:grid-cols-2 gap-6 mt-8 text-left max-w-3xl mx-auto">
+                <div class="bg-card/60 backdrop-blur-xl border border-border/20 rounded-xl p-6">
+                  <h3 class="font-semibold text-foreground mb-3">What We're Testing</h3>
+                  <ul class="space-y-2 text-sm text-muted-foreground">
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Core features and functionality</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Performance and speed metrics</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>User experience and interface</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Value for money analysis</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="bg-card/60 backdrop-blur-xl border border-border/20 rounded-xl p-6">
+                  <h3 class="font-semibold text-foreground mb-3">What to Expect</h3>
+                  <ul class="space-y-2 text-sm text-muted-foreground">
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Detailed feature breakdown</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Real-world use cases</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Comparison with alternatives</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-primary">•</span>
+                      <span>Expert recommendations</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick Overview Section */}
+            <div class="space-y-6">
+              <h2 class="text-2xl font-bold text-foreground">Quick Overview</h2>
+              <p class="text-foreground/90">
+                {resource.data.description}
+              </p>
+              
+              {resource.data.subtitle && (
+                <p class="text-lg text-muted-foreground italic">
+                  {resource.data.subtitle}
+                </p>
+              )}
+              
+              {/* Key Information */}
+              <div class="bg-card/60 backdrop-blur-xl border border-border/20 rounded-xl p-6">
+                <h3 class="font-semibold text-foreground mb-4">Key Information</h3>
+                <dl class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <dt class="text-sm text-muted-foreground">Category</dt>
+                    <dd class="text-foreground font-medium">{categoryName}</dd>
+                  </div>
+                  {resource.data.metadata?.official_website && (
+                    <div>
+                      <dt class="text-sm text-muted-foreground">Official Website</dt>
+                      <dd>
+                        <a href={resource.data.metadata.official_website} 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="text-primary hover:text-primary/80 transition-colors">
+                          Visit Website →
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                  {resource.data.pricing?.startingPrice && (
+                    <div>
+                      <dt class="text-sm text-muted-foreground">Starting Price</dt>
+                      <dd class="text-foreground font-medium">{resource.data.pricing.startingPrice}</dd>
+                    </div>
+                  )}
+                  {resource.data.pricing?.free !== undefined && (
+                    <div>
+                      <dt class="text-sm text-muted-foreground">Free Version</dt>
+                      <dd class="text-foreground font-medium">
+                        {resource.data.pricing.free ? 'Available' : 'Premium Only'}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            </div>
+            
+            {/* Notification Signup */}
+            <div class="bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 border border-primary/20 rounded-2xl p-8 text-center">
+              <h3 class="text-xl font-semibold text-foreground mb-3">
+                Get Notified When This Review is Ready
+              </h3>
+              <p class="text-muted-foreground mb-6">
+                Be the first to read our comprehensive review of {resource.data.title}
+              </p>
+              <button class="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                Notify Me When Available
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Content />
+        )}
       </div>
 
       {/* Pros and Cons */}

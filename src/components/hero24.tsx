@@ -48,24 +48,23 @@ const Hero24 = ({ "data-theme": dataTheme, content }: Hero24Props) => {
       data-theme={dataTheme}
     >
       {/* Background decorative elements */}
-      <div className="absolute inset-0 ">
-        {/* Dot pattern background */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Dot pattern background - increased visibility */}
         <DotPattern
           glow={true}
-          className="text-primary opacity-80"
-          width={30}
-          height={30}
-          cx={1}
-          cy={1}
+          className="text-primary/60 fill-primary/60"
+          width={32}
+          height={32}
+          cx={2}
+          cy={2}
           cr={2}
         />
         
         {/* Gradient overlay for smooth blend */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/80 pointer-events-none" />
         
         {/* Original blur elements */}
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
       </div>
       
       <div className="container relative">
