@@ -1,13 +1,20 @@
 import { createBrowserClient } from '@supabase/ssr';
 
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Create a dummy client if environment variables are missing
+// This allows the app to run without Supabase configured
+const createSupabaseClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Supabase environment variables not configured. Authentication features will be disabled.');
+    // Return a mock client that won't crash the app
+    return null;
+  }
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+};
 
-export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createSupabaseClient();
 
 // Types for our application
 export interface UserProfile {
@@ -22,6 +29,8 @@ export interface UserProfile {
 
 // Helper function to get current user profile
 export async function getCurrentUserProfile(): Promise<UserProfile | null> {
+  if (!supabase) return null;
+  
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) return null;

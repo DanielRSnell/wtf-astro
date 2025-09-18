@@ -72,10 +72,10 @@ let profile = null;
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
     <ViewTransitions />
-    <Header client:only="react" data-theme="bright-dark" />
+    <Header client:idle data-theme="bright-dark" />
     <main>
       <slot />
     </main>
-    <Footer client:only="react" data-theme="bright-dark" />
+    <Footer client:idle data-theme="bright-dark" />
   </body>
 </html>

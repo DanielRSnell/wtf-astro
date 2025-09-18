@@ -62,6 +62,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const fetchUserProfile = async (userId: string, useCache: boolean = true) => {
+    if (!supabase) return null;
+    
     try {
       // Check cache first if enabled
       if (useCache && isCacheValid(userId)) {
@@ -101,6 +103,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
+    // If supabase is not configured, set loading to false and return
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+    
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('📧 Initial session check:', session?.user?.email || 'No user');
@@ -140,6 +148,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) {
+      return { error: { message: 'Authentication is not configured' } };
+    }
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -148,6 +159,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    if (!supabase) {
+      return { error: { message: 'Authentication is not configured' } };
+    }
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -161,6 +175,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      return { error: { message: 'Authentication is not configured' } };
+    }
     const { error } = await supabase.auth.signOut();
     
     // Clear cached profile data
@@ -177,6 +194,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
+    if (!supabase) {
+      return { error: { message: 'Authentication is not configured' } };
+    }
     if (!user) {
       return { error: { message: 'No user logged in' } };
     }
