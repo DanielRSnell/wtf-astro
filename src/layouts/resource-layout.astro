@@ -1,6 +1,9 @@
 ---
 import Layout from './base.astro';
 import { ReviewHero } from '../components/review-hero.tsx';
+import { FAQ } from '../components/ui/faq.tsx';
+import { BreadcrumbInline } from '../components/ui/breadcrumb-inline.tsx';
+import { generateBreadcrumbSchema } from '../components/ui/breadcrumb-wrapper.tsx';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -21,6 +24,68 @@ const isComplete = resource.data.review_status === 'complete';
 const isActive = resource.data.review_status === 'active';
 const isBacklog = resource.data.review_status === 'backlog';
 const isSkip = resource.data.review_status === 'skip';
+
+// Prepare FAQ schema data if FAQs exist
+const faqSchema = resource.data.faq && resource.data.faq.length > 0 ? {
+  "@type": "FAQPage",
+  mainEntity: resource.data.faq.map((item: { q: string, a: string }) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a
+    }
+  }))
+} : null;
+
+// Get the primary category for URL
+const primaryCategory = Array.isArray(resource.data.category) 
+  ? resource.data.category[0] 
+  : resource.data.category;
+
+// Map category to proper URL path
+const getCategoryUrl = (category: string) => {
+  // Handle special cases where category doesn't match URL pattern
+  if (category === 'themes') return '/wordpress-themes';
+  if (category === 'hosting') return '/wordpress-hosting';
+  if (category === 'seo') return '/wordpress-seo';
+  if (category === 'performance') return '/wordpress-performance';
+  if (category === 'security') return '/wordpress-security';
+  if (category === 'forms') return '/wordpress-forms';
+  if (category === 'blocks') return '/wordpress-blocks';
+  if (category === 'pagebuilder') return '/wordpress-pagebuilder';
+  if (category === 'admin') return '/wordpress-admin';
+  if (category === 'automation') return '/wordpress-automation';
+  if (category === 'woocommerce-themes') return '/woocommerce-themes';
+  if (category === 'woocommerce-plugins') return '/woocommerce-plugins';
+  if (category === 'woocommerce-hosting') return '/woocommerce-hosting';
+  
+  // Default: prefix with wordpress- if not already
+  if (!category.startsWith('wordpress-') && !category.startsWith('woocommerce-')) {
+    return `/wordpress-${category}`;
+  }
+  return `/${category}`;
+};
+
+// Generate breadcrumb items
+const breadcrumbItems = [
+  {
+    name: 'Home',
+    href: '/'
+  },
+  {
+    name: categoryName,
+    href: getCategoryUrl(primaryCategory)
+  },
+  {
+    name: resource.data.title,
+    current: true
+  }
+];
+
+// Generate breadcrumb schema
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://blocksy-components.com';
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems, siteUrl);
 ---
 
 <Layout 
@@ -29,47 +94,51 @@ const isSkip = resource.data.review_status === 'skip';
   image={resource.data.image?.src || "/open-graph.png"}
   canonical={`/${resource.data.category}/${resource.data.slug}`}
   schemaType="Review"
-  schemaData={{
-    "@type": "Review",
-    name: `${resource.data.title} Review`,
-    reviewBody: resource.data.description,
-    author: {
-      "@type": "Person",
-      name: resource.data.metadata?.author || "Blocksy Components Team"
-    },
-    datePublished: resource.data.metadata?.publishDate?.toISOString(),
-    dateModified: resource.data.metadata?.lastUpdated?.toISOString() || resource.data.metadata?.publishDate?.toISOString(),
-    itemReviewed: {
-      "@type": "Product",
-      name: resource.data.title,
-      description: resource.data.subtitle,
-      image: resource.data.image?.src || "/open-graph.png",
-      brand: {
-        "@type": "Brand",
-        name: resource.data.title
+  schemaData={[
+    breadcrumbSchema,
+    {
+      "@type": "Review",
+      name: `${resource.data.title} Review`,
+      reviewBody: resource.data.description,
+      author: {
+        "@type": "Person",
+        name: resource.data.metadata?.author || "Daniel Snell"
       },
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "USD",
-        price: resource.data.pricing?.startingPrice?.replace(/[^0-9.]/g, '') || "0",
-        availability: "https://schema.org/InStock",
-        url: resource.data.href
+      datePublished: resource.data.metadata?.publishDate?.toISOString(),
+      dateModified: resource.data.metadata?.lastUpdated?.toISOString() || resource.data.metadata?.publishDate?.toISOString(),
+      itemReviewed: {
+        "@type": "Product",
+        name: resource.data.title,
+        description: resource.data.subtitle,
+        image: resource.data.image?.src || "/open-graph.png",
+        brand: {
+          "@type": "Brand",
+          name: resource.data.title
+        },
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "USD",
+          price: resource.data.pricing?.startingPrice?.replace(/[^0-9.]/g, '') || "0",
+          availability: "https://schema.org/InStock",
+          url: resource.data.href
+        }
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: overallRating.toFixed(1),
+        bestRating: "5",
+        worstRating: "1"
       }
     },
-    reviewRating: {
-      "@type": "Rating",
-      ratingValue: overallRating.toFixed(1),
-      bestRating: "5",
-      worstRating: "1"
-    }
-  }}
+    ...(faqSchema ? [faqSchema] : [])
+  ]}
   product={{
     price: resource.data.pricing?.startingPrice?.replace(/[^0-9.]/g, ''),
     currency: "USD",
     availability: "InStock"
   }}
 >
-  {/* Review Hero Section */}
+  {/* Review Hero Section with Breadcrumb */}
   <ReviewHero
     client:load
     data-theme="bright-dark"
@@ -82,6 +151,7 @@ const isSkip = resource.data.review_status === 'skip';
     badge={resource.data.badge}
     ratings={resource.data.ratings || []}
     alignment="left"
+    breadcrumbItems={breadcrumbItems}
   />
 
   <article class="bg-background text-foreground" data-theme="bright-dark">
@@ -426,6 +496,16 @@ const isSkip = resource.data.review_status === 'skip';
             )}
           </div>
         </div>
+      )}
+
+      {/* FAQ Section */}
+      {resource.data.faq && resource.data.faq.length > 0 && (
+        <FAQ 
+          client:visible
+          items={resource.data.faq} 
+          title="Frequently Asked Questions"
+          className="mt-16"
+        />
       )}
 
     </div>

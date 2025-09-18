@@ -50,7 +50,7 @@ switch (type) {
       "image": data.image || `${siteUrl}/open-graph.png`,
       "author": {
         "@type": "Person",
-        "name": data.author || "Blocksy Components Team"
+        "name": data.author || "Daniel Snell"
       },
       "publisher": {
         "@type": "Organization",
@@ -107,7 +107,7 @@ switch (type) {
       "reviewBody": data.description,
       "author": {
         "@type": "Person",
-        "name": data.author || "Blocksy Components Team"
+        "name": data.author || "Daniel Snell"
       },
       "datePublished": data.publishedDate,
       "itemReviewed": {
@@ -164,8 +164,27 @@ switch (type) {
     schema = websiteSchema;
 }
 
-// Filter out undefined values
-const cleanSchema = JSON.parse(JSON.stringify(schema));
+// Handle arrays for multiple schemas
+const schemas = Array.isArray(data) ? data : [schema];
+
+// Filter out undefined values from all schemas
+const cleanSchemas = schemas
+  .filter(s => s && Object.keys(s).length > 0)
+  .map(s => {
+    // Ensure @context is present for each schema
+    if (!s['@context']) {
+      s['@context'] = 'https://schema.org';
+    }
+    return JSON.parse(JSON.stringify(s));
+  });
+
+// Use single schema or @graph for multiple schemas
+const finalSchema = cleanSchemas.length === 1 
+  ? cleanSchemas[0] 
+  : {
+      "@context": "https://schema.org",
+      "@graph": cleanSchemas
+    };
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(cleanSchema, null, 2)} />
+<script type="application/ld+json" set:html={JSON.stringify(finalSchema, null, 2)} />

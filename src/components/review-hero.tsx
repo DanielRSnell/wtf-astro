@@ -1,4 +1,5 @@
-import { Star, Calendar, User } from "lucide-react";
+import React from "react";
+import { Star, Calendar, User, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 
@@ -6,6 +7,12 @@ interface RatingItem {
   name: string;
   value: number;
   maxValue?: number;
+}
+
+export interface BreadcrumbItem {
+  name: string;
+  href?: string;
+  current?: boolean;
 }
 
 interface ReviewHeroProps {
@@ -21,6 +28,7 @@ interface ReviewHeroProps {
   alignment?: "left" | "center";
   className?: string;
   "data-theme"?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }
 
 const ReviewHero = ({
@@ -35,7 +43,8 @@ const ReviewHero = ({
   ratings,
   alignment = "left",
   className,
-  "data-theme": dataTheme
+  "data-theme": dataTheme,
+  breadcrumbItems
 }: ReviewHeroProps) => {
 
   const RatingDisplay = ({ ratings }: { ratings: RatingItem[] }) => {
@@ -157,6 +166,42 @@ const ReviewHero = ({
             >
               <div className="h-2 w-2 rounded-full bg-primary" />
               <span className="text-sm font-medium text-primary">{badge}</span>
+            </div>
+          )}
+          
+          {/* Breadcrumb */}
+          {breadcrumbItems && breadcrumbItems.length > 0 && (
+            <div className="mb-4">
+              <nav aria-label="Breadcrumb" className="flex items-center text-sm">
+                {breadcrumbItems.map((item, index) => {
+                  const isLast = index === breadcrumbItems.length - 1;
+                  return (
+                    <React.Fragment key={index}>
+                      {item.href && !isLast ? (
+                        <a
+                          href={item.href}
+                          className="text-muted-foreground hover:text-primary transition-colors duration-200"
+                          aria-current={item.current ? 'page' : undefined}
+                        >
+                          {item.name}
+                        </a>
+                      ) : (
+                        <span
+                          className={cn(
+                            isLast ? "text-foreground" : "text-muted-foreground"
+                          )}
+                          aria-current={isLast ? 'page' : undefined}
+                        >
+                          {item.name}
+                        </span>
+                      )}
+                      {!isLast && (
+                        <ChevronRight className="h-4 w-4 mx-2 flex-shrink-0 text-muted-foreground/50" />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </nav>
             </div>
           )}
           
