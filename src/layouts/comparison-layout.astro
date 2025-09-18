@@ -186,11 +186,139 @@ const generateDosAndDonts = () => {
 };
 
 const guidelines = generateDosAndDonts();
+
+// Create comprehensive comparison schema
+const comparisonTitle = `${resourceA.data.title} vs ${resourceB.data.title} (2024) - Complete Comparison`;
+const comparisonDescription = `Detailed comparison of ${resourceA.data.title} and ${resourceB.data.title} for ${new Date().getFullYear()}. Compare features, pricing, performance, support, and find which ${categoryName.toLowerCase()} solution is best for your needs. Expert review with side-by-side analysis.`;
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/compare",
+        "name": "Comparisons"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@id": `https://blocksy-components.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
+        "name": `${resourceA.data.title} vs ${resourceB.data.title}`
+      }
+    }
+  ]
+};
+
+// Create comparison schema with Product and Review data
+const comparisonSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": comparisonTitle,
+  "description": comparisonDescription,
+  "url": `https://blocksy-components.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": `${resourceA.data.title} vs ${resourceB.data.title} Comparison`,
+    "description": `Side-by-side comparison of ${resourceA.data.title} and ${resourceB.data.title}`,
+    "numberOfItems": 2,
+    "itemListElement": [
+      {
+        "@type": "Product",
+        "position": 1,
+        "name": resourceA.data.title,
+        "description": resourceA.data.subtitle || resourceA.data.description,
+        "url": `https://blocksy-components.com${reviewUrlA}`,
+        "category": categoryName,
+        "aggregateRating": resourceA.data.ratings ? {
+          "@type": "AggregateRating",
+          "ratingValue": overallRatingA.toFixed(1),
+          "bestRating": "5",
+          "worstRating": "1",
+          "reviewCount": "1"
+        } : undefined,
+        "review": {
+          "@type": "Review",
+          "name": `${resourceA.data.title} Review`,
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": overallRatingA.toFixed(1),
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "Blocksy Components"
+          }
+        }
+      },
+      {
+        "@type": "Product",
+        "position": 2,
+        "name": resourceB.data.title,
+        "description": resourceB.data.subtitle || resourceB.data.description,
+        "url": `https://blocksy-components.com${reviewUrlB}`,
+        "category": categoryName,
+        "aggregateRating": resourceB.data.ratings ? {
+          "@type": "AggregateRating",
+          "ratingValue": overallRatingB.toFixed(1),
+          "bestRating": "5",
+          "worstRating": "1",
+          "reviewCount": "1"
+        } : undefined,
+        "review": {
+          "@type": "Review",
+          "name": `${resourceB.data.title} Review`,
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": overallRatingB.toFixed(1),
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "Blocksy Components"
+          }
+        }
+      }
+    ]
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Blocksy Components"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Blocksy Components",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blocksy-components.com/logo.png"
+    }
+  },
+  "datePublished": new Date().toISOString(),
+  "dateModified": new Date().toISOString()
+};
 ---
 
 <Layout 
-  title={`${resourceA.data.title} vs ${resourceB.data.title} - ${categoryName} Comparison`} 
-  description={`Comprehensive comparison between ${resourceA.data.title} and ${resourceB.data.title}. Compare features, performance, pricing, and find out which is best for your needs.`}
+  title={comparisonTitle} 
+  description={comparisonDescription}
+  image="/open-graph.png"
+  schemaType="WebPage"
+  schemaData={comparisonSchema}
 >
   <article class="bg-background text-foreground" data-theme="bright-dark">
     {/* Hero Section with Premium Background */}

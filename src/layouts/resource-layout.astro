@@ -24,7 +24,52 @@ const isBacklog = resource.data.review_status === 'backlog';
 const isSkip = resource.data.review_status === 'skip';
 ---
 
-<Layout title={`${resource.data.title} - ${categoryName}`} description={resource.data.description}>
+<Layout 
+  title={`${resource.data.title} Review (2024) - ${categoryName} | Blocksy Components`}
+  description={resource.data.description || `In-depth review of ${resource.data.title}. Features, pricing, pros & cons, and expert analysis to help you make the right choice.`}
+  image={resource.data.image?.src || "/open-graph.png"}
+  canonical={`/${resource.data.category}/${resource.data.slug}`}
+  schemaType="Review"
+  schemaData={{
+    "@type": "Review",
+    name: `${resource.data.title} Review`,
+    reviewBody: resource.data.description,
+    author: {
+      "@type": "Person",
+      name: resource.data.metadata?.author || "Blocksy Components Team"
+    },
+    datePublished: resource.data.metadata?.publishDate?.toISOString(),
+    dateModified: resource.data.metadata?.lastUpdated?.toISOString() || resource.data.metadata?.publishDate?.toISOString(),
+    itemReviewed: {
+      "@type": "Product",
+      name: resource.data.title,
+      description: resource.data.subtitle,
+      image: resource.data.image?.src || "/open-graph.png",
+      brand: {
+        "@type": "Brand",
+        name: resource.data.title
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "USD",
+        price: resource.data.pricing?.startingPrice?.replace(/[^0-9.]/g, '') || "0",
+        availability: "https://schema.org/InStock",
+        url: resource.data.href
+      }
+    },
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: overallRating.toFixed(1),
+      bestRating: "5",
+      worstRating: "1"
+    }
+  }}
+  product={{
+    price: resource.data.pricing?.startingPrice?.replace(/[^0-9.]/g, ''),
+    currency: "USD",
+    availability: "InStock"
+  }}
+>
   {/* Review Hero Section */}
   <ReviewHero
     client:load

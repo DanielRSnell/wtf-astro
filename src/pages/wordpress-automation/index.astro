@@ -23,11 +23,68 @@ const automationPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "WordPress Automation Tools & Workflows";
-const pageDescription = "Automate your WordPress workflow with powerful automation tools and plugins. Save time, reduce errors, and streamline repetitive tasks.";
+const pageTitle = "Best WordPress Automation Plugins (2024) - Reviews & Comparisons | Blocksy Components";
+const pageDescription = "Discover the best WordPress automation plugins and workflow tools of 2024. Expert reviews of automation solutions, workflow builders, and task schedulers. Save time and reduce errors with powerful automation tools for WordPress sites.";
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/wordpress-automation",
+        "name": "WordPress Automation Plugins"
+      }
+    }
+  ]
+};
+
+// Create CollectionPage schema with Product listings
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": "https://blocksy-components.com/wordpress-automation",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": automationResources.length,
+    "itemListElement": automationResources.slice(0, 10).map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://blocksy-components.com/wordpress-automation/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WordPress Automation Plugins",
+      "aggregateRating": resource.data.ratings ? {
+        "@type": "AggregateRating",
+        "ratingValue": Object.values(resource.data.ratings).reduce((a, b) => a + b, 0) / Object.keys(resource.data.ratings).length,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "1"
+      } : undefined
+    }))
+  }
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout 
+  title={pageTitle} 
+  description={pageDescription}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
+>
   <ResourceDirectory
     client:load
     data-theme="bright-dark"

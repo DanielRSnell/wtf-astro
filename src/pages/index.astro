@@ -54,7 +54,24 @@ const wordpressReviews = await getCollection('wordpress-review');
 console.log(`Loaded ${sortedPosts.length} blog posts across ${blogCategories.length} categories`);
 ---
 
-<Layout title="Home">
+<Layout 
+	title="Blocksy Components - Expert WordPress Reviews & Resources"
+	description="Discover the best WordPress themes, plugins, and hosting through expert reviews and in-depth comparisons. Perfect for developers and non-coders alike."
+	schemaType="WebSite"
+	schemaData={{
+		name: "Blocksy Components",
+		description: "Expert WordPress reviews, guides, and comparisons for themes, plugins, and hosting solutions.",
+		url: "https://blocksy-components.com",
+		potentialAction: {
+			"@type": "SearchAction",
+			target: {
+				"@type": "EntryPoint",
+				urlTemplate: "https://blocksy-components.com/search?q={search_term_string}"
+			},
+			"query-input": "required name=search_term_string"
+		}
+	}}
+>
 	<Hero24 client:load data-theme="bright-dark" content={heroContent} />
 	<About8 client:visible data-theme="bright-dark" content={aboutContent} />
 	<ResourceHub client:visible data-theme="bright-dark" resources={wordpressResources} categories={wordpressCategories} reviews={wordpressReviews} />

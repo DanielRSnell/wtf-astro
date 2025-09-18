@@ -4,13 +4,32 @@ import { ViewTransitions } from "astro:transitions";
 import { Header } from "../components/global/header.tsx";
 import { Footer } from "../components/global/footer.tsx";
 import { createSupabaseSSR } from '@/lib/supabase-ssr';
+import SEOMeta from "../components/seo/seo-meta.astro";
+import SchemaOrg from "../components/seo/schema-org.astro";
 
 export interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+  article?: any;
+  product?: any;
+  schemaType?: "WebSite" | "Article" | "Product" | "Review" | "FAQPage" | "Organization" | "BreadcrumbList";
+  schemaData?: any;
 }
 
-const { title = "Blocksy Components", description = "Premium component library for modern web applications" } = Astro.props;
+const { 
+  title = "Blocksy Components - Premium WordPress Resources", 
+  description = "Expert reviews and guides for WordPress themes, plugins, and hosting. Find the best tools for developers and non-coders.",
+  image,
+  canonical,
+  noindex,
+  article,
+  product,
+  schemaType = "WebSite",
+  schemaData
+} = Astro.props;
 
 // Get user session for SSR (only on server-rendered pages)
 let user = null;
@@ -24,10 +43,32 @@ let profile = null;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <title>{title}</title>
+    
+    <!-- SEO Meta Tags -->
+    <SEOMeta 
+      title={title}
+      description={description}
+      image={image}
+      canonical={canonical}
+      noindex={noindex}
+      article={article}
+      product={product}
+    />
+    
+    <!-- Schema.org Structured Data -->
+    <SchemaOrg type={schemaType} data={schemaData} />
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- ViewTransitions API -->
+    <ViewTransitions />
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
     <ViewTransitions />

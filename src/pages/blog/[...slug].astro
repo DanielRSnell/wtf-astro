@@ -41,7 +41,28 @@ const breadcrumbItems = [
 ];
 ---
 
-<Layout title={entry.data.title}>
+<Layout 
+  title={`${entry.data.title} | Blocksy Components Blog`}
+  description={entry.data.description || entry.data.excerpt}
+  image={entry.data.image || "/open-graph.png"}
+  canonical={`/blog/${entry.slug}`}
+  article={{
+    publishedTime: entry.data.date?.toISOString(),
+    modifiedTime: entry.data.updatedDate?.toISOString() || entry.data.date?.toISOString(),
+    author: entry.data.author || "Blocksy Components Team",
+    tags: entry.data.tags || []
+  }}
+  schemaType="Article"
+  schemaData={{
+    title: entry.data.title,
+    description: entry.data.description || entry.data.excerpt,
+    url: `/blog/${entry.slug}`,
+    publishedDate: entry.data.date?.toISOString(),
+    modifiedDate: entry.data.updatedDate?.toISOString() || entry.data.date?.toISOString(),
+    author: entry.data.author || "Blocksy Components Team",
+    keywords: entry.data.tags?.join(', ')
+  }}
+>
   <section class="bg-background py-32 text-foreground min-h-screen" data-theme="bright-dark">
     <div class="container">
       <!-- Breadcrumbs -->

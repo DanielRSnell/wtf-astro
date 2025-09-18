@@ -22,14 +22,68 @@ const relatedPosts = blogPosts.filter(post =>
   )
 );
 
-const title = 'WordPress Page Builders';
-const description = 'In-depth reviews and comparisons of WordPress page builders including Elementor, Divi, Bricks Builder, and modern visual development platforms.';
+const title = 'Best WordPress Page Builders (2024) - Reviews & Comparisons | Blocksy Components';
+const description = 'Discover the best WordPress page builders of 2024. Expert reviews and comparisons of Elementor, Divi, Bricks Builder, Oxygen, and modern visual development platforms. Build stunning WordPress sites with drag-and-drop page builders.';
 const baseUrl = '/wordpress-pagebuilder';
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/wordpress-pagebuilder",
+        "name": "WordPress Page Builders"
+      }
+    }
+  ]
+};
+
+// Create CollectionPage schema with Product listings
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": "https://blocksy-components.com/wordpress-pagebuilder",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": resources.length,
+    "itemListElement": resources.slice(0, 10).map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://blocksy-components.com/wordpress-pagebuilder/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WordPress Page Builders",
+      "aggregateRating": resource.data.ratings ? {
+        "@type": "AggregateRating",
+        "ratingValue": Object.values(resource.data.ratings).reduce((a, b) => a + b, 0) / Object.keys(resource.data.ratings).length,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "1"
+      } : undefined
+    }))
+  }
+};
 ---
 
 <Layout 
   title={title} 
   description={description}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
 >
   <ResourceDirectory
     client:load

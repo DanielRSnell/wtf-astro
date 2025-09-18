@@ -1,0 +1,90 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+  article?: {
+    publishedTime?: string;
+    modifiedTime?: string;
+    author?: string;
+    tags?: string[];
+  };
+  product?: {
+    price?: string;
+    currency?: string;
+    availability?: string;
+  };
+}
+
+const {
+  title = "Blocksy Components",
+  description = "Premium WordPress themes, plugins, and hosting reviews. Expert guides for developers and non-coders.",
+  image = "/open-graph.png",
+  canonical,
+  noindex = false,
+  article,
+  product,
+} = Astro.props;
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || "https://blocksy-components.com";
+const imageStr = image || "/open-graph.png";
+const fullImageUrl = typeof imageStr === 'string' && imageStr.startsWith("http") ? imageStr : `${siteUrl}${imageStr}`;
+const canonicalUrl = canonical || Astro.url.href;
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+{canonical && <link rel="canonical" href={canonicalUrl} />}
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={article ? "article" : "website"} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Blocksy Components" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullImageUrl} />
+
+<!-- Article Metadata -->
+{article && (
+  <>
+    {article.publishedTime && (
+      <meta property="article:published_time" content={article.publishedTime} />
+    )}
+    {article.modifiedTime && (
+      <meta property="article:modified_time" content={article.modifiedTime} />
+    )}
+    {article.author && <meta property="article:author" content={article.author} />}
+    {article.tags?.map((tag) => (
+      <meta property="article:tag" content={tag} />
+    ))}
+  </>
+)}
+
+<!-- Product Metadata -->
+{product && (
+  <>
+    <meta property="og:type" content="product" />
+    {product.price && <meta property="product:price:amount" content={product.price} />}
+    {product.currency && <meta property="product:price:currency" content={product.currency} />}
+    {product.availability && <meta property="product:availability" content={product.availability} />}
+  </>
+)}
+
+<!-- Additional SEO Tags -->
+<meta name="author" content="Blocksy Components Team" />
+<meta name="generator" content={Astro.generator} />
+<link rel="sitemap" href="/sitemap-index.xml" />

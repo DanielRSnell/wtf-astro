@@ -1,0 +1,171 @@
+---
+export interface Props {
+  type?: "WebSite" | "Article" | "Product" | "Review" | "FAQPage" | "Organization" | "BreadcrumbList";
+  data?: any;
+}
+
+const { type = "WebSite", data = {} } = Astro.props;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || "https://blocksy-components.com";
+
+// Default Website Schema
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Blocksy Components",
+  "description": "Premium WordPress themes, plugins, and hosting reviews",
+  "url": siteUrl,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": `${siteUrl}/search?q={search_term_string}`
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
+
+// Organization Schema
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Blocksy Components",
+  "url": siteUrl,
+  "logo": `${siteUrl}/logo.png`,
+  "sameAs": [
+    "https://twitter.com/blocksycomponents",
+    "https://github.com/blocksycomponents"
+  ]
+};
+
+// Build schema based on type
+let schema = {};
+
+switch (type) {
+  case "Article":
+    schema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": data.title,
+      "description": data.description,
+      "image": data.image || `${siteUrl}/open-graph.png`,
+      "author": {
+        "@type": "Person",
+        "name": data.author || "Blocksy Components Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Blocksy Components",
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.png`
+        }
+      },
+      "datePublished": data.publishedDate,
+      "dateModified": data.modifiedDate || data.publishedDate,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": data.url || Astro.url.href
+      },
+      ...data
+    };
+    break;
+
+  case "Product":
+    schema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": data.name,
+      "description": data.description,
+      "image": data.image || `${siteUrl}/open-graph.png`,
+      "brand": {
+        "@type": "Brand",
+        "name": data.brand || "Unknown"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": data.url || Astro.url.href,
+        "priceCurrency": data.currency || "USD",
+        "price": data.price || "0",
+        "priceValidUntil": data.priceValidUntil || new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": data.availability || "https://schema.org/InStock"
+      },
+      "aggregateRating": data.rating ? {
+        "@type": "AggregateRating",
+        "ratingValue": data.rating.value,
+        "reviewCount": data.rating.count || 1
+      } : undefined,
+      ...data
+    };
+    break;
+
+  case "Review":
+    schema = {
+      "@context": "https://schema.org",
+      "@type": "Review",
+      "name": data.title,
+      "reviewBody": data.description,
+      "author": {
+        "@type": "Person",
+        "name": data.author || "Blocksy Components Team"
+      },
+      "datePublished": data.publishedDate,
+      "itemReviewed": {
+        "@type": data.itemType || "Product",
+        "name": data.itemName,
+        "image": data.itemImage,
+        "description": data.itemDescription
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": data.rating,
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      ...data
+    };
+    break;
+
+  case "FAQPage":
+    schema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": data.questions?.map((q: any) => ({
+        "@type": "Question",
+        "name": q.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": q.answer
+        }
+      })) || [],
+      ...data
+    };
+    break;
+
+  case "BreadcrumbList":
+    schema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": data.items?.map((item: any, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": item.name,
+        "item": item.url
+      })) || [],
+      ...data
+    };
+    break;
+
+  case "Organization":
+    schema = organizationSchema;
+    break;
+
+  default:
+    schema = websiteSchema;
+}
+
+// Filter out undefined values
+const cleanSchema = JSON.parse(JSON.stringify(schema));
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(cleanSchema, null, 2)} />

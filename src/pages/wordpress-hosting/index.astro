@@ -26,11 +26,68 @@ const hostingPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "WordPress Hosting Reviews & Comparisons";
-const pageDescription = "Find the best WordPress hosting for your needs. Compare performance, features, pricing, and support from top hosting providers.";
+const pageTitle = "Best WordPress Hosting (2024) - Reviews & Comparisons | Blocksy Components";
+const pageDescription = "Compare the best WordPress hosting providers of 2024. In-depth reviews of performance, uptime, support, and pricing. Find the perfect hosting for your WordPress site with expert recommendations.";
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/wordpress-hosting",
+        "name": "WordPress Hosting"
+      }
+    }
+  ]
+};
+
+// Create CollectionPage schema with Product listings
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": "https://blocksy-components.com/wordpress-hosting",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": hostingResources.length,
+    "itemListElement": hostingResources.slice(0, 10).map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://blocksy-components.com/wordpress-hosting/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WordPress Hosting",
+      "aggregateRating": resource.data.ratings ? {
+        "@type": "AggregateRating",
+        "ratingValue": Object.values(resource.data.ratings).reduce((a, b) => a + b, 0) / Object.keys(resource.data.ratings).length,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "1"
+      } : undefined
+    }))
+  }
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout 
+  title={pageTitle} 
+  description={pageDescription}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
+>
   <ResourceDirectory
     client:load
     data-theme="bright-dark"

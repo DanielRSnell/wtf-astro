@@ -21,14 +21,68 @@ const relatedPosts = blogPosts.filter(post =>
   )
 );
 
-const title = 'WordPress Block Plugins';
-const description = 'Comprehensive reviews of WordPress block plugins including Gutenberg blocks, page builder blocks, and design system solutions for modern WordPress development.';
+const title = 'Best WordPress Block Plugins (2024) - Reviews & Comparisons | Blocksy Components';
+const description = 'Discover the best WordPress block plugins of 2024. Expert reviews of Gutenberg blocks, custom block collections, and design system solutions. Build beautiful WordPress sites with premium block libraries and advanced Gutenberg extensions.';
 const baseUrl = '/wordpress-blocks';
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/wordpress-blocks",
+        "name": "WordPress Block Plugins"
+      }
+    }
+  ]
+};
+
+// Create CollectionPage schema with Product listings
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": "https://blocksy-components.com/wordpress-blocks",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": resources.length,
+    "itemListElement": resources.slice(0, 10).map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://blocksy-components.com/wordpress-blocks/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WordPress Block Plugins",
+      "aggregateRating": resource.data.ratings ? {
+        "@type": "AggregateRating",
+        "ratingValue": Object.values(resource.data.ratings).reduce((a, b) => a + b, 0) / Object.keys(resource.data.ratings).length,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "1"
+      } : undefined
+    }))
+  }
+};
 ---
 
 <Layout 
   title={title} 
   description={description}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
 >
   <ResourceDirectory
     client:load

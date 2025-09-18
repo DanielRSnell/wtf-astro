@@ -121,9 +121,66 @@ resourcesByCategory.forEach((categoryResources, category) => {
     }
   }
 });
+
+// SEO Configuration
+const pageTitle = "WordPress Product Comparisons (2024) - Side-by-Side Analysis | Blocksy Components";
+const pageDescription = "Compare the best WordPress themes, plugins, hosting, and tools side-by-side. In-depth comparisons with ratings, features, pricing analysis to help you make the right choice for your WordPress site in 2024.";
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://blocksy-components.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://blocksy-components.com/compare",
+        "name": "Comparisons"
+      }
+    }
+  ]
+};
+
+// Create CollectionPage schema for comparison directory
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": "https://blocksy-components.com/compare",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "WordPress Product Comparisons",
+    "description": "Collection of detailed comparisons between WordPress products",
+    "numberOfItems": comparisons.reduce((total, cat) => total + cat.items.length, 0),
+    "itemListElement": comparisons.slice(0, 3).flatMap((category, catIndex) => 
+      category.items.slice(0, 3).map((item, index) => ({
+        "@type": "WebPage",
+        "position": catIndex * 3 + index + 1,
+        "url": `https://blocksy-components.com/compare/${item.slug}`,
+        "name": `${item.titleA} vs ${item.titleB}`,
+        "description": `Comparison between ${item.titleA} and ${item.titleB} - ${category.categoryName}`
+      }))
+    )
+  }
+};
 ---
 
-<Layout title="WordPress Comparisons" description="Compare WordPress themes, plugins, and tools side by side to make the best choice for your needs.">
+<Layout 
+  title={pageTitle} 
+  description={pageDescription}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
+>
   <div class="bg-background text-foreground" data-theme="bright-dark">
     {/* Hero Section with Premium Background */}
     <section class="relative pt-48 pb-20 bg-background overflow-hidden">
