@@ -2,6 +2,14 @@
 // This is a catch-all route for comparison redirects
 // It handles reversed comparison URLs and redirects to the correct alphabetical order
 
+export async function getStaticPaths() {
+  // Return an empty array since this is just a redirect handler
+  // We'll handle all paths dynamically
+  return [];
+}
+
+export const prerender = false; // This page handles redirects dynamically
+
 const slug = Astro.params.slug;
 
 if (!slug || !slug.includes('-vs-')) {
