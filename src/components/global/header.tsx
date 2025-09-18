@@ -98,10 +98,26 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { loading } = useAuth();
 
-  // Set up interaction detection
+  // Detect client-side rendering
   useEffect(() => {
+    setIsClient(true);
+    // In production, show header immediately
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      setHasInteracted(true);
+      setHasAnimated(true);
+    }
+  }, []);
+
+  // Set up interaction detection for local development
+  useEffect(() => {
+    // Skip interaction detection in production
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      return;
+    }
+
     const handleFirstInteraction = () => {
       setHasInteracted(true);
       document.removeEventListener('mousemove', handleFirstInteraction);
@@ -126,10 +142,12 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
     };
   }, []);
 
-  // Trigger animation when auth loading completes AND user has interacted
+  // Trigger animation when auth loading completes AND user has interacted (local dev only)
   useEffect(() => {
-    if (hasInteracted && !loading && !hasAnimated) {
-      setHasAnimated(true);
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (hasInteracted && !loading && !hasAnimated) {
+        setHasAnimated(true);
+      }
     }
   }, [hasInteracted, loading, hasAnimated]);
 
@@ -295,14 +313,18 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
     }
   ];
 
+  // Determine if we should show animation or display immediately
+  const shouldAnimate = isClient && typeof window !== 'undefined' && window.location.hostname === 'localhost';
+  const isVisible = shouldAnimate ? hasAnimated : true;
+
   return (
     <header 
       className="fixed top-0 left-0 right-0 z-[9999]" 
       data-theme={dataTheme}
       style={{ 
-        transform: hasAnimated ? 'translateY(0)' : 'translateY(-100%)',
-        opacity: hasAnimated ? 1 : 0,
-        transition: hasInteracted ? 'transform 0.6s ease-out, opacity 0.6s ease-out' : 'none'
+        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+        opacity: isVisible ? 1 : 0,
+        transition: shouldAnimate && hasInteracted ? 'transform 0.6s ease-out, opacity 0.6s ease-out' : 'none'
       }}
     >
       {/* Glassmorphism Header */}
