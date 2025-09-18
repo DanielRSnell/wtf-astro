@@ -126,16 +126,24 @@ const ReviewHero = ({
 
   return (
     <section className={cn("relative py-24 bg-background overflow-hidden", className)} data-theme={dataTheme}>
-      {/* Dot Pattern Background */}
-      <DotPattern
-        className={cn(
-          "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
-          "absolute inset-0 h-full w-full"
-        )}
-      />
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+      {/* Dot Pattern Background - matching Hero24 style */}
+      <div className="absolute inset-0 overflow-hidden">
+        <DotPattern
+          glow={true}
+          className="text-primary/60 fill-primary/60"
+          width={32}
+          height={32}
+          cx={2}
+          cy={2}
+          cr={2}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/80 pointer-events-none" />
+        
+        {/* Blur elements for visual consistency */}
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+      </div>
       
       <div className="container max-w-6xl mx-auto px-6 relative z-10">
         {/* Header Section */}
