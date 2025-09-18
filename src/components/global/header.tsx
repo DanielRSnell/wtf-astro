@@ -1,102 +1,14 @@
-import { Menu, X, ChevronDown, LogIn, UserPlus, Zap, Code, Package, BookOpen, FileText, Shield, Search, Gauge, Server, Palette, Plug, Bot, Lock } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { Menu, X, ChevronDown, Zap, Code, Package, BookOpen, FileText, Shield, Search, Gauge, Server, Palette, Plug, Bot, Lock } from "lucide-react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
-import { UserMenu } from "@/components/auth/UserMenu";
-import { AuthModal } from "@/components/auth/AuthModal";
 import { MegaMenu, type MegaMenuSection } from "@/components/ui/mega-menu";
 
 interface HeaderProps {
   "data-theme"?: string;
 }
 
-const AuthButtons = () => {
-  const { user, profile, loading } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-
-  const handleSignIn = () => {
-    setAuthMode('signin');
-    setShowAuthModal(true);
-  };
-
-  const handleSignUp = () => {
-    setAuthMode('signup');
-    setShowAuthModal(true);
-  };
-
-  // Expose auth modal functions globally
-  useEffect(() => {
-    // Create global auth modal functions
-    window.showAuthModal = (mode: 'signin' | 'signup' = 'signin') => {
-      setAuthMode(mode);
-      setShowAuthModal(true);
-    };
-
-    window.hideAuthModal = () => {
-      setShowAuthModal(false);
-    };
-
-    // Cleanup on unmount
-    return () => {
-      delete window.showAuthModal;
-      delete window.hideAuthModal;
-    };
-  }, []);
-
-  // Show loading state while auth is being checked
-  if (loading) {
-    return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-muted/30 animate-pulse"></div>
-        <div className="hidden md:block">
-          <div className="w-20 h-4 bg-muted/30 rounded animate-pulse mb-1"></div>
-          <div className="w-16 h-3 bg-muted/30 rounded animate-pulse"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (user) {
-    return <UserMenu />;
-  }
-
-  return (
-    <>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleSignIn}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
-        >
-          <LogIn className="w-4 h-4" />
-          Sign In
-        </button>
-        
-        <ShimmerButton
-          onClick={handleSignUp}
-          variant="secondary"
-          className="shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 py-1.5 px-4 flex items-center gap-2"
-          shimmerSize="0.08em"
-          shimmerDuration="2.5s"
-        >
-          <UserPlus className="w-4 h-4" />
-          Sign Up
-        </ShimmerButton>
-      </div>
-
-      <AuthModal 
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        initialMode={authMode}
-      />
-    </>
-  );
-};
-
-const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
+const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { loading } = useAuth();
 
   // Services mega menu data
   const servicesSections: MegaMenuSection[] = [
@@ -349,11 +261,6 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
               </a>
             </nav>
             
-            {/* Divider */}
-            <div className="h-6 w-px bg-border/50"></div>
-            
-            {/* Auth Section */}
-            <AuthButtons />
           </div>
         </nav>
 
@@ -458,12 +365,6 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
                   </a>
                 </div>
                 
-                {/* Mobile Auth */}
-                <div className="pt-4 border-t border-border/40">
-                  <div onClick={() => setIsMobileMenuOpen(false)}>
-                    <AuthButtons />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -473,12 +374,5 @@ const HeaderContent = ({ "data-theme": dataTheme }: HeaderProps) => {
   );
 };
 
-const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
-  return (
-    <AuthProvider>
-      <HeaderContent data-theme={dataTheme} />
-    </AuthProvider>
-  );
-};
 
 export { Header };

@@ -3,7 +3,6 @@ import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import { Header } from "../components/global/header.tsx";
 import { Footer } from "../components/global/footer.tsx";
-import { createSupabaseSSR } from '@/lib/supabase-ssr';
 import SEOMeta from "../components/seo/seo-meta.astro";
 import SchemaOrg from "../components/seo/schema-org.astro";
 
@@ -30,13 +29,6 @@ const {
   schemaType = "WebSite",
   schemaData
 } = Astro.props;
-
-// Get user session for SSR (only on server-rendered pages)
-let user = null;
-let profile = null;
-
-// Skip auth entirely during prerendering to avoid request.headers access
-// This also improves build performance since static pages don't need auth
 ---
 
 <html lang="en">

@@ -1,7 +1,6 @@
 ---
 import Layout from './base.astro';
 import { ReviewHero } from '../components/review-hero.tsx';
-import { CommentsSection } from '../components/comments/comments-section.tsx';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -429,21 +428,6 @@ const isSkip = resource.data.review_status === 'skip';
         </div>
       )}
 
-      {/* Comments Section */}
-      <div class="mt-16 border-t border-border/50 pt-12">
-        <div class="bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl p-8">
-          <h3 class="text-2xl font-bold text-foreground mb-4">Comments</h3>
-          <p class="text-muted-foreground mb-6">
-            Join the discussion about {resource.data.title}. Share your experience, ask questions, or help others.
-          </p>
-          
-          <CommentsSection
-            client:load
-            resourceType="wordpress-resource"
-            resourceSlug={resource.data.slug}
-          />
-        </div>
-      </div>
     </div>
   </article>
 </Layout>
