@@ -14,10 +14,15 @@ export default defineConfig({
   adapter: netlify(),
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['@supabase/ssr', '@supabase/supabase-js', '@supabase/auth-ui-react']
+    }
   },
   integrations: [
     mdx(),
-    react(), 
+    react({
+      experimentalReactChildren: true
+    }), 
     sitemap()
   ]
 });
