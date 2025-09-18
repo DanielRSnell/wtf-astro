@@ -123,10 +123,29 @@ const ResourceHub = ({
     const sortedResources = resourcesWithRatings.sort((a, b) => b.avgRating - a.avgRating);
 
     // Generate links from sorted resources with rating badges
-    // Use category as-is if it already has a prefix, otherwise add wordpress- prefix
-    const categoryPath = cat.data.category.startsWith('woocommerce-') || cat.data.category.startsWith('wordpress-')
-      ? cat.data.category
-      : `wordpress-${cat.data.category}`;
+    // Determine the correct path based on the category
+    const getCategoryPath = (category: string) => {
+      // Map categories to their correct URL paths
+      const categoryPathMap: Record<string, string> = {
+        'themes': 'wordpress-themes',
+        'hosting': 'wordpress-hosting',
+        'wordpress-hosting': 'wordpress-hosting',
+        'security': 'wordpress-security',
+        'performance': 'wordpress-performance',
+        'seo': 'wordpress-seo',
+        'forms': 'wordpress-forms',
+        'automation': 'wordpress-automation',
+        'admin': 'wordpress-admin',
+        'wordpress-blocks': 'wordpress-blocks',
+        'wordpress-pagebuilder': 'wordpress-pagebuilder',
+        'woocommerce-themes': 'woocommerce-themes',
+        'woocommerce-plugins': 'woocommerce-plugins',
+        'woocommerce-hosting': 'woocommerce-hosting'
+      };
+      return categoryPathMap[category] || `wordpress-${category}`;
+    };
+    
+    const categoryPath = getCategoryPath(cat.data.category);
     
     const resourceLinks = sortedResources.slice(0, 10).map(resource => ({
       title: resource.data.title,
