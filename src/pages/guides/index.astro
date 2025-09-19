@@ -1,0 +1,159 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/base.astro';
+import { GuidesCards } from '@/components/guides-cards.tsx';
+import { DotPattern } from '@/components/magicui/dot-pattern';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { BookOpen } from 'lucide-react';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+// Get all guides
+const guidesDir = path.join(process.cwd(), 'src/content/guides');
+const guideFolders = fs.readdirSync(guidesDir).filter(item => {
+  return fs.statSync(path.join(guidesDir, item)).isDirectory();
+});
+
+const guides = guideFolders.map(folder => {
+  const indexPath = path.join(guidesDir, folder, 'index.mdx');
+  if (fs.existsSync(indexPath)) {
+    const fileContents = fs.readFileSync(indexPath, 'utf8');
+    const { data } = matter(fileContents);
+    
+    // Map to GuidesCards format
+    return {
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      gradient: getGradientForCategory(data.category),
+      lessonsCount: data.lessons,
+      duration: data.duration,
+      level: data.level,
+      href: `/guides/${folder}`,
+      author: data.author
+    };
+  }
+  return null;
+}).filter(Boolean);
+
+// Function to assign gradients based on category
+function getGradientForCategory(category) {
+  const gradients = {
+    'Web Development': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'Performance': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'Automation': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'Customer Support': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'Design': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'Development': 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+    'Infrastructure': 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    'Security': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+  };
+  return gradients[category] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+}
+---
+
+<Layout
+  title="Learning Guides - WooThatsFast"
+  description="Master WordPress, WooCommerce, and modern web development with our comprehensive guides and tutorials."
+>
+  <!-- Hero Section -->
+  <section class="relative bg-background pt-32 pb-20" data-theme="bright-dark">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <!-- Dot pattern background -->
+      <DotPattern
+        glow={true}
+        className="text-primary/60 fill-primary/60"
+        width={32}
+        height={32}
+        cx={2}
+        cy={2}
+        cr={2}
+        client:load
+      />
+      
+      <!-- Gradient overlay for smooth blend -->
+      <div class="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/80 pointer-events-none" />
+      
+      <!-- Blur element in top right corner -->
+      <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+    </div>
+    
+    <div class="container relative z-10 mx-auto px-6">
+      <div class="mx-auto max-w-4xl text-center">
+        <!-- Badge -->
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 backdrop-blur-sm border border-primary/20">
+          <BookOpen className="h-4 w-4 text-primary" />
+          <span class="text-sm font-medium text-primary">Learn & Master</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="mb-6 text-5xl font-bold tracking-tight text-foreground lg:text-6xl">
+          Level Up Your <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">WordPress Skills</span>
+        </h1>
+
+        <!-- Description -->
+        <p class="mb-10 text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          Practical, no-BS guides that actually teach you something useful. From performance optimization to automation, we cover what matters.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guides Cards Component -->
+  <GuidesCards
+    client:load
+    data-theme="bright-dark"
+    showHeader={false}
+    guides={guides}
+  />
+
+  <!-- CTA Section -->
+  <section class="relative bg-background py-32 text-foreground" data-theme="bright-dark">
+    {/* Background decorative elements */}
+    <div class="absolute inset-0">
+      <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+      <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-secondary/5 blur-3xl" />
+    </div>
+    
+    <div class="container relative mx-auto px-6">
+      <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+        {/* Layered gradient backgrounds */}
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+          <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+        </div>
+        
+        <div class="relative z-10 px-8 py-12 lg:px-16 text-center max-w-4xl mx-auto">
+          <div class="inline-flex items-center gap-2 rounded-full bg-card/60 backdrop-blur-xl border border-brand px-4 py-2 mb-6">
+            <div class="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <span class="text-xs tracking-widest text-muted-foreground font-medium uppercase">
+              Community Driven
+            </span>
+          </div>
+          
+          <h2 class="text-3xl font-bold text-foreground md:text-4xl leading-tight mb-4">
+            Can't Find What You're Looking For?
+          </h2>
+          <p class="text-lg text-muted-foreground md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
+            We're constantly creating new guides based on what the community needs. Tell us what you want to learn next.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" variant="default" class="bg-primary hover:bg-primary/90 text-primary-foreground">
+              Request a Guide
+            </Button>
+            <Button variant="link" class="text-foreground hover:text-primary transition-colors duration-300 px-0 h-auto font-medium">
+              Join the Community
+            </Button>
+          </div>
+        </div>
+        
+        {/* Main container border highlight */}
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      </div>
+    </div>
+  </section>
+</Layout>

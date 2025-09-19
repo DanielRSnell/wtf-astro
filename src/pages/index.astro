@@ -11,6 +11,7 @@ import { Blog11 } from '../components/blog11.tsx';
 import { Cta19 } from '../components/cta19.tsx';
 import { Separator } from '../components/ui/separator.tsx';
 import { CoreWebVitalsComparison } from '../components/core-web-vitals-comparison.tsx';
+import { GuidesCards } from '../components/guides-cards.tsx';
 import { getHeroContent, getAboutContent, getFeaturesContent, getServicesContent, getTimelineContent, getCtaContent } from '../lib/content.ts';
 import { getCollection } from 'astro:content';
 
@@ -51,11 +52,45 @@ const wordpressResources = await getCollection('wordpress-resource');
 const wordpressCategories = await getCollection('wordpress-category');
 const wordpressReviews = await getCollection('wordpress-review');
 
+console.log(`Loaded ${wordpressResources.length} WordPress resources`);
+console.log(`Loaded ${wordpressCategories.length} WordPress categories`);
+console.log(`Loaded ${wordpressReviews.length} WordPress reviews`);
+
+// Load guides collection
+const guides = await getCollection('guides', (guide) => {
+  // Filter to get only main guides, not sections
+  return !guide.slug.includes('/');
+});
+
+console.log(`Loaded ${guides.length} guides`);
+
+// Array of beautiful gradients for the guide cards
+const gradients = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', // Pink
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', // Blue
+  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', // Green
+  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // Warm
+  'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', // Deep blue
+];
+
+// Format guides for the GuidesCards component
+const formattedGuides = guides.map((guide, index) => ({
+  title: guide.data.title,
+  description: guide.data.description || '',
+  category: guide.data.category || 'Tutorial',
+  gradient: gradients[index % gradients.length], // Cycle through gradients
+  lessonsCount: typeof guide.data.lessons === 'number' ? guide.data.lessons : guide.data.lessons?.length || 0,
+  duration: guide.data.duration || '1h',
+  level: (guide.data.level as 'Beginner' | 'Intermediate' | 'Advanced') || 'Intermediate',
+  href: `/guides/${guide.slug}`,
+  author: 'WooThatsFast Team'
+}));
+
 console.log(`Loaded ${sortedPosts.length} blog posts across ${blogCategories.length} categories`);
 ---
 
 <Layout 
-	client:load
 	title="WooThatsFast - Expert WordPress Reviews & Resources"
 	description="Discover the best WordPress themes, plugins, and hosting through expert reviews and in-depth comparisons. Perfect for developers and non-coders alike."
 	schemaType="WebSite"
@@ -76,9 +111,17 @@ console.log(`Loaded ${sortedPosts.length} blog posts across ${blogCategories.len
 	<Hero24 client:load data-theme="bright-dark" content={heroContent} />
 	<About8 client:visible data-theme="bright-dark" content={aboutContent} />
 	<ResourceHub client:visible data-theme="bright-dark" resources={wordpressResources} categories={wordpressCategories} reviews={wordpressReviews} />
-	<Feature261 client:visible data-theme="bright-dark" content={featuresContent} />
-	<Services10 client:visible data-theme="bright-dark" content={servicesContent} />
-	<Timeline4 client:visible data-theme="bright-dark" content={timelineContent} />
+	<GuidesCards 
+		client:visible 
+		data-theme="bright-dark" 
+		title="Learn WordPress Development" 
+		subtitle="Step-by-step guides to master WordPress, from beginner basics to advanced techniques"
+		guides={formattedGuides}
+	/>
+	<!-- <Feature261 client:visible data-theme="bright-dark" content={featuresContent} /> -->
+	<!-- <Services10 client:visible data-theme="bright-dark" content={servicesContent} /> -->
 	<Blog11 client:visible data-theme="bright-dark" posts={sortedPosts} categories={blogCategories} />
+	<Timeline4 client:visible data-theme="bright-dark" content={timelineContent} />
+
 	<Cta19 client:visible data-theme="bright-dark" content={ctaContent} />
 </Layout>

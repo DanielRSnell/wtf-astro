@@ -168,8 +168,8 @@ const ResourceDirectory = ({
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-16">
           {filteredResources.map((resource) => (
             <a
-              key={resource.data.slug}
-              href={`${baseUrl}/${resource.data.slug}`}
+              key={resource.slug}
+              href={`${baseUrl}/${resource.slug}`}
               className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-6 block"
             >
               {/* Background gradient */}

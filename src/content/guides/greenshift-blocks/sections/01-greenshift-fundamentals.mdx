@@ -1,0 +1,307 @@
+---
+section: "greenshift-fundamentals"
+title: "Greenshift Fundamentals"
+order: 1
+description: "Understanding Greenshift's approach and core concepts"
+lessons:
+  - id: "why-greenshift"
+    title: "Why Greenshift Beats Everything Else"
+    duration: "12m"
+  - id: "installation-setup"
+    title: "Installation & Initial Setup"
+    duration: "8m"
+  - id: "interface-overview"
+    title: "Interface & Workflow Overview"
+    duration: "10m"
+  - id: "block-library"
+    title: "Understanding the Block Library"
+    duration: "15m"
+  - id: "global-settings"
+    title: "Global Settings & Framework"
+    duration: "10m"
+---
+
+## Why Greenshift Beats Everything Else
+
+Let's cut the BS. You've probably tried every block plugin out there. They all promise "pro-level design" and deliver amateur hour. Here's why Greenshift is different.
+
+### The Performance Advantage
+
+While Elementor adds 300KB of CSS and Divi loads jQuery like it's 2010, Greenshift outputs only what you use:
+
+- **No jQuery dependency** - Everything runs on vanilla JS
+- **CSS-in-JS approach** - Styles load only where needed
+- **GPU acceleration** - Animations use transform3d by default
+- **Lazy loading built-in** - Images, videos, even animations
+
+Real world impact: Sites load in under 1 second on mobile. Try that with Elementor.
+
+### Animation That Actually Works
+
+Greenshift uses GSAP (GreenSock Animation Platform) - the same library Disney and Nike use:
+
+```javascript
+// What Greenshift generates
+gsap.to(".element", {
+  y: -100,
+  rotation: 360,
+  duration: 1,
+  ease: "power2.inOut"
+})
+```
+
+Not some CSS transition hack. Real, timeline-based animation with:
+- Scroll triggers
+- Parallax effects
+- Morphing SVGs
+- 3D transforms
+
+### Developer-Friendly Output
+
+Check the code Greenshift generates vs competitors:
+
+**Elementor Output:**
+```html
+<div class="elementor-element elementor-element-2d4f5a6 elementor-widget elementor-widget-heading" data-id="2d4f5a6" data-element_type="widget" data-widget_type="heading.default">
+  <div class="elementor-widget-container">
+    <h2 class="elementor-heading-title elementor-size-default">Hello</h2>
+  </div>
+</div>
+```
+
+**Greenshift Output:**
+```html
+<h2 class="gs-heading">Hello</h2>
+```
+
+Clean. Semantic. No div soup.
+
+## Installation & Initial Setup
+
+Skip the marketing pages. Here's the fast track:
+
+### Step 1: Install the Free Version
+
+```bash
+wp plugin install greenshift-animation-and-page-builder-blocks --activate
+```
+
+Or download from [WordPress.org](https://wordpress.org/plugins/greenshift-animation-and-page-builder-blocks/).
+
+### Step 2: Essential Settings
+
+Navigate to **Greenshift → Settings** and configure:
+
+1. **Framework Loading**
+   - Set to "Load only on pages with blocks"
+   - Prevents unnecessary script loading
+
+2. **Local Google Fonts**
+   - Enable to host fonts locally
+   - Improves GDPR compliance and speed
+
+3. **CSS Loading Method**
+   - Choose "File" for production sites
+   - "Inline" only for testing
+
+4. **Disable Unused Modules**
+   - Turn off WooCommerce if not using it
+   - Disable Query Loop if using custom queries
+
+### Step 3: License Activation (Pro)
+
+If you bought Pro (smart move):
+
+1. Go to **Greenshift → License**
+2. Enter your license key
+3. Click "Activate"
+
+Pro unlocks:
+- Advanced animation presets
+- 3D transformations
+- Lottie animations
+- Shape dividers
+- Premium templates
+
+## Interface & Workflow Overview
+
+Greenshift integrates directly into Gutenberg. No separate builder interface.
+
+### The Inspector Panel
+
+When you select any Greenshift block, the right sidebar shows:
+
+**Layout Tab:**
+- Width/height controls
+- Padding/margin (with responsive units)
+- Position (relative, absolute, sticky)
+- Z-index management
+
+**Style Tab:**
+- Typography with variable fonts
+- Colors with gradient support
+- Borders with individual corner control
+- Shadows (box and text)
+
+**Animation Tab:**
+- Entrance animations
+- Scroll animations
+- Hover effects
+- Loop animations
+
+**Advanced Tab:**
+- Custom CSS classes
+- HTML attributes
+- Visibility conditions
+- Custom CSS (scoped to block)
+
+### The Toolbar
+
+Each block has quick actions:
+
+- **Copy Styles** - Save styling for reuse
+- **Paste Styles** - Apply saved styling
+- **Save as Reusable** - Create patterns
+- **Responsive Preview** - Test breakpoints
+
+### Keyboard Shortcuts
+
+Speed up your workflow:
+
+- `Alt + Shift + D` - Duplicate block
+- `Alt + Shift + Z` - Undo
+- `Alt + Shift + G` - Group blocks
+- `Alt + Shift + U` - Ungroup
+
+## Understanding the Block Library
+
+Greenshift's blocks are categorized logically:
+
+### Container Blocks
+**Container** - The foundation. Like a div with superpowers:
+- Flexbox or CSS Grid layout
+- Shape dividers
+- Overlay effects
+- Video backgrounds
+
+**Row/Column** - For complex layouts:
+- Responsive breakpoints
+- Column gaps and alignment
+- Reverse on mobile option
+
+### Content Blocks
+**Advanced Heading** - Not just text:
+- Split text animations
+- Gradient text
+- Text shadows
+- Typewriter effect
+
+**Advanced Text** - Rich text with:
+- Inline animations
+- Highlight effects
+- Custom typography per selection
+
+### Interactive Blocks
+**Tabs** - Actually good tabs:
+- Vertical or horizontal
+- Icon support
+- AJAX content loading
+- Deep linking support
+
+**Accordion** - Smooth and accessible:
+- Multiple open items
+- Search functionality
+- Schema markup
+
+**Slider** - Swiper.js powered:
+- Touch gestures
+- Infinite loop
+- Thumbnail navigation
+- Lightbox integration
+
+### Animation Blocks
+**Animation Container** - Wrap anything:
+- Timeline sequencing
+- Scroll-triggered animations
+- Pin elements while scrolling
+
+**3D Model Viewer** - Because why not:
+- GLTF/GLB support
+- Interactive rotation
+- Augmented reality ready
+
+## Global Settings & Framework
+
+Set site-wide defaults to maintain consistency:
+
+### Global Styles
+
+Navigate to **Greenshift → Global Styles**:
+
+1. **Typography Scale**
+   ```css
+   --gs-heading-1: clamp(2rem, 5vw, 3.5rem);
+   --gs-heading-2: clamp(1.5rem, 4vw, 2.5rem);
+   --gs-body: clamp(1rem, 2vw, 1.125rem);
+   ```
+
+2. **Color Palette**
+   ```css
+   --gs-primary: #007cba;
+   --gs-secondary: #f0f0f0;
+   --gs-accent: #ff6b6b;
+   ```
+
+3. **Spacing System**
+   ```css
+   --gs-space-xs: 0.5rem;
+   --gs-space-sm: 1rem;
+   --gs-space-md: 2rem;
+   --gs-space-lg: 4rem;
+   ```
+
+### Framework Components
+
+Create reusable components:
+
+1. **Button Styles**
+   - Primary, secondary, ghost variants
+   - Hover animations
+   - Loading states
+
+2. **Card Layouts**
+   - Image position variations
+   - Hover lift effects
+   - Badge placements
+
+3. **Section Templates**
+   - Heroes
+   - Feature grids
+   - Testimonials
+   - CTAs
+
+### Performance Framework
+
+Enable these for maximum speed:
+
+- **Lazy Load Animations** - Animations trigger only in viewport
+- **Preload Critical Fonts** - Faster text rendering
+- **WebP Conversion** - Automatic image optimization
+- **CSS Extraction** - Separate critical CSS
+
+### Accessibility Features
+
+Don't be an asshole. Enable these:
+
+- **Focus Indicators** - Visible keyboard navigation
+- **ARIA Labels** - Screen reader support
+- **Reduced Motion** - Respect user preferences
+- **Semantic HTML** - Proper heading hierarchy
+
+---
+
+## Next Steps
+
+Now you understand Greenshift's foundation. In the next section, we'll dive into creating animations that make clients say "holy shit" instead of "that's nice."
+
+Remember: Just because you can animate everything doesn't mean you should. Start subtle. Build up. Don't be that person who makes every heading bounce.

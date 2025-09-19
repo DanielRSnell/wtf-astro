@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { FileText, Code, Palette, Zap, Globe, Shield, Settings, Layers } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import type { CollectionEntry } from "astro:content";
@@ -28,6 +28,37 @@ const Blog11 = ({
 }: Blog11Props) => {
   // Get unique categories from posts if not provided separately
   const allCategories = categories.length > 0 ? categories : [];
+  
+  // Beautiful gradients for blog cards
+  const gradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', // Pink
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', // Blue
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', // Green
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // Warm
+    'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', // Deep blue
+    'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)', // Sunset
+    'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', // Soft
+  ];
+
+  // Category to icon mapping
+  const categoryIcons: Record<string, React.ComponentType<any>> = {
+    'development': Code,
+    'design': Palette,
+    'performance': Zap,
+    'seo': Globe,
+    'security': Shield,
+    'wordpress': Settings,
+    'tutorial': FileText,
+    'news': Globe,
+    'default': Layers
+  };
+
+  // Get icon for category
+  const getCategoryIcon = (category: string): React.ComponentType<any> => {
+    const normalizedCategory = category.toLowerCase().replace(/\s+/g, '-');
+    return categoryIcons[normalizedCategory] || categoryIcons['default'];
+  };
   
   // Helper functions
   const formatDate = (date: Date): string => {
@@ -95,15 +126,18 @@ const Blog11 = ({
             </nav>
           </header>
           <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
-            {posts.slice(0, 6).map((post) => {
+            {posts.slice(0, 6).map((post, index) => {
               const categoryName = post.data.category.charAt(0).toUpperCase() + post.data.category.slice(1).replace('-', ' ');
+              const Icon = getCategoryIcon(post.data.category);
+              const gradient = gradients[index % gradients.length];
               
               return (
-                <div key={post.slug} className="relative">
+                <div key={post.slug} className="relative h-full">
                   <a
                     href={`/blog/${post.slug}`}
-                    className="group relative flex flex-col overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 min-h-[400px] block"
+                    className="group relative flex flex-col overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 h-full block"
                     data-astro-transition-scope={`blog-card-${post.slug}`}
+                    style={{ minHeight: '450px' }}
                   >
                     {/* High-fidelity gradient background using theme colors */}
                     <div className="absolute inset-0">
@@ -112,36 +146,30 @@ const Blog11 = ({
                       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-muted/5 to-primary/3" />
                     </div>
                     
-                    {/* Featured image if available */}
-                    {post.data.image && (
-                      <div className="relative z-10 h-32 overflow-hidden flex-shrink-0">
-                        <img 
-                          src={post.data.image.src} 
-                          alt={post.data.image.alt}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          style={{ viewTransitionName: `blog-image-${post.slug}` }}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                    {/* Gradient header with icon instead of image */}
+                    <div className="relative h-48 flex-shrink-0">
+                      <div 
+                        className="absolute inset-0"
+                        style={{ background: gradient }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                          <Icon className="w-10 h-10 text-white" />
+                        </div>
                       </div>
-                    )}
-                  
-                    {/* Overlay gradient on top of image */}
-                    {post.data.image && (
-                      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/30 via-black/15 to-transparent z-20 pointer-events-none" />
-                    )}
+                      
+                      {/* Category badge in top left */}
+                      <div className="absolute top-4 left-4">
+                        <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-sm text-white text-xs font-medium">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                          {categoryName}
+                        </div>
+                      </div>
+                    </div>
                   
                   {/* Content - grows to fill space */}
                   <div className="relative z-10 flex flex-col p-6 flex-1">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 backdrop-blur-sm border border-primary/20">
-                          <div className="h-2 w-2 rounded-full bg-primary" />
-                        </span>
-                        <span className="text-xs font-medium text-primary uppercase tracking-widest">
-                          {categoryName}
-                        </span>
-                      </div>
                       {post.data.featured && (
                         <div className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 mb-4">
                           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -149,10 +177,10 @@ const Blog11 = ({
                         </div>
                       )}
                       
-                      <h2 className="text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors duration-300 mb-3" style={{ viewTransitionName: `blog-title-${post.slug}` }}>
+                      <h2 className="text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors duration-300 mb-3 line-clamp-2" style={{ viewTransitionName: `blog-title-${post.slug}` }}>
                         {post.data.title}
                       </h2>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                         {post.data.description}
                       </p>
                     </div>

@@ -15,7 +15,7 @@ export async function getStaticPaths() {
   
   return resources.map((resource) => ({
     params: { 
-      slug: resource.data.slug 
+      slug: resource.slug 
     },
     props: { resource }
   }));

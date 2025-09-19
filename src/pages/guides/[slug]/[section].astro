@@ -1,0 +1,88 @@
+---
+export const prerender = true;
+import GuideLayout from '@/layouts/guide-layout.astro';
+import { getGuideSlugs, getGuide, getGuideSections, formatGuideData } from '@/lib/guides';
+import { PrereleaseSignup } from '@/components/guides/prerelease-signup';
+
+export async function getStaticPaths() {
+  const guideSlugs = await getGuideSlugs();
+  
+  const paths = [];
+  
+  for (const slug of guideSlugs) {
+    // Get all sections for this guide
+    const sectionEntries = await getGuideSections(slug);
+    
+    for (const section of sectionEntries) {
+      paths.push({
+        params: { 
+          slug,
+          section: section.data.section 
+        },
+        props: { 
+          guideSlug: slug,
+          sectionSlug: section.data.section,
+          sectionEntry: section
+        }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { guideSlug, sectionSlug, sectionEntry } = Astro.props;
+
+// Get the main guide entry using our helper
+const guideEntry = await getGuide(guideSlug);
+
+// Handle missing guide
+if (!guideEntry) {
+  return Astro.redirect('/404');
+}
+
+const guide = formatGuideData(guideEntry.data);
+
+// Check if guide is in prerelease mode
+const isPrerelease = guideEntry.data.prerelease === true || guide.prerelease === true;
+
+// Get all sections for navigation using our helper
+const allSections = await getGuideSections(guideSlug);
+
+const sections = allSections
+  .map(entry => entry.data)
+  .filter(data => data.section);
+
+// Find current section info
+const currentSectionIndex = sections.findIndex(s => s.section === sectionSlug);
+const currentSection = sections[currentSectionIndex];
+const previousSection = currentSectionIndex > 0 ? sections[currentSectionIndex - 1] : null;
+const nextSection = currentSectionIndex < sections.length - 1 ? sections[currentSectionIndex + 1] : null;
+
+// Render the section content
+const { Content } = await sectionEntry.render();
+---
+
+<GuideLayout
+  title={`${currentSection?.title || 'Coming Soon'} - ${guide.title}`}
+  description={currentSection?.description || guide.description}
+  guide={guide}
+  sections={sections}
+  currentSection={currentSection}
+  currentSectionIndex={currentSectionIndex}
+  previousSection={previousSection}
+  nextSection={nextSection}
+  slug={guideSlug}
+  section={sectionSlug}
+>
+  {!isPrerelease ? (
+    <Content />
+  ) : (
+    <PrereleaseSignup 
+      client:load
+      guideTitle={guide.title}
+      guideDescription={guide.description}
+      expectedDate={guideEntry.data.expectedDate}
+    />
+  )}
+</GuideLayout>

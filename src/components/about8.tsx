@@ -6,8 +6,10 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import type { AboutContent } from "@/lib/content";
-import danielImage from "@/assets/daniel.jpg";
+import meDaughterImage from "@/assets/me/me+daughter.JPG";
 import { BeforeAfterCards } from "@/components/ui/before-after-cards";
+import { GradientButton } from "@/components/ui/gradient-button";
+import { MoveRight } from "lucide-react";
 
 interface About8Props {
   "data-theme"?: string;
@@ -52,40 +54,42 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
       </section>
 
       {/* Stats Section */}
-      <section className="container max-w-5xl">
-        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 py-8">
-          {/* High-fidelity gradient background */}
+      <section className="container max-w-5xl py-10">
+        <div className="relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border border-brand p-8 md:p-12">
+          {/* Background gradients */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
             <div className="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-muted/5 to-primary/3" />
           </div>
           
           {/* Content */}
-          <div className="relative z-10 px-6">
-            <h2 className="font-mono text-sm font-semibold tracking-widest text-primary uppercase">
-              {content.stats.sectionTitle}
-            </h2>
-            <div className="mt-6 grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="relative z-10">
+            <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6">
               {content.stats.items.map((stat, index) => (
-                <div key={index} className="space-y-2">
-                  <h3 className="text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl group-hover:text-primary transition-colors duration-300">
-                    {stat.value}
-                  </h3>
-                  <p className="font-medium text-muted-foreground">{stat.label}</p>
+                <div key={index} className="group text-center">
+                  <div className="space-y-2">
+                    {/* Value with gradient on hover */}
+                    <h3 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl bg-gradient-to-br from-foreground to-foreground/80 bg-clip-text text-transparent group-hover:from-primary group-hover:to-secondary transition-all duration-300">
+                      {stat.value}
+                    </h3>
+                    {/* Label */}
+                    <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">
+                      {stat.label}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
           
           {/* Subtle border highlight */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         </div>
       </section>
 
       {/* Mission Section */}
       <section className="container max-w-5xl py-10 md:py-12 lg:py-15">
-        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8">
+        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8">
           {/* High-fidelity gradient background */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary/8 via-transparent to-primary/8" />
@@ -260,7 +264,7 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
 
       {/* CoreAPI Section */}
       <section className="container">
-        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8 mr-0 ml-auto max-w-2xl">
+        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8 mr-0 ml-auto max-w-2xl">
           {/* High-fidelity gradient background */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-secondary/12" />
@@ -290,7 +294,7 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
 
       {/* Founding Team Section */}
       <section className="container py-10 md:py-12 lg:py-15">
-        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8">
+        <div className="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 p-8">
           {/* High-fidelity gradient background */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-primary/15" />
@@ -304,15 +308,30 @@ export const About8 = ({ "data-theme": dataTheme, content }: About8Props) => {
               <h2 className="text-4xl font-semibold tracking-tight md:text-4xl group-hover:text-primary transition-colors duration-300">
                 {content.foundingTeam.title}
               </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {content.foundingTeam.description}
-              </p>
+              <div className="space-y-4">
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Hi, I'm Daniel — father of six, early stage specialist, and founder of WooThatsFast. I've built companies from the ground up, resulting in 7 successful acquisitions. I was there in the trenches, figuring out product-market fit, building the first systems, and scaling from dozens to millions of users.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  With six kids at home, I understand what it means to build something that lasts. Now I'm bringing those same growth strategies to WooCommerce, because every business deserves access to proven playbooks — not just Silicon Valley insiders.
+                </p>
+              </div>
+              <div className="pt-4">
+                <GradientButton
+                  variant="secondary"
+                  size="lg"
+                  href="/contact"
+                >
+                  Work With Me
+                  <MoveRight className="ml-2" strokeWidth={1.5} />
+                </GradientButton>
+              </div>
             </div>
             <div className="order-1 md:order-2 relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 min-h-[400px]">
-              {/* Daniel Snell's image */}
+              {/* Family image */}
               <img 
-                src={danielImage.src} 
-                alt="Daniel Snell - Founder of WooThatsFast" 
+                src={meDaughterImage.src} 
+                alt="Daniel with his daughter - The heart behind WooThatsFast" 
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />

@@ -6,6 +6,7 @@ import { Blogpost4 } from '../../components/blogpost4.tsx';
 import { ShareButtons } from '../../components/ShareButtons.tsx';
 import { ScrollToTop } from '../../components/ScrollToTop.tsx';
 import { TableOfContents } from '../../components/TableOfContents.tsx';
+import { FileText, Code, Palette, Zap, Globe, Shield, Settings, Layers } from 'lucide-react';
 
 export async function getStaticPaths() {
   const blogPosts = await getCollection('blog', ({ data }) => !data.draft);
@@ -39,6 +40,36 @@ const breadcrumbItems = [
   { label: 'Blog', href: '/blog' },
   { label: entry.data.title, href: `/blog/${entry.slug}` }
 ];
+
+// Beautiful gradients array (matching blog cards)
+const gradients = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', // Pink
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', // Blue
+  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', // Green
+  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // Warm
+  'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', // Deep blue
+];
+
+// Category to icon mapping
+const categoryIcons = {
+  'development': Code,
+  'design': Palette,
+  'performance': Zap,
+  'seo': Globe,
+  'security': Shield,
+  'wordpress': Settings,
+  'tutorial': FileText,
+  'news': Globe,
+  'default': Layers
+};
+
+// Get icon for category
+const normalizedCategory = entry.data.category.toLowerCase().replace(/\s+/g, '-');
+const Icon = categoryIcons[normalizedCategory] || categoryIcons['default'];
+
+// Get gradient based on slug hash for consistency
+const gradient = gradients[entry.slug.charCodeAt(0) % gradients.length];
 ---
 
 <Layout 
@@ -66,28 +97,67 @@ const breadcrumbItems = [
   <section class="bg-background py-32 text-foreground min-h-screen" data-theme="bright-dark">
     <div class="container">
       <!-- Breadcrumbs -->
-      <nav aria-label="breadcrumb" class="mb-8">
-        <ol class="flex items-center space-x-2 text-sm text-muted-foreground">
-          <li><a href="/" class="hover:text-primary">Home</a></li>
-          <li class="before:content-['/'] before:mx-2">
-            <a href="/blog" class="hover:text-primary">Blog</a>
+      <nav aria-label="breadcrumb" class="mb-8 overflow-x-auto">
+        <ol class="flex items-center text-sm min-w-0">
+          <li class="flex-shrink-0">
+            <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-primary transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span class="hidden sm:inline">Home</span>
+            </a>
           </li>
-          <li class="before:content-['/'] before:mx-2 text-foreground">{entry.data.title}</li>
+          <li class="flex items-center text-muted-foreground/50 mx-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </li>
+          <li class="flex-shrink-0">
+            <a href="/blog" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-primary transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              <span>Blog</span>
+            </a>
+          </li>
+          <li class="flex items-center text-muted-foreground/50 mx-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </li>
+          <li class="min-w-0 flex-1">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary font-medium max-w-full">
+              <Icon class="h-3.5 w-3.5 flex-shrink-0" />
+              <span class="truncate">{entry.data.title}</span>
+            </div>
+          </li>
         </ol>
       </nav>
       
-      <!-- Featured image if available -->
-      {entry.data.image && (
-        <div class="relative mt-8 mb-8 h-64 md:h-96 overflow-hidden rounded-2xl">
-          <img 
-            src={entry.data.image.src} 
-            alt={entry.data.image.alt}
-            class="w-full h-full object-cover"
-transition:name={`blog-image-${entry.slug}`}
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+      <!-- Gradient header with icon -->
+      <div class="relative mt-8 mb-8 h-64 md:h-96 overflow-hidden rounded-2xl">
+        <div 
+          class="absolute inset-0"
+          style={`background: ${gradient}`}
+        />
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-32 h-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <Icon class="w-16 h-16 text-white" />
+          </div>
         </div>
-      )}
+        
+        <!-- Category badge in top left -->
+        <div class="absolute top-6 left-6">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 backdrop-blur-sm text-white text-sm font-medium">
+            <div class="w-2 h-2 rounded-full bg-white"></div>
+            {entry.data.category.charAt(0).toUpperCase() + entry.data.category.slice(1).replace('-', ' ')}
+          </div>
+        </div>
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+      </div>
       
       <!-- Title and description -->
       <h1 class="mb-6 mt-7 max-w-4xl text-3xl font-semibold md:text-5xl leading-tight" transition:name={`blog-title-${entry.slug}`}>

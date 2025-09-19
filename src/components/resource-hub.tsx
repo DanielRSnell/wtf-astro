@@ -106,9 +106,9 @@ const ResourceHub = ({
     });
     
     // Find recommendations based on category data
-    const topRecommendation = categoryResources.find(r => r.data.slug === cat.data.topRecommendation?.slug);
-    const runnerUp = categoryResources.find(r => r.data.slug === cat.data.runnerUp?.slug);
-    const honorableMention = categoryResources.find(r => r.data.slug === cat.data.honorableMention?.slug);
+    const topRecommendation = categoryResources.find(r => r.slug === cat.data.topRecommendation?.slug);
+    const runnerUp = categoryResources.find(r => r.slug === cat.data.runnerUp?.slug);
+    const honorableMention = categoryResources.find(r => r.slug === cat.data.honorableMention?.slug);
 
     // Calculate average rating for each resource
     const resourcesWithRatings = categoryResources.map(resource => {
@@ -149,7 +149,7 @@ const ResourceHub = ({
     
     const resourceLinks = sortedResources.slice(0, 10).map(resource => ({
       title: resource.data.title,
-      href: `/${categoryPath}/${resource.data.slug}`,
+      href: `/${categoryPath}/${resource.slug}`,
       description: resource.data.description,
       badge: resource.avgRating > 0 ? resource.avgRating.toFixed(1) : undefined
     }));
@@ -157,7 +157,7 @@ const ResourceHub = ({
     // Convert review posts to links format
     const reviewLinks = categoryReviews.map(review => ({
       title: review.data.title,
-      href: `/wordpress-reviews/${review.data.slug}`,
+      href: `/wordpress-reviews/${review.slug}`,
       description: review.data.description
     }));
     
@@ -175,7 +175,7 @@ const ResourceHub = ({
         title: topRecommendation.data.title,
         subtitle: topRecommendation.data.subtitle,
         description: topRecommendation.data.description,
-        href: `/${categoryPath}/${topRecommendation.data.slug}`,
+        href: `/${categoryPath}/${topRecommendation.slug}`,
         badge: topRecommendation.data.badge,
         ratings: topRecommendation.data.ratings
       } : {
@@ -187,7 +187,7 @@ const ResourceHub = ({
         title: runnerUp.data.title,
         subtitle: runnerUp.data.subtitle,
         description: runnerUp.data.description,
-        href: `/${categoryPath}/${runnerUp.data.slug}`,
+        href: `/${categoryPath}/${runnerUp.slug}`,
         badge: runnerUp.data.badge,
         ratings: runnerUp.data.ratings
       } : undefined,
@@ -195,7 +195,7 @@ const ResourceHub = ({
         title: honorableMention.data.title,
         subtitle: honorableMention.data.subtitle,
         description: honorableMention.data.description,
-        href: `/${categoryPath}/${honorableMention.data.slug}`,
+        href: `/${categoryPath}/${honorableMention.slug}`,
         badge: honorableMention.data.badge
       } : undefined
     };
@@ -267,17 +267,19 @@ const ResourceHub = ({
 
           {/* Main Content Area */}
           <div className="w-full">
-            <LinkListWithRecommendation
-              title={activeData.name}
-              subtitle={`(${activeData.name.toLowerCase()} reviews, comparisons, and recommendations)`}
-              links={activeData.links}
-              recommendation={activeData.recommendation}
-              runnerUp={activeData.runnerUp}
-              honorableMention={activeData.honorableMention}
-              layout="standalone"
-              showCard={false}
-              data-theme={dataTheme}
-            />
+            {activeData && (
+              <LinkListWithRecommendation
+                title={activeData.name}
+                subtitle={`(${activeData.name.toLowerCase()} reviews, comparisons, and recommendations)`}
+                links={activeData.links}
+                recommendation={activeData.recommendation}
+                runnerUp={activeData.runnerUp}
+                honorableMention={activeData.honorableMention}
+                layout="standalone"
+                showCard={false}
+                data-theme={dataTheme}
+              />
+            )}
           </div>
         </div>
       </div>

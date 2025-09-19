@@ -81,93 +81,67 @@ export const MegaMenu = ({ trigger, sections, className, featured }: MegaMenuPro
           isOpen ? "opacity-100 visible translate-y-0 pointer-events-auto" : "opacity-0 invisible -translate-y-2 pointer-events-none"
         )}
       >
-        <div className="w-screen max-w-7xl">
-          <div className="group relative overflow-hidden rounded-2xl bg-card/95 backdrop-blur-xl border border-border/30 shadow-2xl">
-            {/* Background gradients */}
-            <div className="absolute inset-0">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-              <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-transparent to-transparent" />
-            </div>
+        <div className="w-[800px] max-w-[90vw]">
+          <div className="group relative overflow-hidden rounded-xl bg-card/98 backdrop-blur-xl border border-border/40 shadow-2xl">
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3" />
 
-            <div className="relative z-10 grid grid-cols-12 gap-6 p-8">
-              {/* Main sections */}
-              <div className={cn(
-                "col-span-12",
-                featured ? "lg:col-span-8" : "lg:col-span-12"
-              )}>
-                <div className={cn(
-                  "grid gap-8",
-                  sections.length === 1 ? "grid-cols-1" : 
-                  sections.length === 2 ? "grid-cols-1 md:grid-cols-2" :
-                  "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                )}>
-                  {sections.map((section, sectionIdx) => (
-                    <div key={sectionIdx}>
-                      <h3 className="mb-4 text-sm font-semibold text-primary uppercase tracking-wider">
-                        {section.title}
-                      </h3>
-                      <ul className="space-y-3">
-                        {section.items.map((item, itemIdx) => (
-                          <li key={itemIdx}>
-                            <a
-                              href={item.href}
-                              className="group/item flex items-start gap-3 rounded-lg p-2 hover:bg-muted/50 transition-all duration-200"
-                            >
-                              {item.icon && (
-                                <div className="mt-0.5 text-muted-foreground group-hover/item:text-primary transition-colors">
-                                  {item.icon}
-                                </div>
-                              )}
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-medium text-foreground group-hover/item:text-primary transition-colors">
-                                    {item.title}
-                                  </span>
-                                  {item.badge && (
-                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary">
-                                      {item.badge}
-                                    </span>
-                                  )}
-                                </div>
-                                {item.description && (
-                                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                                    {item.description}
-                                  </p>
-                                )}
-                              </div>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+            <div className="relative z-10 p-3">
+              {/* Simple 3-column grid without headers */}
+              <div className="grid grid-cols-3 gap-0.5">
+                {sections.flatMap(section => section.items).map((item, idx) => (
+                  <a
+                    key={idx}
+                    href={item.href}
+                    className="group/item flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primary/10 transition-all duration-200"
+                  >
+                    {item.icon && (
+                      <div className="text-muted-foreground group-hover/item:text-primary transition-colors flex-shrink-0">
+                        {item.icon}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-medium text-foreground group-hover/item:text-primary transition-colors truncate">
+                          {item.title}
+                        </span>
+                        {item.badge && (
+                          <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-primary/15 text-primary flex-shrink-0">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </a>
+                ))}
               </div>
 
-              {/* Featured section */}
+              {/* Featured section - more compact */}
               {featured && (
-                <div className="col-span-12 lg:col-span-4">
-                  <div className="h-full rounded-xl bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 p-6 border border-border/20">
-                    <h3 className="mb-3 text-lg font-semibold text-foreground">
-                      {featured.title}
-                    </h3>
-                    <p className="mb-4 text-sm text-muted-foreground">
-                      {featured.description}
-                    </p>
+                <div className="mt-3 p-3 rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border border-border/20">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold text-foreground mb-1">
+                        {featured.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {featured.description}
+                      </p>
+                    </div>
                     <a
                       href={featured.href}
-                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                      className="ml-4 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-primary/10 hover:bg-primary/20 text-primary rounded-md transition-colors"
                     >
-                      Learn more
-                      <ChevronDown className="h-4 w-4 -rotate-90" />
+                      View
+                      <ChevronDown className="h-3 w-3 -rotate-90" />
                     </a>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Hover accent line */}
-            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            {/* Top accent line */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
           </div>
         </div>
       </div>

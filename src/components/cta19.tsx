@@ -1,4 +1,4 @@
-import { FileCode, Layers, Headphones } from "lucide-react";
+import { FileCode, Layers, Headphones, Gauge, TrendingUp, MessageCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { GradientButton } from "@/components/ui/gradient-button";

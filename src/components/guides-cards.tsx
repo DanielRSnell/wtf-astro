@@ -15,11 +15,12 @@ interface GuideCard {
 }
 
 interface GuidesCardsProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   guides: GuideCard[];
   className?: string;
   "data-theme"?: string;
+  showHeader?: boolean;
 }
 
 const GuidesCards = ({
@@ -27,7 +28,8 @@ const GuidesCards = ({
   subtitle,
   guides,
   className,
-  "data-theme": dataTheme
+  "data-theme": dataTheme,
+  showHeader = true
 }: GuidesCardsProps) => {
 
 
@@ -50,8 +52,8 @@ const GuidesCards = ({
 
     return (
       <div
-        className="group relative animate-in fade-in slide-in-from-bottom-8 duration-600"
-        style={{ minHeight: '420px', animationDelay: `${200 + index * 100}ms` }}
+        className="group relative h-full"
+        style={{ minHeight: '460px' }}
       >
         <a href={guide.href} className="block relative">
           {/* Background Cards for Stacked Effect */}
@@ -78,7 +80,7 @@ const GuidesCards = ({
           
           {/* Main Card with Full Content */}
           <div
-            className="relative rounded-2xl bg-card backdrop-blur-xl hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden"
+            className="relative rounded-2xl bg-card backdrop-blur-xl hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden h-full flex flex-col"
             style={{ zIndex: 3 }}
           >
             {/* Header Image */}
@@ -119,14 +121,14 @@ const GuidesCards = ({
             </div>
 
             {/* Content Section */}
-            <div className="relative p-6">
+            <div className="relative p-6 flex-1 flex flex-col">
               <div className="absolute -inset-px rounded-b-2xl bg-gradient-to-br from-foreground/5 to-50% pointer-events-none" />
               
               <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
                 {guide.title}
               </h3>
 
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
                 {guide.description}
               </p>
 
@@ -175,19 +177,23 @@ const GuidesCards = ({
     <section className={cn("py-24 bg-background", className)} data-theme={dataTheme}>
       <div className="container max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-16 animate-in fade-in slide-in-from-top-8 duration-600">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            {title}
-          </h2>
-          {subtitle && (
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              {subtitle}
-            </p>
-          )}
-        </div>
+        {showHeader && (title || subtitle) && (
+          <div className="text-center mb-16 animate-in fade-in slide-in-from-top-8 duration-600">
+            {title && (
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                {title}
+              </h2>
+            )}
+            {subtitle && (
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                {subtitle}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Guides Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {guides.map((guide, index) => (
             <GuideCard key={index} guide={guide} index={index} />
           ))}

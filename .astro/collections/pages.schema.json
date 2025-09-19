@@ -10,6 +10,94 @@
         "description": {
           "type": "string"
         },
+        "hero": {
+          "type": "object",
+          "properties": {
+            "badge": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "servicesSection": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "subtitle"
+          ],
+          "additionalProperties": false
+        },
+        "processTimeline": {
+          "type": "object",
+          "properties": {
+            "header": {
+              "type": "object",
+              "properties": {
+                "badge": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "subtitle": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "badge",
+                "title",
+                "subtitle"
+              ],
+              "additionalProperties": false
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "reverse": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "icon",
+                  "reverse"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "header",
+            "steps"
+          ],
+          "additionalProperties": false
+        },
         "$schema": {
           "type": "string"
         }

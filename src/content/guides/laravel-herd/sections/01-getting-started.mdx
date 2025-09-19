@@ -1,0 +1,165 @@
+---
+title: "Getting Started with Laravel Herd"
+order: 1
+section: "getting-started"
+lessons:
+  - title: "What is Laravel Herd?"
+    duration: "5 min"
+    id: "what-is-herd"
+  - title: "Installation and Setup"
+    duration: "10 min"
+    id: "installation"
+  - title: "Understanding Herd's Architecture"
+    duration: "15 min"
+    id: "architecture"
+---
+
+## What is Laravel Herd?
+
+Laravel Herd is a blazing-fast, native development environment for macOS and Windows. Unlike traditional tools that rely on virtual machines or Docker, Herd runs natively on your system, providing:
+
+- **Lightning Speed**: Native performance without virtualization overhead
+- **Multiple PHP Versions**: Switch between PHP versions with a single click
+- **Built-in Services**: MySQL, Redis, Meilisearch, and more (Pro version)
+- **SSL Certificates**: Automatic SSL for all local sites
+- **Zero Configuration**: Works out of the box
+
+### Why Choose Herd for WordPress?
+
+While Herd was initially built for Laravel, it's perfect for WordPress development:
+
+1. **Speed**: Sites load instantly, no more waiting for Docker containers
+2. **Simplicity**: No complex configurations or YAML files
+3. **Reliability**: Native services mean fewer compatibility issues
+4. **Professional Features**: Production-like environment locally
+
+### Herd vs Traditional Tools
+
+| Feature | Herd | Docker | MAMP/XAMPP | Valet |
+|---------|------|--------|------------|-------|
+| Performance | Native (Fast) | Virtualized (Slower) | Native (Fast) | Native (Fast) |
+| Setup Complexity | Simple | Complex | Moderate | Moderate |
+| Multiple PHP | ✅ One-click | ✅ Complex | ❌ Limited | ✅ Command line |
+| Built-in Services | ✅ Integrated | ✅ Containers | ⚠️ Basic | ❌ Separate |
+| SSL Certificates | ✅ Automatic | ⚠️ Manual | ❌ Manual | ✅ Automatic |
+
+## Installation and Setup
+
+### System Requirements
+
+**macOS:**
+- macOS 11 Big Sur or later
+- Apple Silicon or Intel processor
+- 4GB RAM minimum (8GB recommended)
+
+**Windows:**
+- Windows 10 version 2004 or later
+- WSL 2 enabled
+- 8GB RAM minimum
+
+### Installation Steps
+
+1. **Download Herd**
+   ```bash
+   # Visit https://herd.laravel.com
+   # Download the installer for your OS
+   ```
+
+2. **Run the Installer**
+   - macOS: Open the .dmg and drag to Applications
+   - Windows: Run the .exe installer
+
+3. **Initial Configuration**
+   ```bash
+   # Herd automatically configures:
+   # - PHP installation
+   # - Nginx server
+   # - dnsmasq for .test domains
+   # - SSL certificates
+   ```
+
+4. **Verify Installation**
+   ```bash
+   # Open terminal and check PHP
+   php --version
+   
+   # Should show Herd's PHP version
+   ```
+
+### Upgrading to Herd Pro
+
+Herd Pro unlocks essential services for WordPress development:
+
+- **MySQL/MariaDB**: Full database management
+- **Redis**: Object caching for WordPress
+- **Meilisearch**: Advanced search capabilities
+- **MinIO**: S3-compatible object storage
+- **Mailpit**: Email testing
+
+To upgrade:
+1. Open Herd preferences
+2. Click "Upgrade to Pro"
+3. Enter your license key
+4. Services become immediately available
+
+## Understanding Herd's Architecture
+
+### How Herd Works
+
+Herd uses a unique architecture that combines:
+
+1. **Native PHP Binaries**: Pre-compiled PHP versions optimized for your system
+2. **Nginx Web Server**: High-performance web server
+3. **dnsmasq**: Local DNS resolution for .test domains
+4. **Service Manager**: Coordinates all services
+
+### Directory Structure
+
+```
+~/Herd/
+├── config/           # Herd configuration files
+├── services/         # Service configurations
+├── sites/            # Your WordPress sites
+└── logs/             # Application logs
+```
+
+### The Sites Directory
+
+By default, Herd serves sites from `~/Herd`:
+
+```bash
+# Create a new WordPress site
+cd ~/Herd
+mkdir my-wordpress-site
+cd my-wordpress-site
+
+# Site is now available at:
+# http://my-wordpress-site.test
+```
+
+### PHP Version Management
+
+Herd allows instant PHP version switching:
+
+1. **Global PHP Version**: Set default for all sites
+2. **Per-Site Isolation**: Different PHP for each project
+3. **Command Line**: Consistent with site version
+
+```bash
+# Check current PHP version
+herd php --version
+
+# List available versions
+herd php:list
+
+# Switch global version
+herd use php@8.2
+
+# Isolate a site to specific version
+cd ~/Herd/my-site
+herd isolate php@7.4
+```
+
+### Next Steps
+
+Now that you understand Herd's foundation, we'll move on to creating your first WordPress site with proper database configuration and essential services.

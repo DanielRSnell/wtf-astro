@@ -1,4 +1,4 @@
-import { Menu, X, ChevronDown, Zap, Code, Package, BookOpen, FileText, Shield, Search, Gauge, Server, Palette, Plug, Bot, Lock } from "lucide-react";
+import { Menu, X, ChevronDown, Zap, Code, Package, BookOpen, FileText, Shield, Search, Gauge, Server, Palette, Plug, Bot, Lock, Lightbulb, Rocket, Target, TrendingUp, DollarSign, Users } from "lucide-react";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { MegaMenu, type MegaMenuSection } from "@/components/ui/mega-menu";
@@ -102,7 +102,7 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
           href: "/wordpress-hosting",
           description: "Hosting reviews and guides",
           icon: <Server className="h-4 w-4" />,
-          badge: "2024"
+          badge: "2025"
         },
         {
           title: "WordPress Forms",
@@ -220,20 +220,24 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
           <div className="hidden lg:flex lg:items-center lg:gap-x-6">
             {/* Main Navigation */}
             <nav className="flex items-center gap-x-6">
-              <MegaMenu 
-                trigger="Services"
-                sections={servicesSections}
-                featured={{
-                  title: "Free Speed Audit",
-                  description: "Get a detailed performance report and optimization roadmap for your WooCommerce store.",
-                  href: "/contact"
-                }}
-              />
+              <a 
+                href="/services" 
+                className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-300"
+              >
+                Services
+              </a>
               
               <MegaMenu 
                 trigger="Resources"
                 sections={[...wpResourcesSections, ...wooResourcesSections]}
               />
+
+              <a 
+                href="/guides" 
+                className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-300"
+              >
+                Guides
+              </a>
               
               <a 
                 href="/compare" 
@@ -265,22 +269,14 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
           <div className="lg:hidden">
             <div className="absolute inset-x-0 top-full bg-gradient-to-b from-background/95 via-muted/60 to-background/95 backdrop-blur-xl border-b border-border/50 shadow-2xl max-h-[85vh] overflow-y-auto">
               <div className="space-y-2 px-6 py-6">
-                {/* Services Section */}
+                {/* Services Link */}
                 <div className="pb-2">
-                  <h3 className="px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Services</h3>
                   <a 
-                    href="/services/speed-optimization" 
-                    className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 hover:text-primary transition-all duration-200"
+                    href="/services" 
+                    className="block rounded-lg px-3 py-2 text-base font-semibold text-foreground hover:bg-muted/50 hover:text-primary transition-all duration-200"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Speed Optimization
-                  </a>
-                  <a 
-                    href="/services/custom-development" 
-                    className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 hover:text-primary transition-all duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Custom Development
+                    Services
                   </a>
                 </div>
                 
@@ -338,6 +334,13 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
                 
                 {/* Other Links */}
                 <div className="border-t border-border/40 pt-2">
+                  <a 
+                    href="/guides" 
+                    className="block rounded-lg px-3 py-2 text-base font-semibold text-foreground hover:bg-muted/50 hover:text-primary transition-all duration-200"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Guides
+                  </a>
                   <a 
                     href="/compare" 
                     className="block rounded-lg px-3 py-2 text-base font-semibold text-foreground hover:bg-muted/50 hover:text-primary transition-all duration-200"

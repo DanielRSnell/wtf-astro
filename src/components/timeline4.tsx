@@ -1,4 +1,4 @@
-import { Cpu, LayoutList, LocateFixed, Rocket, Users } from "lucide-react";
+import { Cpu, LayoutList, LocateFixed, Rocket, Users, TrendingUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,9 @@ const Timeline4 = ({ "data-theme": dataTheme, content }: Timeline4Props) => {
       "layout-list": LayoutList,
       "locate-fixed": LocateFixed,
       users: Users,
-      cpu: Cpu
+      cpu: Cpu,
+      rocket: Rocket,
+      "trending-up": TrendingUp
     };
     return iconMap[iconName.toLowerCase()] || LayoutList;
   };

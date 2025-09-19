@@ -16,16 +16,23 @@
         "date": {
           "anyOf": [
             {
-              "type": "string",
-              "format": "date-time"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "integer",
+                  "format": "unix-time"
+                }
+              ]
             },
             {
-              "type": "string",
-              "format": "date"
-            },
-            {
-              "type": "integer",
-              "format": "unix-time"
+              "type": "string"
             }
           ]
         },
@@ -39,10 +46,12 @@
           }
         },
         "featured": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         },
         "draft": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         },
         "image": {
           "type": "object",

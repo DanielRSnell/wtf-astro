@@ -195,9 +195,11 @@ declare module 'astro:content' {
 }>;
 "guides": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "guides";
-  data: any;
+  data: InferEntrySchema<"guides">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
@@ -213,41 +215,51 @@ declare module 'astro:content' {
 }>;
 "services": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "services";
-  data: any;
+  data: InferEntrySchema<"services">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
 "wordpress": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "wordpress";
-  data: any;
+  data: InferEntrySchema<"wordpress">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
 "wordpress-category": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "wordpress-category";
-  data: any;
+  data: InferEntrySchema<"wordpress-category">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
 "wordpress-resource": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "wordpress-resource";
-  data: any;
+  data: InferEntrySchema<"wordpress-resource">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
 "wordpress-review": Record<string, {
   id: string;
-  body?: string;
+  render(): Render[".md"];
+  slug: string;
+  body: string;
   collection: "wordpress-review";
-  data: any;
+  data: InferEntrySchema<"wordpress-review">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;

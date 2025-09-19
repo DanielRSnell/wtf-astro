@@ -178,3 +178,27 @@ export function getCtaContent(): CtaContent {
   
   return data as CtaContent;
 }
+
+export interface ServicesPhilosophyContent {
+  title: string;
+  description: string;
+  hero?: {
+    badge: string;
+    title: string;
+    description: string;
+  };
+  servicesSection?: {
+    title: string;
+    subtitle: string;
+  };
+  processTimeline?: TimelineContent;
+  cta?: CtaContent;
+}
+
+export function getServicesPhilosophyContent(): ServicesPhilosophyContent {
+  const filePath = path.join(process.cwd(), 'src/content/pages/services-philosophy.mdx');
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const { data } = matter(fileContents);
+  
+  return data as ServicesPhilosophyContent;
+}

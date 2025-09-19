@@ -1,0 +1,213 @@
+---
+export const prerender = true;
+import Layout from '../layouts/base.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { Zap, Code, Rocket, ChevronRight, Phone, Clock, DollarSign, TrendingUp, Trash2, LayoutGrid, Bot, MessageCircle, Database, Search, Mail, Palette, Megaphone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { DotPattern } from '@/components/magicui/dot-pattern';
+import { Timeline4 } from '@/components/timeline4';
+import { Cta19 } from '@/components/cta19';
+import { getServicesPhilosophyContent } from '@/lib/content';
+
+// Get all service posts
+const services = await getCollection('services');
+
+// Get philosophy content
+const philosophyData = getServicesPhilosophyContent();
+
+// Get philosophy content for rendering
+let philosophy;
+let PhilosophyContent;
+
+try {
+  philosophy = await getEntry('pages', 'services-philosophy');
+  if (philosophy) {
+    const rendered = await philosophy.render();
+    PhilosophyContent = rendered.Content;
+  }
+} catch (error) {
+  console.error('Error loading philosophy content:', error);
+}
+---
+
+<Layout
+  title="Services - WooThatsFast"
+  description="Professional WooCommerce speed optimization and custom development services. Transform your store's performance and increase conversions."
+>
+  <!-- Hero Section -->
+  <section class="relative bg-background pt-32 pb-20 text-foreground" data-theme="bright-dark">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <!-- Dot pattern background -->
+      <DotPattern
+        glow={true}
+        className="text-primary/60 fill-primary/60"
+        width={32}
+        height={32}
+        cx={2}
+        cy={2}
+        cr={2}
+        client:load
+      />
+      
+      <!-- Gradient overlay for smooth blend -->
+      <div class="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/80 pointer-events-none" />
+      
+      <!-- Blur element in top right corner -->
+      <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+    </div>
+
+    <div class="container relative z-10 mx-auto px-6">
+      <div class="mx-auto max-w-4xl text-center">
+        <!-- Badge -->
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 backdrop-blur-sm border border-primary/20">
+          <Rocket className="h-4 w-4 text-primary" />
+          <span class="text-sm font-medium text-primary">{philosophyData?.hero?.badge || 'Professional Services'}</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="mb-6 text-5xl font-bold tracking-tight text-foreground lg:text-6xl">
+          {philosophyData?.hero?.title ? (
+            <>
+              {philosophyData.hero.title.split(' ').slice(0, -2).join(' ')} <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{philosophyData.hero.title.split(' ').slice(-2).join(' ')}</span>
+            </>
+          ) : (
+            <>Your Site's <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Too Slow</span></>
+          )}
+        </h1>
+
+        <!-- Description -->
+        <p class="mb-10 text-xl text-muted-foreground max-w-lg mx-auto">
+          {philosophyData?.hero?.description || 'We optimize WooCommerce stores for peak performance. Faster load times mean higher conversions, lower bounce rates, and more revenue for your business.'}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section class="bg-background py-20" data-theme="bright-dark">
+    <div class="container mx-auto px-6">
+      <div class="mx-auto max-w-4xl">
+        <div class="prose prose-lg max-w-none dark:prose-invert
+          [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mb-6 [&_h2]:mt-12
+          [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mb-4 [&_h3]:mt-8
+          [&_p]:text-muted-foreground [&_p]:leading-relaxed
+          [&_strong]:text-foreground [&_strong]:font-semibold
+          [&_ul]:text-muted-foreground [&_ul]:space-y-2
+          [&_li]:text-muted-foreground
+          [&_ol]:text-muted-foreground [&_ol]:space-y-2">
+          {philosophy && PhilosophyContent && <PhilosophyContent />}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services List Section -->
+  <section class="bg-background py-20 border-t border-border/20" data-theme="bright-dark">
+    <div class="container mx-auto px-6">
+      <div class="mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="mb-12 text-left">
+          <h2 class="mb-4 text-3xl font-bold text-foreground lg:text-4xl">{philosophyData?.servicesSection?.title || 'Not Your Average Agency BS'}</h2>
+          <p class="text-lg text-muted-foreground">{philosophyData?.servicesSection?.subtitle || 'For revenue-generating businesses ready to invest in actual results, not promises'}</p>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => {
+            const iconMap = {
+              'rocket': Rocket,
+              'zap': Zap,
+              'trash': Trash2,
+              'layout': LayoutGrid,
+              'bot': Bot,
+              'message-circle': MessageCircle,
+              'code': Code,
+              'database': Database,
+              'search': Search,
+              'mail': Mail,
+              'palette': Palette,
+              'megaphone': Megaphone
+            };
+            const Icon = iconMap[service.data.icon as keyof typeof iconMap] || Rocket;
+            return (
+              <article class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+                {/* Background gradients */}
+                <div class="absolute inset-0">
+                  <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+                </div>
+
+                <div class="relative z-10 p-8">
+                  {/* Icon and Title */}
+                  <div class="mb-6 flex items-start gap-4">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 backdrop-blur-sm border border-primary/20">
+                      <Icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="mb-2 text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                        {service.data.title}
+                      </h3>
+                      <p class="text-muted-foreground">{service.data.subtitle}</p>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <p class="mb-6 text-muted-foreground leading-relaxed">
+                    {service.data.description}
+                  </p>
+
+                  {/* Features List */}
+                  {service.data.features && (
+                    <ul class="mb-6 space-y-2">
+                      {service.data.features.slice(0, 3).map((feature: string) => (
+                        <li class="flex items-center gap-2 text-sm text-muted-foreground">
+                          <ChevronRight className="h-4 w-4 text-primary" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {/* Pricing */}
+                  {service.data.pricing && (
+                    <div class="mb-6 rounded-lg bg-primary/5 p-4 border border-primary/10">
+                      <div class="text-sm text-muted-foreground">Starting from</div>
+                      <div class="text-2xl font-bold text-primary">{service.data.pricing.starting}</div>
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  <a 
+                    href={`/service/${service.slug}`}
+                    class="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+                  >
+                    Learn More
+                    <ChevronRight className="h-4 w-4" />
+                  </a>
+                </div>
+
+                {/* Hover accent */}
+                <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Timeline Section -->
+  <Timeline4 
+    data-theme="bright-dark" 
+    content={philosophyData?.processTimeline} 
+    client:load 
+  />
+
+  <!-- CTA Section -->
+  <Cta19
+    data-theme="bright-dark"
+    content={philosophyData?.cta}
+    client:visible
+  />
+</Layout>

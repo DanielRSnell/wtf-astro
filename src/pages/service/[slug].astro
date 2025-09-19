@@ -1,0 +1,313 @@
+---
+export const prerender = true;
+import Layout from '@/layouts/base.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { getServicesPhilosophyContent } from '@/lib/content';
+import { Cta19 } from '@/components/cta19';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { GradientButton } from '@/components/ui/gradient-button';
+import { DotPattern } from '@/components/magicui/dot-pattern';
+import { ArrowLeft, CheckCircle, Users, Zap, ChevronRight, DollarSign, Clock, TrendingUp } from 'lucide-react';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const { Content } = await service.render();
+
+// Get philosophy content for CTA
+const philosophyData = getServicesPhilosophyContent();
+---
+
+<Layout
+  title={`${service.data.title} - WooThatsFast`}
+  description={service.data.description}
+>
+  <!-- Hero Section with enhanced design -->
+  <section class="relative bg-background pt-24 pb-20" data-theme="bright-dark">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <!-- Dot pattern background - matching hero24.tsx -->
+      <DotPattern
+        glow={true}
+        className="text-primary/60 fill-primary/60"
+        width={32}
+        height={32}
+        cx={2}
+        cy={2}
+        cr={2}
+        client:load
+      />
+      
+      <!-- Gradient overlay for smooth blend - matching hero24.tsx -->
+      <div class="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/80 pointer-events-none" />
+      
+      <!-- Glow effects -->
+      <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+      <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-secondary/10 blur-3xl" />
+    </div>
+
+    <div class="container relative z-10 mx-auto px-6">
+      <div class="mx-auto max-w-5xl">
+        <!-- Back to Services & Breadcrumbs -->
+        <div class="mb-8">
+          <a href="/services" class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-3">
+            <ArrowLeft className="h-4 w-4" />
+            Back to all services
+          </a>
+          
+          <!-- Breadcrumbs -->
+          <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-muted-foreground">
+            <a href="/" class="hover:text-primary transition-colors">Home</a>
+            <ChevronRight className="h-3 w-3" />
+            <a href="/services" class="hover:text-primary transition-colors">Services</a>
+            <ChevronRight className="h-3 w-3" />
+            <span class="text-foreground font-medium">{service.data.title}</span>
+          </nav>
+        </div>
+
+        <!-- Main Hero Content -->
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <!-- Left Column - Content -->
+          <div>
+            <!-- Badge -->
+            <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-card/60 backdrop-blur-xl border border-primary/20 px-4 py-2">
+              <Zap className="h-4 w-4 text-primary animate-pulse" />
+              <span class="text-sm font-medium text-primary">{service.data.subtitle}</span>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="mb-6 text-4xl font-bold tracking-tight text-foreground lg:text-5xl xl:text-6xl">
+              {service.data.title}
+            </h1>
+            
+            <!-- Description -->
+            <p class="text-lg text-muted-foreground leading-relaxed mb-8 lg:text-xl">
+              {service.data.description}
+            </p>
+
+            <!-- CTA Button -->
+            <a>
+              <GradientButton 
+                variant="secondary" 
+                size="lg"
+               >
+                
+                Get Started
+                <ChevronRight className="ml-2" strokeWidth={1.5} />
+              </GradientButton>
+            </a>
+          </div>
+
+          <!-- Right Column - Features & Pricing Card -->
+          <div class="relative">
+            <!-- Premium card with features and pricing -->
+            <div class="relative overflow-hidden rounded-3xl bg-card/60 backdrop-blur-xl border border-brand p-8">
+              <!-- Gradient overlays -->
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+              <div class="absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+              
+              <div class="relative z-10">
+                <!-- Features List -->
+                {service.data.features && (
+                  <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">What's Included</h3>
+                    <div class="space-y-3">
+                      {service.data.features.slice(0, 5).map((feature: string) => (
+                        <div class="flex items-start gap-3">
+                          <div class="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10">
+                            <CheckCircle className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          <span class="text-sm text-muted-foreground leading-relaxed">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Pricing Section -->
+                {service.data.pricing && (
+                  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 border border-primary/20">
+                    <div class="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+                    
+                    <div class="relative z-10">
+                      <div class="flex items-baseline justify-between mb-4">
+                        <div>
+                          <p class="text-sm text-muted-foreground mb-1">Investment starts at</p>
+                          <div class="flex items-baseline gap-1">
+                            <span class="text-3xl font-bold text-foreground">{service.data.pricing.starting}</span>
+                          </div>
+                        </div>
+                        <DollarSign className="h-8 w-8 text-primary/20" />
+                      </div>
+                      
+                      <!-- Additional pricing info -->
+                      <div class="flex items-center gap-4 pt-4 border-t border-border/20">
+                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          <span>Quick turnaround</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                          <TrendingUp className="h-4 w-4" />
+                          <span>ROI focused</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <!-- Accent line -->
+              <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+            </div>
+
+            <!-- Decorative elements -->
+            <div class="absolute -z-10 -top-4 -right-4 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+            <div class="absolute -z-10 -bottom-4 -left-4 h-72 w-72 rounded-full bg-secondary/5 blur-3xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partnership Section -->
+  <section class="bg-background py-20 border-t border-border/20" data-theme="bright-dark">
+    <div class="container mx-auto px-6">
+      <div class="mx-auto max-w-4xl">
+        <div class="mb-12 text-center">
+          <Badge variant="outline" class="mb-4 bg-card/60 backdrop-blur-sm">
+            <Users className="h-3 w-3 mr-1" />
+            The Partnership Model
+          </Badge>
+          <h2 class="text-3xl font-bold text-foreground mb-4">Success is a Two-Way Street</h2>
+          <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+            We're not another vendor you throw tasks at. We're partners. Your success depends on both of us showing up.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <!-- What We Bring -->
+          <div class="relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand p-8">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+            <div class="relative z-10">
+              <h3 class="text-xl font-bold text-foreground mb-4">What We Bring</h3>
+              <ul class="space-y-3">
+                <li class="text-muted-foreground">• <strong class="text-foreground">Execution Excellence</strong> - We get shit done, fast and right</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Strategic Thinking</strong> - We see the bigger picture and plan accordingly</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Technical Expertise</strong> - Years of experience, battle-tested solutions</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Proactive Communication</strong> - You'll never wonder what's happening</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- What You Bring -->
+          <div class="relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-brand p-8">
+            <div class="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-primary/5" />
+            <div class="relative z-10">
+              <h3 class="text-xl font-bold text-foreground mb-4">What You Bring</h3>
+              <ul class="space-y-3">
+                <li class="text-muted-foreground">• <strong class="text-foreground">Domain Knowledge</strong> - You know your business better than anyone</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Clear Direction</strong> - You know what success looks like</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Timely Feedback</strong> - Quick decisions keep momentum</li>
+                <li class="text-muted-foreground">• <strong class="text-foreground">Resource Access</strong> - Logins, assets, approvals when needed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Reality Check -->
+        <div class="rounded-2xl bg-primary/5 border border-primary/20 p-8">
+          <h3 class="text-2xl font-bold text-foreground mb-4">The Honest Truth</h3>
+          <p class="text-lg text-muted-foreground mb-4">
+            <strong class="text-foreground">We're only as valuable as you allow us to be.</strong> If you treat us like order-takers, you'll get order-taker results. If you treat us like partners, we'll help transform your business.
+          </p>
+          <p class="text-muted-foreground">
+            This isn't about us being demanding. It's about setting realistic expectations. The clients who see 10x returns are the ones who engage, collaborate, and trust the process. The ones who disappear for weeks and expect magic? They get exactly what they put in.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Details -->
+  <section class="bg-background py-20" data-theme="bright-dark">
+    <div class="container mx-auto px-6">
+      <div class="mx-auto max-w-4xl">
+        <div class="prose prose-lg bg-background/50 backdrop-blur-sm border border-border rounded-3xl px-24 py-16 mx-auto dark:prose-invert
+          [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mb-6 [&_h2]:mt-12
+          [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mb-4 [&_h3]:mt-8
+          [&_p]:text-muted-foreground [&_p]:leading-relaxed
+          [&_strong]:text-foreground [&_strong]:font-semibold
+          [&_ul]:text-muted-foreground [&_ul]:space-y-2
+          [&_li]:text-muted-foreground
+          [&_ol]:text-muted-foreground [&_ol]:space-y-2">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Success Looks Like -->
+  <section class="bg-background py-20 border-t border-border/20" data-theme="bright-dark">
+    <div class="container mx-auto px-6">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="text-3xl font-bold text-foreground mb-8">What Success Looks Like</h2>
+        
+        <div class="space-y-6">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-primary font-bold">1</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-foreground mb-2">Week 1: Alignment</h3>
+              <p class="text-muted-foreground">We get on the same page about goals, success metrics, and working style. You share context, we ask questions.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-primary font-bold">2</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-foreground mb-2">Week 2-4: Momentum</h3>
+              <p class="text-muted-foreground">Quick wins build trust. You see results, we learn your business. Communication rhythm established.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-primary font-bold">3</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-foreground mb-2">Month 2: Acceleration</h3>
+              <p class="text-muted-foreground">We're hitting stride. Less hand-holding needed. You're seeing ROI. We're suggesting improvements you hadn't considered.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-primary font-bold">4</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-foreground mb-2">Ongoing: Partnership</h3>
+              <p class="text-muted-foreground">We're an extension of your team. Proactively solving problems. Revenue impact is undeniable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <Cta19
+    data-theme="bright-dark"
+    content={philosophyData?.cta}
+    client:visible
+  />
+</Layout>

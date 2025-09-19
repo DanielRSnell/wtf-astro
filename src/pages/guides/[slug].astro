@@ -1,0 +1,198 @@
+---
+export const prerender = true;
+import GuideLayout from '@/layouts/guide-layout.astro';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Clock, BookOpen, BarChart, ChevronRight, Play } from 'lucide-react';
+import { getGuideSlugs, getGuide, getGuideSections, formatGuideData } from '@/lib/guides';
+import { PrereleaseSignup } from '@/components/guides/prerelease-signup';
+
+export async function getStaticPaths() {
+  const guideSlugs = await getGuideSlugs();
+  
+  console.log('Available guide slugs:', guideSlugs);
+  
+  return guideSlugs.map(slug => ({
+    params: { slug },
+    props: { slug }
+  }));
+}
+
+const { slug } = Astro.params;
+
+// Get the main guide entry using our helper
+const guideEntry = await getGuide(slug);
+console.log(`Looking for guide with slug: ${slug}`);
+console.log(`Found guide:`, guideEntry ? 'yes' : 'no');
+
+// Handle missing guide
+if (!guideEntry) {
+  console.error(`Guide not found: ${slug}`);
+  return Astro.redirect('/404');
+}
+
+// Format guide data but keep original data reference
+const guide = formatGuideData(guideEntry.data);
+
+// Check if guide is in prerelease mode - check both original and formatted data
+const isPrerelease = guideEntry.data.prerelease === true || guide.prerelease === true;
+console.log(`Guide ${slug} - prerelease flag in original:`, guideEntry.data.prerelease, '- in formatted:', guide.prerelease, '- isPrerelease:', isPrerelease);
+
+// Get all sections for this guide using our helper
+const sectionEntries = await getGuideSections(slug);
+const sections = sectionEntries
+  .map(entry => entry.data)
+  .filter(data => data.section);
+
+// Render the guide content
+const { Content } = await guideEntry.render();
+---
+
+<GuideLayout
+  title={`${guide.title} - WooThatsFast`}
+  description={guide.description}
+  guide={guide}
+  sections={sections}
+  slug={slug}
+>
+  {!isPrerelease ? (
+    <>
+      <!-- Hero Section -->
+      <div class="mb-12">
+        <!-- Badges -->
+        <div class="mb-6 flex flex-wrap items-center gap-3">
+          <Badge variant="outline" class="bg-primary/10 border-primary/20">
+            {guide.badge}
+          </Badge>
+          <Badge variant="outline" class="bg-muted/60">
+            {guide.level}
+          </Badge>
+          <Badge variant="outline" class="bg-muted/60">
+            {guide.category}
+          </Badge>
+        </div>
+
+        <!-- Description -->
+        <p class="mb-10 text-xl text-muted-foreground leading-relaxed">
+          {guide.description}
+        </p>
+
+        <!-- Meta Info -->
+        <div class="mb-10 flex flex-wrap items-center gap-6 text-muted-foreground">
+          <div class="flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            <span>{guide.lessons} Lessons</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            <span>{guide.duration}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <BarChart className="h-5 w-5" />
+            <span>{guide.level}</span>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        {sections.length > 0 && (
+          <Button 
+            asChild
+            variant="premium"
+            size="lg"
+            className="group"
+          >
+            <a href={`/guides/${slug}/${sections[0].section || sections[0].id}`}>
+              <Play className="h-5 w-5" />
+              Start Course
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+          </Button>
+        )}
+
+        <!-- Updated Date -->
+        <p class="mt-6 text-sm text-muted-foreground">
+          Updated on {new Date(guide.updatedDate).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </p>
+      </div>
+    </>
+  ) : (
+    <!-- Prerelease Signup -->
+    <PrereleaseSignup 
+      client:load
+      guideTitle={guide.title}
+      guideDescription={guide.description}
+      expectedDate={guideEntry.data.expectedDate}
+    />
+  )}
+
+  {!isPrerelease && (
+    <>
+      <!-- Course Content Section -->
+      <div class="mb-12">
+        <h2 class="mb-8 text-3xl font-bold text-foreground">Course Content</h2>
+
+        <!-- Sections List -->
+        <div class="space-y-6">
+          {guide.sections && guide.sections.map((section: any, index: number) => (
+            <div class="group relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-border/20 hover:border-primary/30 transition-all duration-500">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <a 
+                href={`/guides/${slug}/${section.id}`}
+                class="relative z-10 block p-8"
+              >
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <div class="mb-2 flex items-center gap-3">
+                      <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                        {index + 1}
+                      </span>
+                      <h3 class="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                        {section.title}
+                      </h3>
+                    </div>
+                    <p class="mb-4 text-muted-foreground">
+                      {section.description}
+                    </p>
+                    <div class="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span>{section.lessons} Lessons</span>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Overview Content -->
+      <div class="border-t border-border/20 pt-12">
+        <h2 class="mb-8 text-3xl font-bold text-foreground">Course Overview</h2>
+        <Content />
+      </div>
+
+      <!-- Call to Action -->
+      <div class="mt-16 pt-12 border-t border-border/20 text-center">
+        <h2 class="mb-6 text-3xl font-bold text-foreground">Ready to Get Started?</h2>
+        <p class="mb-8 text-lg text-muted-foreground">
+          Join thousands of developers who have mastered {guide.title.toLowerCase()}.
+        </p>
+        {sections.length > 0 && (
+          <a 
+            href={`/guides/${slug}/${sections[0].section || sections[0].id}`}
+            class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors group"
+          >
+            <Play className="h-5 w-5" />
+            Start Learning Now
+            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </a>
+        )}
+      </div>
+    </>
+  )}
+</GuideLayout>
