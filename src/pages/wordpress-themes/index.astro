@@ -8,8 +8,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all themes from the wordpress-resource collection
 const themeResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'themes';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('themes');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'themes');
 
 // Get theme-related blog posts
 const themePosts = await getCollection('blog', (post) => {
@@ -94,5 +101,6 @@ const collectionPageSchema = {
     resources={themeResources}
     relatedPosts={themePosts}
     baseUrl="/wordpress-themes"
+    categoryData={categoryData}
   />
 </Layout>

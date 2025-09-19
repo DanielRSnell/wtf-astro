@@ -8,8 +8,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all SEO resources from the wordpress-resource collection
 const seoResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'seo';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('seo');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'seo');
 
 // Get SEO-related blog posts
 const seoPosts = await getCollection('blog', (post) => {
@@ -94,5 +101,6 @@ const collectionPageSchema = {
     resources={seoResources}
     relatedPosts={seoPosts}
     baseUrl="/wordpress-seo"
+    categoryData={categoryData}
   />
 </Layout>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, Star, Users, DollarSign, ChevronRight } from 'lucide-react';
+import { Star, Award, TrendingUp, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ interface ResourceDirectoryProps {
   resources: CollectionEntry<'wordpress-resource'>[];
   relatedPosts?: CollectionEntry<'blog'>[];
   baseUrl: string;
+  categoryData?: CollectionEntry<'wordpress-category'>;
 }
 
 const ResourceDirectory = ({
@@ -23,11 +24,9 @@ const ResourceDirectory = ({
   description,
   resources,
   relatedPosts = [],
-  baseUrl
+  baseUrl,
+  categoryData
 }: ResourceDirectoryProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'rating' | 'popular' | 'name' | 'price'>('rating');
-  const [filterBy, setFilterBy] = useState<'all' | 'free' | 'premium' | 'featured'>('all');
 
   // Calculate average rating for each resource
   const resourcesWithRatings = resources.map(resource => {
@@ -37,33 +36,44 @@ const ResourceDirectory = ({
     return { ...resource, avgRating };
   });
 
-  // Filter and sort resources
-  const filteredResources = resourcesWithRatings
-    .filter(resource => {
-      const matchesSearch = resource.data.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           resource.data.description.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesFilter = filterBy === 'all' || 
-                           (filterBy === 'featured' && resource.data.featured) ||
-                           (filterBy === 'free' && resource.data.pricing?.free) ||
-                           (filterBy === 'premium' && !resource.data.pricing?.free);
-      
-      return matchesSearch && matchesFilter;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'rating':
-          return b.avgRating - a.avgRating;
-        case 'name':
-          return a.data.title.localeCompare(b.data.title);
-        case 'popular':
-          return b.data.featured ? 1 : -1;
-        case 'price':
-          return (a.data.pricing?.startingPrice || '').localeCompare(b.data.pricing?.startingPrice || '');
-        default:
-          return 0;
-      }
+  // Sort resources by rating
+  const sortedResources = resourcesWithRatings
+    .sort((a, b) => b.avgRating - a.avgRating);
+  
+  // Get top recommendations - handle both cases where slug might be in the data
+  const topRecommendation = categoryData?.data?.topRecommendation 
+    ? resources.find(r => {
+        // The slug in Astro collections is at the root level, not in data
+        return r.slug === categoryData.data.topRecommendation?.slug;
+      })
+    : null;
+  const runnerUp = categoryData?.data?.runnerUp 
+    ? resources.find(r => {
+        return r.slug === categoryData.data.runnerUp?.slug;
+      })
+    : null;
+  const honorableMention = categoryData?.data?.honorableMention
+    ? resources.find(r => {
+        return r.slug === categoryData.data.honorableMention?.slug;
+      })
+    : null;
+  
+  // Debug logging to see what we're getting
+  if (typeof window !== 'undefined') {
+    console.log('CategoryData:', categoryData);
+    console.log('Resources count:', resources.length);
+    console.log('Looking for:', {
+      top: categoryData?.data?.topRecommendation?.slug,
+      runner: categoryData?.data?.runnerUp?.slug,
+      mention: categoryData?.data?.honorableMention?.slug
     });
+    console.log('Found:', {
+      top: topRecommendation?.data?.title,
+      runner: runnerUp?.data?.title,
+      mention: honorableMention?.data?.title
+    });
+    console.log('Resource slugs:', resources.map(r => r.slug));
+  }
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -108,65 +118,171 @@ const ResourceDirectory = ({
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/60 to-foreground bg-clip-text text-transparent">
               {title}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               {description}
             </p>
-          
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder={`Search ${category}...`}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-card/60 backdrop-blur-xl border border-brand text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            
-            <div className="flex gap-2">
-              <select
-                className="px-4 py-3 rounded-xl bg-card/60 backdrop-blur-xl border border-brand text-foreground focus:outline-none focus:border-primary/50"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-              >
-                <option value="rating">Sort by Rating</option>
-                <option value="popular">Most Popular</option>
-                <option value="name">Name A-Z</option>
-                <option value="price">Price</option>
-              </select>
-              
-              <select
-                className="px-4 py-3 rounded-xl bg-card/60 backdrop-blur-xl border border-brand text-foreground focus:outline-none focus:border-primary/50"
-                value={filterBy}
-                onChange={(e) => setFilterBy(e.target.value as any)}
-              >
-                <option value="all">All {title}</option>
-                <option value="featured">Featured</option>
-                <option value="free">Free</option>
-                <option value="premium">Premium</option>
-              </select>
-            </div>
-          </div>
         </div>
       </div>
       </section>
 
-      {/* Main Content Section */}
+      {/* Top Recommendations Section */}
+      {(topRecommendation || runnerUp || honorableMention) && (
+        <section className="py-16 border-b border-border/20">
+          <div className="container">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Our Top Picks
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              Based on extensive testing and real-world usage
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Top Pick Card */}
+              {topRecommendation && (
+                <a
+                  href={`${baseUrl}/${topRecommendation.slug}`}
+                  className="group relative flex flex-col h-full rounded-2xl bg-card/60 backdrop-blur-xl border border-yellow-500/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02]"
+                >
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-500/10 to-transparent opacity-50" />
+                  <div className="relative z-10 p-6 flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Award className="w-5 h-5 text-yellow-500" />
+                        <span className="text-xs font-semibold uppercase tracking-wide text-yellow-500">Top Pick</span>
+                      </div>
+                      {topRecommendation.data.ratings && topRecommendation.data.ratings.length > 0 && (
+                        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10">
+                          <Star className="w-3 h-3 text-primary fill-current" />
+                          <span className="text-xs font-medium text-primary">
+                            {(topRecommendation.data.ratings.reduce((sum, r) => sum + r.value, 0) / topRecommendation.data.ratings.length).toFixed(1)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {topRecommendation.data.title}
+                    </h3>
+                    {topRecommendation.data.subtitle && (
+                      <p className="text-sm text-muted-foreground mb-3">{topRecommendation.data.subtitle}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed flex-1 line-clamp-2">
+                      {topRecommendation.data.description}
+                    </p>
+                    {topRecommendation.data.badge && (
+                      <div className="mt-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary">
+                          {topRecommendation.data.badge}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </a>
+              )}
+              
+              {/* Runner Up Card */}
+              {runnerUp && (
+                <a
+                  href={`${baseUrl}/${runnerUp.slug}`}
+                  className="group relative flex flex-col h-full rounded-2xl bg-card/60 backdrop-blur-xl border border-blue-500/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02]"
+                >
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/10 to-transparent opacity-50" />
+                  <div className="relative z-10 p-6 flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-blue-500" />
+                        <span className="text-xs font-semibold uppercase tracking-wide text-blue-500">Runner Up</span>
+                      </div>
+                      {runnerUp.data.ratings && runnerUp.data.ratings.length > 0 && (
+                        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10">
+                          <Star className="w-3 h-3 text-primary fill-current" />
+                          <span className="text-xs font-medium text-primary">
+                            {(runnerUp.data.ratings.reduce((sum, r) => sum + r.value, 0) / runnerUp.data.ratings.length).toFixed(1)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {runnerUp.data.title}
+                    </h3>
+                    {runnerUp.data.subtitle && (
+                      <p className="text-sm text-muted-foreground mb-3">{runnerUp.data.subtitle}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed flex-1 line-clamp-2">
+                      {runnerUp.data.description}
+                    </p>
+                    {runnerUp.data.badge && (
+                      <div className="mt-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary">
+                          {runnerUp.data.badge}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </a>
+              )}
+              
+              {/* Honorable Mention Card */}
+              {honorableMention && (
+                <a
+                  href={`${baseUrl}/${honorableMention.slug}`}
+                  className="group relative flex flex-col h-full rounded-2xl bg-card/60 backdrop-blur-xl border border-purple-500/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:scale-[1.02]"
+                >
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/10 to-transparent opacity-50" />
+                  <div className="relative z-10 p-6 flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-purple-500" />
+                        <span className="text-xs font-semibold uppercase tracking-wide text-purple-500">Honorable Mention</span>
+                      </div>
+                      {honorableMention.data.ratings && honorableMention.data.ratings.length > 0 && (
+                        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10">
+                          <Star className="w-3 h-3 text-primary fill-current" />
+                          <span className="text-xs font-medium text-primary">
+                            {(honorableMention.data.ratings.reduce((sum, r) => sum + r.value, 0) / honorableMention.data.ratings.length).toFixed(1)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {honorableMention.data.title}
+                    </h3>
+                    {honorableMention.data.subtitle && (
+                      <p className="text-sm text-muted-foreground mb-3">{honorableMention.data.subtitle}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed flex-1 line-clamp-2">
+                      {honorableMention.data.description}
+                    </p>
+                    {honorableMention.data.badge && (
+                      <div className="mt-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary">
+                          {honorableMention.data.badge}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* All Resources Section */}
       <section className="py-16">
         <div className="container">
-          {/* Results Count */}
+          {/* Section Header */}
           <div className="mb-8">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              All {title}
+            </h2>
             <p className="text-muted-foreground">
-              Showing {filteredResources.length} of {resources.length} {category}
-              {searchTerm && ` for "${searchTerm}"`}
+              Browse our complete collection of {resources.length} carefully reviewed {category.toLowerCase()}
             </p>
           </div>
 
           {/* Resource Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-16">
-          {filteredResources.map((resource) => (
+          {sortedResources.map((resource) => (
             <a
               key={resource.slug}
               href={`${baseUrl}/${resource.slug}`}

@@ -52,8 +52,8 @@ const GuidesCards = ({
 
     return (
       <div
-        className="group relative h-full"
-        style={{ minHeight: '460px' }}
+        className="group relative"
+        style={{ height: '520px' }}
       >
         <a href={guide.href} className="block relative">
           {/* Background Cards for Stacked Effect */}
@@ -80,8 +80,8 @@ const GuidesCards = ({
           
           {/* Main Card with Full Content */}
           <div
-            className="relative rounded-2xl bg-card backdrop-blur-xl hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden h-full flex flex-col"
-            style={{ zIndex: 3 }}
+            className="relative rounded-2xl bg-card backdrop-blur-xl hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden flex flex-col"
+            style={{ zIndex: 3, height: '100%' }}
           >
             {/* Header Image */}
             <div className="relative h-48">
@@ -124,11 +124,11 @@ const GuidesCards = ({
             <div className="relative p-6 flex-1 flex flex-col">
               <div className="absolute -inset-px rounded-b-2xl bg-gradient-to-br from-foreground/5 to-50% pointer-events-none" />
               
-              <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
+              <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2">
                 {guide.title}
               </h3>
 
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 flex-1 line-clamp-3">
                 {guide.description}
               </p>
 
@@ -193,7 +193,7 @@ const GuidesCards = ({
         )}
 
         {/* Guides Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 auto-rows-fr">
           {guides.map((guide, index) => (
             <GuideCard key={index} guide={guide} index={index} />
           ))}

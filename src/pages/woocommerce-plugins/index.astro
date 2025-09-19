@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all WooCommerce plugin resources from the wordpress-resource collection
 const wooPluginResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'woocommerce-plugins';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('woocommerce-plugins');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'woocommerce-plugins');
 
 // Get WooCommerce plugin-related blog posts
 const wooPluginPosts = await getCollection('blog', (post) => {
@@ -36,5 +43,6 @@ const pageDescription = "Discover the best WooCommerce plugins to enhance your o
     resources={wooPluginResources}
     relatedPosts={wooPluginPosts}
     baseUrl="/woocommerce-plugins"
+    categoryData={categoryData}
   />
 </Layout>

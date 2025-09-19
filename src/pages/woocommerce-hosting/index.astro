@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all WooCommerce hosting resources from the wordpress-resource collection
 const wooHostingResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'woocommerce-hosting';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('woocommerce-hosting');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'woocommerce-hosting');
 
 // Get WooCommerce hosting-related blog posts
 const wooHostingPosts = await getCollection('blog', (post) => {
@@ -36,5 +43,6 @@ const pageDescription = "Find the best hosting for WooCommerce stores. Compare p
     resources={wooHostingResources}
     relatedPosts={wooHostingPosts}
     baseUrl="/woocommerce-hosting"
+    categoryData={categoryData}
   />
 </Layout>

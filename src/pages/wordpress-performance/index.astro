@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all performance resources from the wordpress-resource collection
 const performanceResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'performance';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('performance');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'performance');
 
 // Get performance-related blog posts
 const performancePosts = await getCollection('blog', (post) => {
@@ -95,5 +102,6 @@ const collectionPageSchema = {
     resources={performanceResources}
     relatedPosts={performancePosts}
     baseUrl="/wordpress-performance"
+    categoryData={categoryData}
   />
 </Layout>

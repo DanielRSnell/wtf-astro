@@ -13,6 +13,10 @@ const hostingResources = await getCollection('wordpress-resource', (resource) =>
   return categories.includes('wordpress-hosting') || categories.includes('hosting');
 });
 
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'hosting');
+
 // Get hosting-related blog posts
 const hostingPosts = await getCollection('blog', (post) => {
   return post.data.tags?.some(tag => 
@@ -97,5 +101,6 @@ const collectionPageSchema = {
     resources={hostingResources}
     relatedPosts={hostingPosts}
     baseUrl="/wordpress-hosting"
+    categoryData={categoryData}
   />
 </Layout>

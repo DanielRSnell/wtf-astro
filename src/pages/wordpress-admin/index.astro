@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all admin resources from the wordpress-resource collection
 const adminResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'admin';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('admin');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'admin');
 
 // Get admin-related blog posts
 const adminPosts = await getCollection('blog', (post) => {
@@ -94,5 +101,6 @@ const collectionPageSchema = {
     resources={adminResources}
     relatedPosts={adminPosts}
     baseUrl="/wordpress-admin"
+    categoryData={categoryData}
   />
 </Layout>

@@ -20,7 +20,12 @@ const ResourceRanking = ({
 }: ResourceRankingProps) => {
   // Filter to only themes and sort by rating
   const themeResources = resources
-    .filter(r => r.data.category === 'themes')
+    .filter(r => {
+      const categories = Array.isArray(r.data.category) 
+        ? r.data.category 
+        : [r.data.category];
+      return categories.includes('themes');
+    })
     .map(resource => {
       // Calculate average rating
       const ratings = resource.data.ratings || [];

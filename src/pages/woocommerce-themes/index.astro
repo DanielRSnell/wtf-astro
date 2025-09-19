@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all WooCommerce theme resources from the wordpress-resource collection
 const wooThemeResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'woocommerce-themes';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('woocommerce-themes');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'woocommerce-themes');
 
 // Get WooCommerce theme-related blog posts
 const wooThemePosts = await getCollection('blog', (post) => {
@@ -37,5 +44,6 @@ const pageDescription = "Find the perfect WooCommerce theme for your online stor
     resources={wooThemeResources}
     relatedPosts={wooThemePosts}
     baseUrl="/woocommerce-themes"
+    categoryData={categoryData}
   />
 </Layout>

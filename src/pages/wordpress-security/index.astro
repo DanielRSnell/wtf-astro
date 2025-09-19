@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all security resources from the wordpress-resource collection
 const securityResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'security';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('security');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'security');
 
 // Get security-related blog posts
 const securityPosts = await getCollection('blog', (post) => {
@@ -95,5 +102,6 @@ const collectionPageSchema = {
     resources={securityResources}
     relatedPosts={securityPosts}
     baseUrl="/wordpress-security"
+    categoryData={categoryData}
   />
 </Layout>

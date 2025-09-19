@@ -7,8 +7,15 @@ import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
 // Get all automation resources from the wordpress-resource collection
 const automationResources = await getCollection('wordpress-resource', (resource) => {
-  return resource.data.category === 'automation';
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('automation');
 });
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'automation');
 
 // Get automation-related blog posts
 const automationPosts = await getCollection('blog', (post) => {
@@ -94,5 +101,6 @@ const collectionPageSchema = {
     resources={automationResources}
     relatedPosts={automationPosts}
     baseUrl="/wordpress-automation"
+    categoryData={categoryData}
   />
 </Layout>
