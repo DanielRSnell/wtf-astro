@@ -22,7 +22,7 @@ const relatedPosts = blogPosts.filter(post =>
   )
 );
 
-const title = 'Best WordPress Page Builders (2024) - Reviews & Comparisons | Blocksy Components';
+const title = 'Best WordPress Page Builders (2024) - Reviews & Comparisons | WooThatsFast';
 const description = 'Discover the best WordPress page builders of 2024. Expert reviews and comparisons of Elementor, Divi, Bricks Builder, Oxygen, and modern visual development platforms. Build stunning WordPress sites with drag-and-drop page builders.';
 const baseUrl = '/wordpress-pagebuilder';
 
@@ -34,7 +34,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-pagebuilder",
+        "@id": "https://woothatsfast.com/wordpress-pagebuilder",
         "name": "WordPress Page Builders"
       }
     }
@@ -54,7 +54,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": "https://blocksy-components.com/wordpress-pagebuilder",
+  "url": "https://woothatsfast.com/wordpress-pagebuilder",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -62,7 +62,7 @@ const collectionPageSchema = {
     "itemListElement": resources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-pagebuilder/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-pagebuilder/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Page Builders",

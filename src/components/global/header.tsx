@@ -111,6 +111,19 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
           icon: <FileText className="h-4 w-4" />
         },
         {
+          title: "Block Plugins",
+          href: "/wordpress-blocks",
+          description: "Gutenberg block collections",
+          icon: <Package className="h-4 w-4" />,
+          badge: "New"
+        },
+        {
+          title: "Page Builders",
+          href: "/wordpress-pagebuilder",
+          description: "Visual builder comparisons",
+          icon: <Palette className="h-4 w-4" />
+        },
+        {
           title: "WordPress Admin",
           href: "/wordpress-admin",
           description: "Admin customization guides",
@@ -150,23 +163,6 @@ const Header = ({ "data-theme": dataTheme }: HeaderProps) => {
           description: "Performance hosting solutions",
           icon: <Server className="h-4 w-4" />,
           badge: "Fast"
-        }
-      ]
-    },
-    {
-      title: "Speed & Performance",
-      items: [
-        {
-          title: "Speed Optimization Guide",
-          href: "/services/speed-optimization",
-          description: "Make WooCommerce lightning fast",
-          icon: <Zap className="h-4 w-4" />
-        },
-        {
-          title: "Performance Tips",
-          href: "/blog",
-          description: "Latest optimization techniques",
-          icon: <Gauge className="h-4 w-4" />
         }
       ]
     }

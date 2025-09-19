@@ -23,7 +23,7 @@ const adminPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Admin Tools (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Admin Tools (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Discover the best WordPress admin tools and dashboard customization plugins of 2024. Expert reviews of workflow enhancements, user management tools, and admin interface improvements. Streamline your WordPress site management with professional admin solutions.";
 
 // Create breadcrumb schema
@@ -34,7 +34,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-admin",
+        "@id": "https://woothatsfast.com/wordpress-admin",
         "name": "WordPress Admin Tools"
       }
     }
@@ -54,7 +54,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-admin",
+  "url": "https://woothatsfast.com/wordpress-admin",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -62,7 +62,7 @@ const collectionPageSchema = {
     "itemListElement": adminResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-admin/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-admin/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Admin Tools",

@@ -24,7 +24,7 @@ const securityPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Security Plugins (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Security Plugins (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Discover the best WordPress security plugins and protection tools of 2024. Expert reviews of firewall plugins, malware scanners, backup solutions, and security hardening tools. Protect your WordPress site from hackers and cyber threats.";
 
 // Create breadcrumb schema
@@ -35,7 +35,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -43,7 +43,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-security",
+        "@id": "https://woothatsfast.com/wordpress-security",
         "name": "WordPress Security Plugins"
       }
     }
@@ -55,7 +55,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-security",
+  "url": "https://woothatsfast.com/wordpress-security",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -63,7 +63,7 @@ const collectionPageSchema = {
     "itemListElement": securityResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-security/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-security/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Security Plugins",

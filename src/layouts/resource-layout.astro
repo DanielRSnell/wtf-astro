@@ -83,13 +83,13 @@ const breadcrumbItems = [
   }
 ];
 
-// Generate breadcrumb schema
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://blocksy-components.com';
-const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems, siteUrl);
+// Generate breadcrumb schema (showHome: false since Home is already in breadcrumbItems)
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://woothatsfast.com';
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems, siteUrl, false);
 ---
 
 <Layout 
-  title={`${resource.data.title} Review (2024) - ${categoryName} | Blocksy Components`}
+  title={`${resource.data.title} Review (2024) - ${categoryName} | WooThatsFast`}
   description={resource.data.description || `In-depth review of ${resource.data.title}. Features, pricing, pros & cons, and expert analysis to help you make the right choice.`}
   image={resource.data.image?.src || "/open-graph.png"}
   canonical={`/${resource.data.category}/${resource.data.slug}`}

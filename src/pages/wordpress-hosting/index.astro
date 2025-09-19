@@ -26,7 +26,7 @@ const hostingPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Hosting (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Hosting (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Compare the best WordPress hosting providers of 2024. In-depth reviews of performance, uptime, support, and pricing. Find the perfect hosting for your WordPress site with expert recommendations.";
 
 // Create breadcrumb schema
@@ -37,7 +37,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -45,7 +45,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-hosting",
+        "@id": "https://woothatsfast.com/wordpress-hosting",
         "name": "WordPress Hosting"
       }
     }
@@ -57,7 +57,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-hosting",
+  "url": "https://woothatsfast.com/wordpress-hosting",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -65,7 +65,7 @@ const collectionPageSchema = {
     "itemListElement": hostingResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-hosting/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-hosting/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Hosting",

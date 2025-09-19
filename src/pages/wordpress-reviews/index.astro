@@ -20,7 +20,7 @@ const reviewPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Plugin Reviews (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Plugin Reviews (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Discover comprehensive WordPress plugin reviews and comparisons of 2024. Expert analysis of themes, plugins, hosting, and services. Make informed decisions with detailed reviews, ratings, and feature comparisons for WordPress products.";
 
 // Create breadcrumb schema
@@ -31,7 +31,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -39,7 +39,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-reviews",
+        "@id": "https://woothatsfast.com/wordpress-reviews",
         "name": "WordPress Plugin Reviews"
       }
     }
@@ -51,7 +51,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-reviews",
+  "url": "https://woothatsfast.com/wordpress-reviews",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -59,7 +59,7 @@ const collectionPageSchema = {
     "itemListElement": reviewResources.slice(0, 10).map((resource, index) => ({
       "@type": "Review",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-reviews/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-reviews/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "itemReviewed": {

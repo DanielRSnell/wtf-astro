@@ -24,7 +24,7 @@ const formPosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Form Builders (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Form Builders (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Discover the best WordPress form builders and contact form plugins of 2024. Expert reviews of WPForms, Gravity Forms, Ninja Forms, and more. Compare features, pricing, and integrations to build professional forms for your WordPress site.";
 
 // Create breadcrumb schema
@@ -35,7 +35,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -43,7 +43,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-forms",
+        "@id": "https://woothatsfast.com/wordpress-forms",
         "name": "WordPress Form Builders"
       }
     }
@@ -55,7 +55,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-forms",
+  "url": "https://woothatsfast.com/wordpress-forms",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -63,7 +63,7 @@ const collectionPageSchema = {
     "itemListElement": formResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-forms/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-forms/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Form Builders",

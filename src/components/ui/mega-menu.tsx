@@ -77,8 +77,8 @@ export const MegaMenu = ({ trigger, sections, className, featured }: MegaMenuPro
       {/* Mega Menu Dropdown */}
       <div
         className={cn(
-          "absolute left-1/2 -translate-x-1/2 top-full pt-2 transition-all duration-200",
-          isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"
+          "absolute left-1/2 -translate-x-1/2 top-full pt-2 transition-all duration-200 z-50",
+          isOpen ? "opacity-100 visible translate-y-0 pointer-events-auto" : "opacity-0 invisible -translate-y-2 pointer-events-none"
         )}
       >
         <div className="w-screen max-w-7xl">

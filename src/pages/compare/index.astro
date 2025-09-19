@@ -123,7 +123,7 @@ resourcesByCategory.forEach((categoryResources, category) => {
 });
 
 // SEO Configuration
-const pageTitle = "WordPress Product Comparisons (2024) - Side-by-Side Analysis | Blocksy Components";
+const pageTitle = "WordPress Product Comparisons (2024) - Side-by-Side Analysis | WooThatsFast";
 const pageDescription = "Compare the best WordPress themes, plugins, hosting, and tools side-by-side. In-depth comparisons with ratings, features, pricing analysis to help you make the right choice for your WordPress site in 2024.";
 
 // Create breadcrumb schema
@@ -134,7 +134,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -142,7 +142,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/compare",
+        "@id": "https://woothatsfast.com/compare",
         "name": "Comparisons"
       }
     }
@@ -154,7 +154,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/compare",
+  "url": "https://woothatsfast.com/compare",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -165,7 +165,7 @@ const collectionPageSchema = {
       category.items.slice(0, 3).map((item, index) => ({
         "@type": "WebPage",
         "position": catIndex * 3 + index + 1,
-        "url": `https://blocksy-components.com/compare/${item.slug}`,
+        "url": `https://woothatsfast.com/compare/${item.slug}`,
         "name": `${item.titleA} vs ${item.titleB}`,
         "description": `Comparison between ${item.titleA} and ${item.titleB} - ${category.categoryName}`
       }))

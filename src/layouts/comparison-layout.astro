@@ -199,7 +199,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -207,7 +207,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/compare",
+        "@id": "https://woothatsfast.com/compare",
         "name": "Comparisons"
       }
     },
@@ -215,7 +215,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 3,
       "item": {
-        "@id": `https://blocksy-components.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
+        "@id": `https://woothatsfast.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
         "name": `${resourceA.data.title} vs ${resourceB.data.title}`
       }
     }
@@ -228,7 +228,7 @@ const comparisonSchema = {
   "@type": "WebPage",
   "name": comparisonTitle,
   "description": comparisonDescription,
-  "url": `https://blocksy-components.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
+  "url": `https://woothatsfast.com/compare/${resourceA.data.slug}-vs-${resourceB.data.slug}`,
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -241,7 +241,7 @@ const comparisonSchema = {
         "position": 1,
         "name": resourceA.data.title,
         "description": resourceA.data.subtitle || resourceA.data.description,
-        "url": `https://blocksy-components.com${reviewUrlA}`,
+        "url": `https://woothatsfast.com${reviewUrlA}`,
         "category": categoryName,
         "aggregateRating": resourceA.data.ratings ? {
           "@type": "AggregateRating",
@@ -261,7 +261,7 @@ const comparisonSchema = {
           },
           "author": {
             "@type": "Organization",
-            "name": "Blocksy Components"
+            "name": "WooThatsFast"
           }
         }
       },
@@ -270,7 +270,7 @@ const comparisonSchema = {
         "position": 2,
         "name": resourceB.data.title,
         "description": resourceB.data.subtitle || resourceB.data.description,
-        "url": `https://blocksy-components.com${reviewUrlB}`,
+        "url": `https://woothatsfast.com${reviewUrlB}`,
         "category": categoryName,
         "aggregateRating": resourceB.data.ratings ? {
           "@type": "AggregateRating",
@@ -290,7 +290,7 @@ const comparisonSchema = {
           },
           "author": {
             "@type": "Organization",
-            "name": "Blocksy Components"
+            "name": "WooThatsFast"
           }
         }
       }
@@ -298,14 +298,14 @@ const comparisonSchema = {
   },
   "author": {
     "@type": "Organization",
-    "name": "Blocksy Components"
+    "name": "WooThatsFast"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Blocksy Components",
+    "name": "WooThatsFast",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://blocksy-components.com/logo.png"
+      "url": "https://woothatsfast.com/logo.png"
     }
   },
   "datePublished": new Date().toISOString(),

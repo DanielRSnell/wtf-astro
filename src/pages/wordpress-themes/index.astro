@@ -23,7 +23,7 @@ const themePosts = await getCollection('blog', (post) => {
   );
 });
 
-const pageTitle = "Best WordPress Themes (2024) - Reviews & Comparisons | Blocksy Components";
+const pageTitle = "Best WordPress Themes (2024) - Reviews & Comparisons | WooThatsFast";
 const pageDescription = "Explore 50+ premium WordPress themes for 2024. In-depth reviews of design, performance, features, and pricing. Find the perfect theme for your WordPress site with expert recommendations.";
 
 // Create breadcrumb schema
@@ -34,7 +34,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/wordpress-themes",
+        "@id": "https://woothatsfast.com/wordpress-themes",
         "name": "WordPress Themes"
       }
     }
@@ -54,7 +54,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": pageTitle,
   "description": pageDescription,
-  "url": "https://blocksy-components.com/wordpress-themes",
+  "url": "https://woothatsfast.com/wordpress-themes",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -62,7 +62,7 @@ const collectionPageSchema = {
     "itemListElement": themeResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
-      "url": `https://blocksy-components.com/wordpress-themes/${resource.slug}`,
+      "url": `https://woothatsfast.com/wordpress-themes/${resource.slug}`,
       "name": resource.data.title,
       "description": resource.data.description,
       "category": "WordPress Themes",

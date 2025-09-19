@@ -1,5 +1,5 @@
 ---
-export const prerender = false;
+export const prerender = true;
 import { getEntry, render, getCollection } from 'astro:content';
 import Layout from '../../layouts/base.astro';
 import { Blogpost4 } from '../../components/blogpost4.tsx';
@@ -42,14 +42,14 @@ const breadcrumbItems = [
 ---
 
 <Layout 
-  title={`${entry.data.title} | Blocksy Components Blog`}
+  title={`${entry.data.title} | WooThatsFast Blog`}
   description={entry.data.description || entry.data.excerpt}
   image={entry.data.image || "/open-graph.png"}
   canonical={`/blog/${entry.slug}`}
   article={{
     publishedTime: entry.data.date?.toISOString(),
     modifiedTime: entry.data.updatedDate?.toISOString() || entry.data.date?.toISOString(),
-    author: entry.data.author || "Blocksy Components Team",
+    author: entry.data.author || "WooThatsFast Team",
     tags: entry.data.tags || []
   }}
   schemaType="Article"
@@ -59,7 +59,7 @@ const breadcrumbItems = [
     url: `/blog/${entry.slug}`,
     publishedDate: entry.data.date?.toISOString(),
     modifiedDate: entry.data.updatedDate?.toISOString() || entry.data.date?.toISOString(),
-    author: entry.data.author || "Blocksy Components Team",
+    author: entry.data.author || "WooThatsFast Team",
     keywords: entry.data.tags?.join(', ')
   }}
 >

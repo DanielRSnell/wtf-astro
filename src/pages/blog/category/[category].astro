@@ -56,7 +56,7 @@ try {
 
 // Fallback values
 const categoryName = categoryData?.title || categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1).replace('-', ' ');
-const title = `${categoryName} Articles & Tutorials | Blocksy Components Blog`;
+const title = `${categoryName} Articles & Tutorials | WooThatsFast Blog`;
 const description = categoryData?.description || `Expert ${categoryName.toLowerCase()} articles, tutorials, and guides. Browse ${posts.length} in-depth posts covering WordPress development, optimization, and best practices.`;
 
 // Create breadcrumb schema
@@ -67,7 +67,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "item": {
-        "@id": "https://blocksy-components.com",
+        "@id": "https://woothatsfast.com",
         "name": "Home"
       }
     },
@@ -75,7 +75,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "item": {
-        "@id": "https://blocksy-components.com/blog",
+        "@id": "https://woothatsfast.com/blog",
         "name": "Blog"
       }
     },
@@ -83,7 +83,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 3,
       "item": {
-        "@id": `https://blocksy-components.com/blog/category/${categorySlug}`,
+        "@id": `https://woothatsfast.com/blog/category/${categorySlug}`,
         "name": categoryName
       }
     }
@@ -95,7 +95,7 @@ const collectionPageSchema = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": `https://blocksy-components.com/blog/category/${categorySlug}`,
+  "url": `https://woothatsfast.com/blog/category/${categorySlug}`,
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
@@ -103,7 +103,7 @@ const collectionPageSchema = {
     "itemListElement": posts.slice(0, 10).map((post, index) => ({
       "@type": "BlogPosting",
       "position": index + 1,
-      "url": `https://blocksy-components.com/blog/${post.slug}`,
+      "url": `https://woothatsfast.com/blog/${post.slug}`,
       "headline": post.data.title,
       "description": post.data.description,
       "datePublished": post.data.date.toISOString(),

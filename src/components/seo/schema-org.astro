@@ -5,13 +5,13 @@ export interface Props {
 }
 
 const { type = "WebSite", data = {} } = Astro.props;
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || "https://blocksy-components.com";
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || "https://woothatsfast.com";
 
 // Default Website Schema
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Blocksy Components",
+  "name": "WooThatsFast",
   "description": "Premium WordPress themes, plugins, and hosting reviews",
   "url": siteUrl,
   "potentialAction": {
@@ -28,7 +28,7 @@ const websiteSchema = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Blocksy Components",
+  "name": "WooThatsFast",
   "url": siteUrl,
   "logo": `${siteUrl}/logo.png`,
   "sameAs": [
@@ -54,7 +54,7 @@ switch (type) {
       },
       "publisher": {
         "@type": "Organization",
-        "name": "Blocksy Components",
+        "name": "WooThatsFast",
         "logo": {
           "@type": "ImageObject",
           "url": `${siteUrl}/logo.png`

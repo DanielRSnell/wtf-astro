@@ -107,7 +107,10 @@ export const generateBreadcrumbSchema = (
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": item.href ? `${baseUrl}${item.href}` : undefined
+      "item": item.href ? {
+        "@type": "Thing",
+        "@id": `${baseUrl}${item.href}`
+      } : undefined
     }))
   };
 };

@@ -1,5 +1,5 @@
 # Robots.txt for Blocksy Components
-# https://blocksy-components.com
+# https://woothatsfast.com
 
 User-agent: *
 Allow: /
@@ -9,7 +9,7 @@ Disallow: /admin/
 Disallow: /_astro/
 
 # Sitemaps
-Sitemap: https://blocksy-components.com/sitemap-index.xml
+Sitemap: https://woothatsfast.com/sitemap-index.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
