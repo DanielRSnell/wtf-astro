@@ -83,11 +83,10 @@ const {
         window.WTFAnalyticsInitialized = true;
         
         // Initialize global analytics
-        window.WTFAnalytics = { 
-          forms: [], 
-          pageViews: [], 
-          currentPage: null,
-          formListenerAdded: false
+        window.WTFAnalytics = {
+          forms: [],
+          pageViews: [],
+          currentPage: null
         };
 
         // Get page metadata
@@ -116,38 +115,41 @@ const {
 
         // Setup form tracking
         function setupFormTracking() {
-          // Only add listener once
-          if (window.WTFAnalytics.formListenerAdded) return;
-          
+          // Remove existing listener to avoid duplicates
+          document.removeEventListener('submit', handleFormSubmit, true);
+
+          // Add fresh listener
           document.addEventListener('submit', handleFormSubmit, true);
-          window.WTFAnalytics.formListenerAdded = true;
           console.log('[Analytics] Form tracking initialized');
         }
 
         // Handle form submissions
-        function handleFormSubmit(event) {
+        async function handleFormSubmit(event) {
           const form = event.target;
           if (form.tagName !== 'FORM') return;
-          
+
           const formData = new FormData(form);
           const data = {};
           for (let [key, value] of formData.entries()) {
             data[key] = value;
           }
-          
+
           const pageContext = getPageMetadata();
+          const formName = form.getAttribute('name') || form.id || 'unnamed-form';
+
           const submission = {
             page: pageContext.path,
             slug: pageContext.slug,
             url: pageContext.url,
             form: {
               id: form.id || 'unnamed-form',
+              name: formName,
               action: form.action || 'none',
               data: data
             },
             timestamp: new Date().toISOString()
           };
-          
+
           // Save to localStorage
           const storageKey = 'wtf-form-submissions';
           let submissions = [];
@@ -155,26 +157,51 @@ const {
             const existing = localStorage.getItem(storageKey);
             if (existing) submissions = JSON.parse(existing);
           } catch (e) {}
-          
+
           submissions.push(submission);
           if (submissions.length > 50) submissions = submissions.slice(-50);
-          
+
           localStorage.setItem(storageKey, JSON.stringify(submissions));
           localStorage.setItem('wtf-last-form', JSON.stringify(submission));
-          
+
           // Track with Umami
           if (window.umami) {
             window.umami.track('form-submit', {
               formId: submission.form.id,
+              formName: formName,
               page: pageContext.path
             });
           }
-          
+
+          // Send to webhook
+          try {
+            const webhookData = {
+              current: pageContext.url,
+              name: formName,
+              data: data
+            };
+
+            await fetch('https://api.umbral.ai/webhook/3e6eeff1-0e94-4497-8155-fad9df560192', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(webhookData)
+            });
+
+            console.log('[Analytics] Webhook sent successfully');
+          } catch (error) {
+            console.error('[Analytics] Webhook failed:', error);
+          }
+
           console.log('[Analytics] Form tracked:', submission.form.id);
         }
 
-        // Initialize form tracking once
+        // Initialize form tracking on page load
         setupFormTracking();
+
+        // Re-initialize after ViewTransitions navigation
+        document.addEventListener('astro:after-swap', setupFormTracking);
 
         // Expose API for n8n integration
         window.WTFAnalytics.getFormSubmissions = function() {

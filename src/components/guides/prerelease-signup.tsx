@@ -22,21 +22,36 @@ export const PrereleaseSignup: React.FC<PrereleaseSignupProps> = ({
     if (!email) return;
 
     setIsLoading(true);
-    
-    // Here you would typically send to your email service
-    // For now, we'll just simulate it
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitted(true);
-    setIsLoading(false);
-    
-    // Store in localStorage for now
-    const signups = JSON.parse(localStorage.getItem('guideSignups') || '{}');
-    if (!signups[guideTitle]) {
-      signups[guideTitle] = [];
+
+    try {
+      // The form submission will be automatically tracked by the global analytics
+      // via the form submit event listener in base.astro
+
+      // Store in localStorage for backup
+      const signups = JSON.parse(localStorage.getItem('guideSignups') || '{}');
+      if (!signups[guideTitle]) {
+        signups[guideTitle] = [];
+      }
+      signups[guideTitle].push({ email, date: new Date().toISOString() });
+      localStorage.setItem('guideSignups', JSON.stringify(signups));
+
+      // Track specific event with Umami
+      if (window.umami) {
+        window.umami.track('prerelease-signup', {
+          guide: guideTitle,
+          email: email.split('@')[1] // domain only for privacy
+        });
+      }
+
+      // Small delay for user experience
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Signup error:', error);
+    } finally {
+      setIsLoading(false);
     }
-    signups[guideTitle].push({ email, date: new Date().toISOString() });
-    localStorage.setItem('guideSignups', JSON.stringify(signups));
   };
 
   if (isSubmitted) {
@@ -110,7 +125,11 @@ export const PrereleaseSignup: React.FC<PrereleaseSignupProps> = ({
               Get notified when this guide is available.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              name="prerelease-signup"
+              className="space-y-4"
+            >
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60" />
                 <input
