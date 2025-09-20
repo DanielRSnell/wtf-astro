@@ -70,6 +70,143 @@ const {
     
     <!-- ViewTransitions API -->
     <ViewTransitions />
+    
+    <!-- Umami Analytics -->
+    <script defer src="http://umami-rkk4o0woc4ogwsk0o00ck4s0.157.230.11.56.sslip.io/script.js" data-website-id="8232a0dd-fbc4-4ad6-b2b3-715bed75a742"></script>
+    
+    <!-- Enhanced Analytics Tracking -->
+    <script is:inline>
+      // Analytics with ViewTransitions Support
+      (function() {
+        // Initialize global analytics
+        if (!window.WTFAnalytics) {
+          window.WTFAnalytics = { forms: [], pageViews: [], initialized: false };
+        }
+
+        // Get page metadata
+        function getPageMetadata() {
+          const path = window.location.pathname;
+          const pathParts = path.split('/').filter(Boolean);
+          const slug = pathParts[pathParts.length - 1] || 'home';
+          
+          let pageType = 'other';
+          if (path === '/') pageType = 'home';
+          else if (path.includes('/blog/')) pageType = 'blog';
+          else if (path.includes('/guides/')) pageType = 'guide';
+          else if (path.includes('/wordpress-')) pageType = 'resource';
+          else if (path.includes('/auth')) pageType = 'auth';
+          
+          return {
+            path,
+            title: document.title,
+            url: window.location.href,
+            slug,
+            pageType,
+            referrer: document.referrer || 'direct',
+            timestamp: new Date().toISOString()
+          };
+        }
+
+        // Track page view
+        function trackPageView() {
+          const metadata = getPageMetadata();
+          
+          // Send to Umami
+          if (window.umami) {
+            window.umami.track('page-view', metadata);
+          }
+          
+          // Store for form context
+          localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
+          console.log('[Analytics] Page tracked:', metadata.path);
+        }
+
+        // Setup form tracking
+        function setupFormTracking() {
+          document.removeEventListener('submit', handleFormSubmit, true);
+          document.addEventListener('submit', handleFormSubmit, true);
+        }
+
+        // Handle form submissions
+        function handleFormSubmit(event) {
+          const form = event.target;
+          if (form.tagName !== 'FORM') return;
+          
+          const formData = new FormData(form);
+          const data = {};
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+          
+          const pageContext = getPageMetadata();
+          const submission = {
+            page: pageContext.path,
+            slug: pageContext.slug,
+            url: pageContext.url,
+            form: {
+              id: form.id || 'unnamed-form',
+              action: form.action || 'none',
+              data: data
+            },
+            timestamp: new Date().toISOString()
+          };
+          
+          // Save to localStorage
+          const storageKey = 'wtf-form-submissions';
+          let submissions = [];
+          try {
+            const existing = localStorage.getItem(storageKey);
+            if (existing) submissions = JSON.parse(existing);
+          } catch (e) {}
+          
+          submissions.push(submission);
+          if (submissions.length > 50) submissions = submissions.slice(-50);
+          
+          localStorage.setItem(storageKey, JSON.stringify(submissions));
+          localStorage.setItem('wtf-last-form', JSON.stringify(submission));
+          
+          // Track with Umami
+          if (window.umami) {
+            window.umami.track('form-submit', {
+              formId: submission.form.id,
+              page: pageContext.path
+            });
+          }
+          
+          console.log('[Analytics] Form tracked:', submission.form.id);
+        }
+
+        // Initialize
+        function initAnalytics() {
+          trackPageView();
+          setupFormTracking();
+          window.WTFAnalytics.initialized = true;
+        }
+
+        // Handle initial load and ViewTransitions
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAnalytics);
+        } else {
+          initAnalytics();
+        }
+
+        // Handle ViewTransitions navigation
+        document.addEventListener('astro:page-load', function() {
+          console.log('[Analytics] ViewTransition navigation');
+          initAnalytics();
+        });
+
+        // Expose API for n8n integration
+        window.WTFAnalytics.getFormSubmissions = function() {
+          try {
+            const stored = localStorage.getItem('wtf-form-submissions');
+            return stored ? JSON.parse(stored) : [];
+          } catch (e) {
+            return [];
+          }
+        };
+      })();
+    </script>
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
     <ViewTransitions />

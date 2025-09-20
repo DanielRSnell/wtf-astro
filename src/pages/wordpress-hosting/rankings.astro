@@ -1,0 +1,110 @@
+---
+export const prerender = false;
+
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceRanking } from '@/components/resource-ranking.tsx';
+
+// Get all hosting resources from the wordpress-resource collection
+const hostingResources = await getCollection('wordpress-resource', (resource) => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('wordpress-hosting') || categories.includes('hosting');
+});
+
+const pageTitle = "Best WordPress Hosting 2025 - Expert Rankings | WooThatsFast";
+const pageDescription = "Compare the top-rated WordPress hosting providers of 2025. Rankings based on performance, uptime, support quality, and value. Find your perfect hosting solution.";
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://woothatsfast.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://woothatsfast.com/wordpress-hosting",
+        "name": "WordPress Hosting"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@id": "https://woothatsfast.com/wordpress-hosting/rankings",
+        "name": "Rankings"
+      }
+    }
+  ]
+};
+
+// Filter to only hosting with ratings and sort by average rating
+const rankedHosting = hostingResources
+  .filter(r => r.data.ratings && r.data.ratings.length > 0)
+  .map(resource => {
+    const ratings = resource.data.ratings || [];
+    const avgRating = ratings.length > 0 
+      ? ratings.reduce((sum, rating) => sum + rating.value, 0) / ratings.length
+      : 0;
+    
+    return {
+      ...resource,
+      avgRating
+    };
+  })
+  .sort((a, b) => b.avgRating - a.avgRating)
+  .slice(0, 10); // Top 10 hosting providers
+
+// Create CollectionPage schema with ranked products
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": "https://woothatsfast.com/wordpress-hosting/rankings",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": rankedHosting.length,
+    "itemListElement": rankedHosting.map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://woothatsfast.com/wordpress-hosting/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WordPress Hosting",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": resource.avgRating.toFixed(1),
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": resource.data.ratings.length
+      }
+    }))
+  }
+};
+---
+
+<Layout 
+  title={pageTitle} 
+  description={pageDescription}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
+>
+  <ResourceRanking
+    client:load
+    data-theme="bright-dark"
+    title="Top WordPress Hosting 2025"
+    description="The best WordPress hosting providers ranked by performance, reliability, support quality, and overall value for your investment."
+    resources={rankedHosting}
+  />
+</Layout>

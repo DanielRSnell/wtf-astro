@@ -52,6 +52,81 @@ const isCoursePage = !section;
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Umami Analytics -->
+    <script defer src="http://umami-rkk4o0woc4ogwsk0o00ck4s0.157.230.11.56.sslip.io/script.js" data-website-id="8232a0dd-fbc4-4ad6-b2b3-715bed75a742"></script>
+    
+    <!-- Enhanced Analytics for Guides -->
+    <script is:inline>
+      (function() {
+        if (!window.WTFAnalytics) {
+          window.WTFAnalytics = { initialized: false };
+        }
+
+        function trackPageView() {
+          const path = window.location.pathname;
+          const metadata = {
+            path: path,
+            title: document.title,
+            url: window.location.href,
+            pageType: 'guide',
+            timestamp: new Date().toISOString()
+          };
+          
+          // Extract guide and section info
+          const pathParts = path.split('/').filter(Boolean);
+          if (pathParts[0] === 'guides' && pathParts[1]) {
+            metadata.guide = pathParts[1];
+            if (pathParts[2]) {
+              metadata.section = pathParts[2];
+            }
+          }
+          
+          if (window.umami) {
+            window.umami.track('guide-view', metadata);
+          }
+          
+          localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
+        }
+
+        // Track guide interactions
+        function setupGuideTracking() {
+          // Track section navigation clicks
+          document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href*="/guides/"]');
+            if (link && !link.dataset.tracked) {
+              link.dataset.tracked = 'true';
+              if (window.umami) {
+                window.umami.track('guide-navigation', {
+                  from: window.location.pathname,
+                  to: link.href,
+                  text: link.textContent.trim().substring(0, 50)
+                });
+              }
+            }
+          });
+        }
+
+        function initAnalytics() {
+          if (!window.WTFAnalytics.initialized) {
+            trackPageView();
+            setupGuideTracking();
+            window.WTFAnalytics.initialized = true;
+          } else {
+            trackPageView();
+          }
+        }
+
+        // Handle initial load and ViewTransitions
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAnalytics);
+        } else {
+          initAnalytics();
+        }
+
+        document.addEventListener('astro:page-load', initAnalytics);
+      })();
+    </script>
   </head>
   <body class="bg-background text-foreground">
     <div class="flex h-screen overflow-hidden">

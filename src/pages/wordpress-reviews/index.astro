@@ -5,8 +5,17 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/base.astro';
 import { ResourceDirectory } from '@/components/resource-directory.tsx';
 
-// Get all review resources from the wordpress-review collection
-const reviewResources = await getCollection('wordpress-review');
+// Get all review resources from the wordpress-resource collection
+const reviewResources = await getCollection('wordpress-resource', (resource) => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('wordpress-reviews') || categories.includes('reviews');
+});
+
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'reviews');
 
 // Get review-related blog posts
 const reviewPosts = await getCollection('blog', (post) => {
@@ -95,5 +104,6 @@ const collectionPageSchema = {
     resources={reviewResources}
     relatedPosts={reviewPosts}
     baseUrl="/wordpress-reviews"
+    categoryData={categoryData}
   />
 </Layout>

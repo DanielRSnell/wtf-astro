@@ -1,30 +1,38 @@
 ---
 export const prerender = false;
-import Layout from '../../layouts/base.astro';
-import { ResourceDirectory } from '../../components/resource-directory.tsx';
-import { getCollection } from 'astro:content';
 
-const resources = await getCollection('wordpress-resource', (resource) => {
-  const category = resource.data.category;
-  if (Array.isArray(category)) {
-    return category.includes('wordpress-pagebuilder');
-  }
-  return category === 'wordpress-pagebuilder';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceDirectory } from '@/components/resource-directory.tsx';
+
+// Get all pagebuilder resources from the wordpress-resource collection
+const pagebuilderResources = await getCollection('wordpress-resource', (resource) => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('wordpress-pagebuilder') || categories.includes('pagebuilder');
 });
 
-const blogPosts = await getCollection('blog');
-const relatedPosts = blogPosts.filter(post => 
-  post.data.tags?.some(tag => 
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'wordpress-pagebuilder');
+
+// Get pagebuilder-related blog posts
+const pagebuilderPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
     tag.toLowerCase().includes('builder') || 
     tag.toLowerCase().includes('elementor') ||
     tag.toLowerCase().includes('divi') ||
-    tag.toLowerCase().includes('bricks')
-  )
-);
+    tag.toLowerCase().includes('bricks') ||
+    pagebuilderResources.some(builder => 
+      post.data.title.toLowerCase().includes(builder.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(builder.data.title.toLowerCase()))
+    )
+  );
+});
 
-const title = 'Best WordPress Page Builders (2025) - Reviews & Comparisons | WooThatsFast';
-const description = 'Discover the best WordPress page builders of 2025. Expert reviews and comparisons of Elementor, Divi, Bricks Builder, Oxygen, and modern visual development platforms. Build stunning WordPress sites with drag-and-drop page builders.';
-const baseUrl = '/wordpress-pagebuilder';
+const pageTitle = 'Best WordPress Page Builders (2025) - Reviews & Comparisons | WooThatsFast';
+const pageDescription = 'Discover the best WordPress page builders of 2025. Expert reviews and comparisons of Elementor, Divi, Bricks Builder, Oxygen, and modern visual development platforms. Build stunning WordPress sites with drag-and-drop page builders.';
 
 // Create breadcrumb schema
 const breadcrumbSchema = {
@@ -52,14 +60,14 @@ const breadcrumbSchema = {
 // Create CollectionPage schema with Product listings
 const collectionPageSchema = {
   "@type": "CollectionPage",
-  "name": title,
-  "description": description,
+  "name": pageTitle,
+  "description": pageDescription,
   "url": "https://woothatsfast.com/wordpress-pagebuilder",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
-    "numberOfItems": resources.length,
-    "itemListElement": resources.slice(0, 10).map((resource, index) => ({
+    "numberOfItems": pagebuilderResources.length,
+    "itemListElement": pagebuilderResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
       "url": `https://woothatsfast.com/wordpress-pagebuilder/${resource.slug}`,
@@ -79,8 +87,8 @@ const collectionPageSchema = {
 ---
 
 <Layout 
-  title={title} 
-  description={description}
+  title={pageTitle} 
+  description={pageDescription}
   image="/open-graph.png"
   schemaType="CollectionPage"
   schemaData={collectionPageSchema}
@@ -88,11 +96,12 @@ const collectionPageSchema = {
   <ResourceDirectory
     client:load
     data-theme="bright-dark"
-    category="WordPress Page Builders"
-    title={title}
-    description={description}
-    resources={resources}
-    relatedPosts={relatedPosts}
-    baseUrl={baseUrl}
+    category="pagebuilder"
+    title="WordPress Page Builders"
+    description="Visual drag-and-drop builders for creating stunning WordPress sites"
+    resources={pagebuilderResources}
+    relatedPosts={pagebuilderPosts}
+    baseUrl="/wordpress-pagebuilder"
+    categoryData={categoryData}
   />
 </Layout>

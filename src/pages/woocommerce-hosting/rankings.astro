@@ -1,0 +1,110 @@
+---
+export const prerender = false;
+
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/base.astro';
+import { ResourceRanking } from '@/components/resource-ranking.tsx';
+
+// Get all WooCommerce hosting resources from the wordpress-resource collection
+const wooHostingResources = await getCollection('wordpress-resource', (resource) => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('woocommerce-hosting');
+});
+
+const pageTitle = "Best WooCommerce Hosting 2025 - Expert Rankings | WooThatsFast";
+const pageDescription = "Top-rated hosting for WooCommerce stores. Compare the best eCommerce hosting providers ranked by performance, scalability, and WooCommerce optimization.";
+
+// Create breadcrumb schema
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://woothatsfast.com",
+        "name": "Home"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://woothatsfast.com/woocommerce-hosting",
+        "name": "WooCommerce Hosting"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@id": "https://woothatsfast.com/woocommerce-hosting/rankings",
+        "name": "Rankings"
+      }
+    }
+  ]
+};
+
+// Filter to only WooCommerce hosting with ratings and sort by average rating
+const rankedWooHosting = wooHostingResources
+  .filter(r => r.data.ratings && r.data.ratings.length > 0)
+  .map(resource => {
+    const ratings = resource.data.ratings || [];
+    const avgRating = ratings.length > 0 
+      ? ratings.reduce((sum, rating) => sum + rating.value, 0) / ratings.length
+      : 0;
+    
+    return {
+      ...resource,
+      avgRating
+    };
+  })
+  .sort((a, b) => b.avgRating - a.avgRating)
+  .slice(0, 10); // Top 10 WooCommerce hosting providers
+
+// Create CollectionPage schema with ranked products
+const collectionPageSchema = {
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": "https://woothatsfast.com/woocommerce-hosting/rankings",
+  "breadcrumb": breadcrumbSchema,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": rankedWooHosting.length,
+    "itemListElement": rankedWooHosting.map((resource, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "url": `https://woothatsfast.com/woocommerce-hosting/${resource.slug}`,
+      "name": resource.data.title,
+      "description": resource.data.description,
+      "category": "WooCommerce Hosting",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": resource.avgRating.toFixed(1),
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": resource.data.ratings.length
+      }
+    }))
+  }
+};
+---
+
+<Layout 
+  title={pageTitle} 
+  description={pageDescription}
+  image="/open-graph.png"
+  schemaType="CollectionPage"
+  schemaData={collectionPageSchema}
+>
+  <ResourceRanking
+    client:load
+    data-theme="bright-dark"
+    title="Top WooCommerce Hosting 2025"
+    description="The best hosting solutions specifically optimized for WooCommerce stores, ranked by eCommerce performance, scalability, and specialized features."
+    resources={rankedWooHosting}
+  />
+</Layout>

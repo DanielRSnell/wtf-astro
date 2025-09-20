@@ -2,28 +2,35 @@
 export const prerender = false;
 import Layout from '../../layouts/base.astro';
 import { ResourceDirectory } from '../../components/resource-directory.tsx';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-const resources = await getCollection('wordpress-resource', (resource) => {
-  const category = resource.data.category;
-  if (Array.isArray(category)) {
-    return category.includes('wordpress-blocks');
-  }
-  return category === 'wordpress-blocks';
+// Get all block resources from the wordpress-resource collection
+const blockResources = await getCollection('wordpress-resource', (resource) => {
+  const categories = Array.isArray(resource.data.category) 
+    ? resource.data.category 
+    : [resource.data.category];
+  return categories.includes('wordpress-blocks') || categories.includes('blocks');
 });
 
-const blogPosts = await getCollection('blog');
-const relatedPosts = blogPosts.filter(post => 
-  post.data.tags?.some(tag => 
+// Get the category data
+const categories = await getCollection('wordpress-category');
+const categoryData = categories.find(cat => cat.data.category === 'wordpress-blocks');
+
+// Get block-related blog posts
+const blockPosts = await getCollection('blog', (post) => {
+  return post.data.tags?.some(tag => 
     tag.toLowerCase().includes('block') || 
     tag.toLowerCase().includes('gutenberg') ||
-    tag.toLowerCase().includes('editor')
-  )
-);
+    tag.toLowerCase().includes('editor') ||
+    blockResources.some(block => 
+      post.data.title.toLowerCase().includes(block.data.title.toLowerCase()) ||
+      post.data.tags?.some(postTag => postTag.toLowerCase().includes(block.data.title.toLowerCase()))
+    )
+  );
+});
 
-const title = 'Best WordPress Block Plugins (2025) - Reviews & Comparisons | WooThatsFast';
-const description = 'Discover the best WordPress block plugins of 2025. Expert reviews of Gutenberg blocks, custom block collections, and design system solutions. Build beautiful WordPress sites with premium block libraries and advanced Gutenberg extensions.';
-const baseUrl = '/wordpress-blocks';
+const pageTitle = 'Best WordPress Block Plugins (2025) - Reviews & Comparisons | WooThatsFast';
+const pageDescription = 'Discover the best WordPress block plugins of 2025. Expert reviews of Gutenberg blocks, custom block collections, and design system solutions. Build beautiful WordPress sites with premium block libraries and advanced Gutenberg extensions.';
 
 // Create breadcrumb schema
 const breadcrumbSchema = {
@@ -51,14 +58,14 @@ const breadcrumbSchema = {
 // Create CollectionPage schema with Product listings
 const collectionPageSchema = {
   "@type": "CollectionPage",
-  "name": title,
-  "description": description,
+  "name": pageTitle,
+  "description": pageDescription,
   "url": "https://woothatsfast.com/wordpress-blocks",
   "breadcrumb": breadcrumbSchema,
   "mainEntity": {
     "@type": "ItemList",
-    "numberOfItems": resources.length,
-    "itemListElement": resources.slice(0, 10).map((resource, index) => ({
+    "numberOfItems": blockResources.length,
+    "itemListElement": blockResources.slice(0, 10).map((resource, index) => ({
       "@type": "Product",
       "position": index + 1,
       "url": `https://woothatsfast.com/wordpress-blocks/${resource.slug}`,
@@ -78,8 +85,8 @@ const collectionPageSchema = {
 ---
 
 <Layout 
-  title={title} 
-  description={description}
+  title={pageTitle} 
+  description={pageDescription}
   image="/open-graph.png"
   schemaType="CollectionPage"
   schemaData={collectionPageSchema}
@@ -87,11 +94,12 @@ const collectionPageSchema = {
   <ResourceDirectory
     client:load
     data-theme="bright-dark"
-    category="WordPress Blocks"
-    title={title}
-    description={description}
-    resources={resources}
-    relatedPosts={relatedPosts}
-    baseUrl={baseUrl}
+    category="blocks"
+    title="WordPress Block Plugins"
+    description="Premium Gutenberg blocks and custom block collections for WordPress"
+    resources={blockResources}
+    relatedPosts={blockPosts}
+    baseUrl="/wordpress-blocks"
+    categoryData={categoryData}
   />
 </Layout>

@@ -15,7 +15,7 @@ const hostingResources = await getCollection('wordpress-resource', (resource) =>
 
 // Get the category data
 const categories = await getCollection('wordpress-category');
-const categoryData = categories.find(cat => cat.data.category === 'hosting');
+const categoryData = categories.find(cat => cat.data.category === 'wordpress-hosting');
 
 // Get hosting-related blog posts
 const hostingPosts = await getCollection('blog', (post) => {
