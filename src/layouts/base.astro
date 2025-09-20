@@ -5,6 +5,7 @@ import { Header } from "../components/global/header.tsx";
 import { Footer } from "../components/global/footer.tsx";
 import SEOMeta from "../components/seo/seo-meta.astro";
 import SchemaOrg from "../components/seo/schema-org.astro";
+import Favicon from "../components/favicon.astro";
 
 export interface Props {
   title?: string;
@@ -36,11 +37,7 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <Favicon />
     
     <!-- SEO Meta Tags -->
     <SEOMeta 
@@ -56,10 +53,6 @@ const {
     <!-- Schema.org Structured Data -->
     <SchemaOrg type={schemaType} data={schemaData} />
     
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

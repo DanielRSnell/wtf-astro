@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import SEOMeta from "../components/seo/seo-meta.astro";
+import Favicon from "../components/favicon.astro";
 
 export interface Props {
   title?: string;
@@ -19,9 +20,11 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
+    <Favicon />
+
     <!-- SEO Meta Tags -->
-    <SEOMeta 
+    <SEOMeta
       title={title}
       description={description}
       noindex={noindex}
