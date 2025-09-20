@@ -80,7 +80,12 @@ const {
       (function() {
         // Initialize global analytics
         if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { forms: [], pageViews: [], initialized: false };
+          window.WTFAnalytics = { 
+            forms: [], 
+            pageViews: [], 
+            currentPage: null,
+            formListenerAdded: false
+          };
         }
 
         // Get page metadata
@@ -111,6 +116,15 @@ const {
         function trackPageView() {
           const metadata = getPageMetadata();
           
+          // Check if we already tracked this page
+          if (window.WTFAnalytics.currentPage === metadata.path) {
+            console.log('[Analytics] Page already tracked:', metadata.path);
+            return;
+          }
+          
+          // Update current page
+          window.WTFAnalytics.currentPage = metadata.path;
+          
           // Send to Umami
           if (window.umami) {
             window.umami.track('page-view', metadata);
@@ -123,8 +137,11 @@ const {
 
         // Setup form tracking
         function setupFormTracking() {
-          document.removeEventListener('submit', handleFormSubmit, true);
+          // Only add listener once
+          if (window.WTFAnalytics.formListenerAdded) return;
+          
           document.addEventListener('submit', handleFormSubmit, true);
+          window.WTFAnalytics.formListenerAdded = true;
         }
 
         // Handle form submissions
@@ -180,21 +197,11 @@ const {
         function initAnalytics() {
           trackPageView();
           setupFormTracking();
-          window.WTFAnalytics.initialized = true;
         }
 
-        // Handle initial load and ViewTransitions
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initAnalytics);
-        } else {
-          initAnalytics();
-        }
-
-        // Handle ViewTransitions navigation
-        document.addEventListener('astro:page-load', function() {
-          console.log('[Analytics] ViewTransition navigation');
-          initAnalytics();
-        });
+        // Use only astro:page-load which fires after every navigation
+        // including the initial page load
+        document.addEventListener('astro:page-load', initAnalytics);
 
         // Expose API for n8n integration
         window.WTFAnalytics.getFormSubmissions = function() {

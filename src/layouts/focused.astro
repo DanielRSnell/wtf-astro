@@ -39,12 +39,18 @@ const {
       // Simplified analytics for focused layout
       (function() {
         if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { initialized: false };
+          window.WTFAnalytics = { currentPage: null };
         }
 
         function trackPageView() {
+          const path = window.location.pathname;
+          
+          // Check if already tracked
+          if (window.WTFAnalytics.currentPage === path) return;
+          window.WTFAnalytics.currentPage = path;
+          
           const metadata = {
-            path: window.location.pathname,
+            path: path,
             title: document.title,
             url: window.location.href,
             timestamp: new Date().toISOString()
@@ -57,21 +63,8 @@ const {
           localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
         }
 
-        function initAnalytics() {
-          if (!window.WTFAnalytics.initialized) {
-            trackPageView();
-            window.WTFAnalytics.initialized = true;
-          }
-        }
-
-        // Handle initial load and ViewTransitions
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initAnalytics);
-        } else {
-          initAnalytics();
-        }
-
-        document.addEventListener('astro:page-load', initAnalytics);
+        // Only use astro:page-load event
+        document.addEventListener('astro:page-load', trackPageView);
       })();
     </script>
   </head>

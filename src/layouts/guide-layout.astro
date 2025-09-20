@@ -60,11 +60,19 @@ const isCoursePage = !section;
     <script is:inline>
       (function() {
         if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { initialized: false };
+          window.WTFAnalytics = { 
+            currentPage: null,
+            guideListenerAdded: false 
+          };
         }
 
         function trackPageView() {
           const path = window.location.pathname;
+          
+          // Check if already tracked
+          if (window.WTFAnalytics.currentPage === path) return;
+          window.WTFAnalytics.currentPage = path;
+          
           const metadata = {
             path: path,
             title: document.title,
@@ -91,7 +99,9 @@ const isCoursePage = !section;
 
         // Track guide interactions
         function setupGuideTracking() {
-          // Track section navigation clicks
+          // Only add listener once
+          if (window.WTFAnalytics.guideListenerAdded) return;
+          
           document.addEventListener('click', function(e) {
             const link = e.target.closest('a[href*="/guides/"]');
             if (link && !link.dataset.tracked) {
@@ -105,25 +115,16 @@ const isCoursePage = !section;
               }
             }
           });
+          
+          window.WTFAnalytics.guideListenerAdded = true;
         }
 
         function initAnalytics() {
-          if (!window.WTFAnalytics.initialized) {
-            trackPageView();
-            setupGuideTracking();
-            window.WTFAnalytics.initialized = true;
-          } else {
-            trackPageView();
-          }
+          trackPageView();
+          setupGuideTracking();
         }
 
-        // Handle initial load and ViewTransitions
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initAnalytics);
-        } else {
-          initAnalytics();
-        }
-
+        // Only use astro:page-load event
         document.addEventListener('astro:page-load', initAnalytics);
       })();
     </script>
