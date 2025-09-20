@@ -24,9 +24,6 @@ export const PrereleaseSignup: React.FC<PrereleaseSignupProps> = ({
     setIsLoading(true);
 
     try {
-      // The form submission will be automatically tracked by the global analytics
-      // via the form submit event listener in base.astro
-
       // Store in localStorage for backup
       const signups = JSON.parse(localStorage.getItem('guideSignups') || '{}');
       if (!signups[guideTitle]) {
@@ -41,6 +38,31 @@ export const PrereleaseSignup: React.FC<PrereleaseSignupProps> = ({
           guide: guideTitle,
           email: email.split('@')[1] // domain only for privacy
         });
+      }
+
+      // Send to n8n webhook (since we're preventing default submission)
+      const webhookData = {
+        current: window.location.href,
+        name: 'prerelease-signup',
+        data: { email }
+      };
+
+      try {
+        const response = await fetch('https://api.umbral.ai/webhook/3e6eeff1-0e94-4497-8155-fad9df560192', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookData)
+        });
+
+        if (response.ok) {
+          console.log('[Analytics] Webhook sent successfully', webhookData);
+        } else {
+          console.error('[Analytics] Webhook response error:', response.status, response.statusText);
+        }
+      } catch (webhookError) {
+        console.error('[Analytics] Webhook failed:', webhookError);
       }
 
       // Small delay for user experience
@@ -134,6 +156,7 @@ export const PrereleaseSignup: React.FC<PrereleaseSignupProps> = ({
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60" />
                 <input
                   type="email"
+                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"

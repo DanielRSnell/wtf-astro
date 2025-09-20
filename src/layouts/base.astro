@@ -124,7 +124,7 @@ const {
         }
 
         // Handle form submissions
-        async function handleFormSubmit(event) {
+        function handleFormSubmit(event) {
           const form = event.target;
           if (form.tagName !== 'FORM') return;
 
@@ -173,28 +173,35 @@ const {
             });
           }
 
-          // Send to webhook
-          try {
-            const webhookData = {
-              current: pageContext.url,
-              name: formName,
-              data: data
-            };
+          // Send to webhook asynchronously (don't block form submission)
+          const webhookData = {
+            current: pageContext.url,
+            name: formName,
+            data: data
+          };
 
-            await fetch('https://api.umbral.ai/webhook/3e6eeff1-0e94-4497-8155-fad9df560192', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(webhookData)
-            });
+          // Use setTimeout to ensure this runs after form submission
+          setTimeout(async () => {
+            try {
+              const response = await fetch('https://api.umbral.ai/webhook/3e6eeff1-0e94-4497-8155-fad9df560192', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookData)
+              });
 
-            console.log('[Analytics] Webhook sent successfully');
-          } catch (error) {
-            console.error('[Analytics] Webhook failed:', error);
-          }
+              if (response.ok) {
+                console.log('[Analytics] Webhook sent successfully', webhookData);
+              } else {
+                console.error('[Analytics] Webhook response error:', response.status, response.statusText);
+              }
+            } catch (error) {
+              console.error('[Analytics] Webhook failed:', error);
+            }
+          }, 100);
 
-          console.log('[Analytics] Form tracked:', submission.form.id);
+          console.log('[Analytics] Form tracked:', submission.form.id, webhookData);
         }
 
         // Initialize form tracking on page load
