@@ -56,76 +56,28 @@ const isCoursePage = !section;
     <!-- Umami Analytics -->
     <script defer src="https://analytics.umbral.ai/script.js" data-website-id="8232a0dd-fbc4-4ad6-b2b3-715bed75a742"></script>
     
-    <!-- Enhanced Analytics for Guides -->
+    <!-- Guide Navigation Tracking -->
     <script is:inline>
       (function() {
-        if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { 
-            currentPage: null,
-            guideListenerAdded: false 
-          };
-        }
-
-        function trackPageView() {
-          const path = window.location.pathname;
-          
-          // Check if already tracked
-          if (window.WTFAnalytics.currentPage === path) return;
-          window.WTFAnalytics.currentPage = path;
-          
-          const metadata = {
-            path: path,
-            title: document.title,
-            url: window.location.href,
-            pageType: 'guide',
-            timestamp: new Date().toISOString()
-          };
-          
-          // Extract guide and section info
-          const pathParts = path.split('/').filter(Boolean);
-          if (pathParts[0] === 'guides' && pathParts[1]) {
-            metadata.guide = pathParts[1];
-            if (pathParts[2]) {
-              metadata.section = pathParts[2];
+        // Only initialize once globally
+        if (window.WTFGuideTrackingInitialized) return;
+        window.WTFGuideTrackingInitialized = true;
+        
+        // Track guide navigation clicks
+        document.addEventListener('click', function(e) {
+          const link = e.target.closest('a[href*="/guides/"]');
+          if (link && window.umami) {
+            // Only track internal guide navigation
+            if (link.href.includes(window.location.host)) {
+              window.umami.track('guide-navigation', {
+                from: window.location.pathname,
+                to: new URL(link.href).pathname
+              });
             }
           }
-          
-          if (window.umami) {
-            window.umami.track('guide-view', metadata);
-          }
-          
-          localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
-        }
-
-        // Track guide interactions
-        function setupGuideTracking() {
-          // Only add listener once
-          if (window.WTFAnalytics.guideListenerAdded) return;
-          
-          document.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href*="/guides/"]');
-            if (link && !link.dataset.tracked) {
-              link.dataset.tracked = 'true';
-              if (window.umami) {
-                window.umami.track('guide-navigation', {
-                  from: window.location.pathname,
-                  to: link.href,
-                  text: link.textContent.trim().substring(0, 50)
-                });
-              }
-            }
-          });
-          
-          window.WTFAnalytics.guideListenerAdded = true;
-        }
-
-        function initAnalytics() {
-          trackPageView();
-          setupGuideTracking();
-        }
-
-        // Only use astro:page-load event
-        document.addEventListener('astro:page-load', initAnalytics);
+        }, true);
+        
+        console.log('[Analytics] Guide navigation tracking initialized');
       })();
     </script>
   </head>

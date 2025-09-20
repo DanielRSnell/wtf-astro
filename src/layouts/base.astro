@@ -78,15 +78,17 @@ const {
     <script is:inline>
       // Analytics with ViewTransitions Support
       (function() {
+        // Only initialize once globally
+        if (window.WTFAnalyticsInitialized) return;
+        window.WTFAnalyticsInitialized = true;
+        
         // Initialize global analytics
-        if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { 
-            forms: [], 
-            pageViews: [], 
-            currentPage: null,
-            formListenerAdded: false
-          };
-        }
+        window.WTFAnalytics = { 
+          forms: [], 
+          pageViews: [], 
+          currentPage: null,
+          formListenerAdded: false
+        };
 
         // Get page metadata
         function getPageMetadata() {
@@ -112,29 +114,6 @@ const {
           };
         }
 
-        // Track page view
-        function trackPageView() {
-          const metadata = getPageMetadata();
-          
-          // Check if we already tracked this page
-          if (window.WTFAnalytics.currentPage === metadata.path) {
-            console.log('[Analytics] Page already tracked:', metadata.path);
-            return;
-          }
-          
-          // Update current page
-          window.WTFAnalytics.currentPage = metadata.path;
-          
-          // Send to Umami
-          if (window.umami) {
-            window.umami.track('page-view', metadata);
-          }
-          
-          // Store for form context
-          localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
-          console.log('[Analytics] Page tracked:', metadata.path);
-        }
-
         // Setup form tracking
         function setupFormTracking() {
           // Only add listener once
@@ -142,6 +121,7 @@ const {
           
           document.addEventListener('submit', handleFormSubmit, true);
           window.WTFAnalytics.formListenerAdded = true;
+          console.log('[Analytics] Form tracking initialized');
         }
 
         // Handle form submissions
@@ -193,15 +173,8 @@ const {
           console.log('[Analytics] Form tracked:', submission.form.id);
         }
 
-        // Initialize
-        function initAnalytics() {
-          trackPageView();
-          setupFormTracking();
-        }
-
-        // Use only astro:page-load which fires after every navigation
-        // including the initial page load
-        document.addEventListener('astro:page-load', initAnalytics);
+        // Initialize form tracking once
+        setupFormTracking();
 
         // Expose API for n8n integration
         window.WTFAnalytics.getFormSubmissions = function() {
@@ -212,6 +185,8 @@ const {
             return [];
           }
         };
+        
+        console.log('[Analytics] Custom tracking initialized (Umami handles page views)');
       })();
     </script>
   </head>

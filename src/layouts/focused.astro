@@ -34,39 +34,6 @@ const {
     <!-- Umami Analytics -->
     <script defer src="https://analytics.umbral.ai/script.js" data-website-id="8232a0dd-fbc4-4ad6-b2b3-715bed75a742"></script>
     
-    <!-- Enhanced Analytics Tracking -->
-    <script is:inline>
-      // Simplified analytics for focused layout
-      (function() {
-        if (!window.WTFAnalytics) {
-          window.WTFAnalytics = { currentPage: null };
-        }
-
-        function trackPageView() {
-          const path = window.location.pathname;
-          
-          // Check if already tracked
-          if (window.WTFAnalytics.currentPage === path) return;
-          window.WTFAnalytics.currentPage = path;
-          
-          const metadata = {
-            path: path,
-            title: document.title,
-            url: window.location.href,
-            timestamp: new Date().toISOString()
-          };
-          
-          if (window.umami) {
-            window.umami.track('page-view', metadata);
-          }
-          
-          localStorage.setItem('wtf-last-page', JSON.stringify(metadata));
-        }
-
-        // Only use astro:page-load event
-        document.addEventListener('astro:page-load', trackPageView);
-      })();
-    </script>
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
     <main>
